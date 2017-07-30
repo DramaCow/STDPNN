@@ -4,8 +4,21 @@
 class Neuron
 {
   public:
-    Neuron();
-    double get();
+    Neuron(int id);
+    virtual bool isSpiking() = 0;
+
+  protected:
+    int id;
+    double t_last;
+    double x;
+    double y;
+};
+
+class PPNeuron : public Neuron
+{
+  public:
+    PPNeuron(int id);
+    virtual bool isSpiking();
 };
 
 #endif

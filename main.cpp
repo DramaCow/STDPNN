@@ -3,7 +3,7 @@
 
 int main() 
 {
-  Neuron N;
-  printf("%f\n", N.get());
+  PPNeuron N(5);
+  printf("%s\n", N.isSpiking() ? "true" : "false");
   return 0;
 }
