@@ -1,9 +1,12 @@
 #include <cstdio>
+#include <random>
+#include <iostream>
 #include "neuron.hpp"
 
 int main() 
 {
   PPNeuron N(5);
-  printf("%s\n", N.isSpiking() ? "true" : "false");
+  std::cout << N.isSpiking() << std::endl;
+
   return 0;
 }
