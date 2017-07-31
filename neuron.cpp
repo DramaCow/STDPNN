@@ -31,7 +31,7 @@ void Neuron::spike()
 
 PPNeuron::PPNeuron(int id) : Neuron(id)
 {
-  std::random_device rd; // slow rng used for one-off seed (makes use of device entropy)
+  std::random_device rd; // slow rng for one-off seed (uses  device entropy)
   gen.seed(rd()); // standard mersenne_twister_engine
 
   this->fr = 20;
@@ -39,7 +39,15 @@ PPNeuron::PPNeuron(int id) : Neuron(id)
 
 bool PPNeuron::isSpiking()
 {
-  //std::cout << std::exponential_distribution<double>{fr}(gen) << std::endl;
-  return std::uniform_real_distribution<double>{0,1}(gen) < 0.5;
+  return t_last == t_next;
 }
 
+double PPNeuron::getNextSpikeTime()
+{
+  return t_next;
+}
+
+void PPNeuron::setNextSpikeTime(double t_curr)
+{
+  t_next = fr > 0 ? t_curr + std::exponential_distribution<double>{fr}(gen) : INFINITY;
+}

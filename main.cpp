@@ -6,7 +6,8 @@
 int main() 
 {
   PPNeuron N(5);
-  std::cout << N.isSpiking() << std::endl;
+  N.setNextSpikeTime(0.0);
+  std::cout << N.getNextSpikeTime() << std::endl;
 
   return 0;
 }
