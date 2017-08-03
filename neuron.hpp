@@ -11,6 +11,7 @@
 class Neuron
 {
   public:
+    Neuron() {}
     Neuron(int id, int type);
 
     virtual void update(double t_curr);
@@ -35,6 +36,7 @@ class Neuron
 class PPNeuron : public Neuron
 {
   public:
+    PPNeuron() {}
     PPNeuron(int id, int type);
 
     virtual void step(double dt) { UNUSED(dt); }
