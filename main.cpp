@@ -5,9 +5,8 @@
 
 int main() 
 {
-  PPNeuron N(5);
-  N.setNextSpikeTime(0.0);
-  std::cout << N.getNextSpikeTime() << std::endl;
+  PPNeuron N(5, EXCITATORY);
+  std::cout << N.next_spike_time(0.0) << std::endl;
 
   return 0;
 }
