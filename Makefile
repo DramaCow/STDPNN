@@ -1,19 +1,20 @@
-EXE = run
+EXE ?= start
 
-CC = g++ 
-DEBUG = -g
-CFLAGS = -Wall -Wextra -Werror -std=c++11 -pedantic
-LIBS = -lm
+CC := g++ 
+DEBUG := -g
+CFLAGS := -Wall -Wextra -Werror -std=c++11 -pedantic
+LIBS := -lm
 
-all: $(EXE)
+SRCS := $(shell find . -name '*.cpp')
+OBJS := $(SRCS:%=./%.o)
+DEPS := $(OBJS:.o=.d)
 
-$(EXE): neuron.o main.cpp
+print-%  : ; @echo $* = $($*)
+
+$(EXE): $(OBJS)
 	$(CC) $(CFLAGS) $^ $(LIBS) -o $@
 
-neuron.o: neuron.cpp
-	$(CC) -c $(CFLAGS) $^ $(LIBS) -o $@
-
-RNG.o: RNG.cpp
+%.cpp.o: %.cpp
 	$(CC) -c $(CFLAGS) $^ $(LIBS) -o $@
 
 clean:
