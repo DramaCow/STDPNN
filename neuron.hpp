@@ -60,6 +60,9 @@ class IFNeuron : public Neuron
     virtual bool is_spiking();
     virtual double next_spike_time(double t);
 
+    std::vector<double> V_record;
+    std::vector<double> t_record;
+
   private:
     double V_rest;
     double V_thresh;

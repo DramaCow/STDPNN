@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cmath>
 #include <iostream>
+#include <vector>
 #include "neuron.hpp"
 #include "units.hpp"
 
@@ -65,12 +66,18 @@ IFNeuron::IFNeuron(int id, int type) : Neuron(id, type)
 
   V = V_rest;
   g_ex = g_in = 0;
+
+  V_record.push_back(V);
+  t_record.push_back(0.0);
 }
 
 void IFNeuron::spike()
 {
   Neuron::spike();
   V = V_reset;
+
+  V_record.push_back(V);
+  t_record.push_back(t_record.back());
 }
 
 void IFNeuron::step(double dt)
@@ -78,6 +85,9 @@ void IFNeuron::step(double dt)
   V    += dt * dVdt(V, g_ex, g_in);
   g_ex += dt * dg_exdt(g_ex);
   g_in += dt * dg_indt(g_in);
+
+  V_record.push_back(V);
+  t_record.push_back(t_record.back() + dt);
 }
 
 void IFNeuron::receive_spike()
@@ -98,7 +108,7 @@ double IFNeuron::next_spike_time(double t)
 
 double IFNeuron::dVdt(double V, double g_ex, double g_in)
 {
-  return (1.0/tau_m)*(V_rest - V + g_ex*(E_ex - V) + g_in*(E_in - V));
+  return (1.0/tau_m)*(V_rest - V + g_ex*(E_ex - V) + g_in*(E_in - V) + 0.021);
 }
 double IFNeuron::dg_exdt(double g_ex)
 {
