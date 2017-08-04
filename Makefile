@@ -18,4 +18,4 @@ $(EXE): $(OBJS)
 	$(CC) -c $(CFLAGS) $^ $(LIBS) -o $@
 
 clean:
-	rm *.o $(EXE)
+	rm *.o *.dat $(EXE)
