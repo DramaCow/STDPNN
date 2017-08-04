@@ -1,2 +1,0 @@
-export LD_LIBRARY_PATH=/home/samc/anaconda3/lib:$LD_LIBRARY_PATH
-export PYTHONPATH=$PYTHONPATH:/home/samc/Repos/stdp

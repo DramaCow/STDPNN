@@ -3,11 +3,7 @@
 #include <iostream>
 #include "neuron.hpp"
 
-#include <Python.h>
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-#include <numpy/arrayobject.h>
-
-int main(int argc, char *argv[]) 
+int main() 
 {
 /*
   PPNeuron I[1000];
@@ -41,19 +37,6 @@ int main(int argc, char *argv[])
 //    std::cout << t << " ";
 //  }
 */
-
-  PyObject *pName, *pModule, *pDict, *pFunc;
-  PyObject *pArgs, *pValue;
-
-  Py_Initialize();
-  pName = PyUnicode_FromString("plot");
-  pModule = PyImport_Import(pName);
-  Py_DECREF(pName);
-
-  if (pModule == NULL)
-  {
-    std::cout << "Module not found..." << std::endl;
-  }
 
   return 0;
 }
