@@ -4,7 +4,7 @@ Event::Event(double time) : time(time)
 {
 }
 
-SpikeEvent::SpikeEvent(double time, int n_id) : Event(time), n_id(n_id)
+SpikeEvent::SpikeEvent(double time, Neuron *neuron) : Event(time), neuron(neuron)
 {
 }
 

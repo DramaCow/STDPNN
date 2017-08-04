@@ -1,6 +1,7 @@
 #include <iostream>
 #include <random>
 #include "neuron.hpp"
+#include "synapse.hpp"
 #include "event.hpp"
 
 int main(int argc, char *argv[]) 
@@ -31,13 +32,23 @@ int main(int argc, char *argv[])
   }
 */
 
+  Neuron *n1 = new PPNeuron(0, EXCITATORY);
+  Neuron *n2 = new PPNeuron(1, EXCITATORY);
+  Neuron *n3 = new PPNeuron(2, EXCITATORY);
+  Neuron *n4 = new PPNeuron(3, EXCITATORY);
+  SynapseNetwork sn(4);
+  sn.add_edge(n1, n2, W_MAX);
+  sn.add_edge(n1, n3, W_MAX);
+  sn.add_edge(n1, n4, W_MAX);
+
+/*
   EventQueue EQ;
   EQ.insert(new EpochEvent(0.5, 0));
   EQ.insert(new RecordEvent(0.1));
   EQ.insert(new EpochEvent(0.2, 0));
-  EQ.insert(new SpikeEvent(0.9, 0));
+  EQ.insert(new SpikeEvent(0.9, n1));
   EQ.insert(new EpochEvent(0.3, 0));
-  EQ.insert(new SpikeEvent(0.7, 0));
+  EQ.insert(new SpikeEvent(0.7, n1));
 
   int limit = EQ.size();
   for (int i = 0; i < limit; ++i)
@@ -46,6 +57,7 @@ int main(int argc, char *argv[])
     std::cout << event->time << std::endl;
     EQ.del_min();
   }
+*/
 
 /*
   // export results to binary file
@@ -59,6 +71,15 @@ int main(int argc, char *argv[])
   return 0;
 }
 /*
+  for (Synapse *&sy : sn.outputs(n1))
+  {
+    std::cout << sy->pre->id << " --> " << sy->post->id << std::endl;
+  }
+  for (Synapse *&sy : sn.inputs(n1))
+  {
+    std::cout << sy->post->id << " <-- " << sy->pre->id << std::endl;
+  }
+
   for (auto iter = EQ.event_list.begin()+1; iter != EQ.event_list.end(); ++iter)
   {
     std::cout << (*iter)->time << std::endl;

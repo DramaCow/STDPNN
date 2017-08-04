@@ -2,6 +2,7 @@
 #define __EVENT_H
 
 #include <vector>
+#include "neuron.hpp"
 
 class Event
 {
@@ -16,8 +17,8 @@ class Event
 class SpikeEvent : public Event
 {
   public:
-    SpikeEvent(double time, int n_id);
-    const int n_id;
+    SpikeEvent(double time, Neuron *neuron);
+    const Neuron *const neuron;
 
     virtual void process() {}
 };

@@ -11,8 +11,10 @@
 class Neuron
 {
   public:
-    Neuron() {}
     Neuron(int id, int type);
+
+    const int id;
+    const int type;
 
     virtual void update(double t_curr);
     virtual void spike();  
@@ -23,9 +25,6 @@ class Neuron
     virtual double next_spike_time(double t) = 0;
 
   protected:
-    int id;
-    int type;
-
     double t_last;
     double t_next;
 
@@ -36,7 +35,6 @@ class Neuron
 class PPNeuron : public Neuron
 {
   public:
-    PPNeuron() {}
     PPNeuron(int id, int type);
 
     virtual void step(double dt) { UNUSED(dt); }

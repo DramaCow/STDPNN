@@ -102,7 +102,7 @@ bool IFNeuron::is_spiking()
 
 double IFNeuron::next_spike_time(double t)
 {
-  UNUSED(t);
+  (void)t;
   return INFINITY;
 }
 
