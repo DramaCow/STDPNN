@@ -7,8 +7,9 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
 
-int main() 
-{/*
+int main(int argc, char *argv[]) 
+{
+/*
   PPNeuron I[1000];
   IFNeuron N(0, EXCITATORY);
   
@@ -20,29 +21,39 @@ int main()
       t_sim += 0.0005;
       N.step(0.0005);
     }
-    N.update(t_sim);
+//    N.update(t_sim);
     N.spike();
 
-    for (int a = 0; a < 1000; ++a)
-    {
-      //I[a].
-      I[a].update(t_sim);
-    }
+//    for (int a = 0; a < 1000; ++a)
+//    {
+//      I[a].
+//      I[a].update(t_sim);
+//    }
   }
-
   std::cout << t_sim << std::endl;
+
+
+//  for (double &V : N.V_record) {
+//    std::cout << V << " ";
+//  }
+//  std::cout << std::endl;
+//  for (double &t : N.t_record) {
+//    std::cout << t << " ";
+//  }
 */
-/*
-  for (double &V : N.V_record) {
-    std::cout << V << " ";
+
+  PyObject *pName, *pModule, *pDict, *pFunc;
+  PyObject *pArgs, *pValue;
+
+  Py_Initialize();
+  pName = PyUnicode_FromString("plot");
+  pModule = PyImport_Import(pName);
+  Py_DECREF(pName);
+
+  if (pModule == NULL)
+  {
+    std::cout << "Module not found..." << std::endl;
   }
 
-  std::cout << std::endl;
-
-  for (double &t : N.t_record) {
-    std::cout << t << " ";
-  }
-*/
-  std::cout << "Hello, world!" << std::endl;
   return 0;
 }
