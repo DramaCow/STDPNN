@@ -4,6 +4,18 @@ Event::Event(double time) : time(time)
 {
 }
 
+SpikeEvent::SpikeEvent(double time, int n_id) : Event(time), n_id(n_id)
+{
+}
+
+EpochEvent::EpochEvent(double time, int g_id) : Event(time), g_id(g_id)
+{
+}
+
+RecordEvent::RecordEvent(double time) : Event(time)
+{
+}
+
 EventQueue::EventQueue()
 {
   event_list = {nullptr};
@@ -16,6 +28,11 @@ EventQueue::~EventQueue()
   {
     delete event;
   }
+}
+
+int EventQueue::size()
+{
+  return current_size;
 }
 
 void EventQueue::insert(Event *event)

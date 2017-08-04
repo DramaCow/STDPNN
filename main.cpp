@@ -32,7 +32,20 @@ int main(int argc, char *argv[])
 */
 
   EventQueue EQ;
-  EQ.insert(new Event(0.5));
+  EQ.insert(new EpochEvent(0.5, 0));
+  EQ.insert(new RecordEvent(0.1));
+  EQ.insert(new EpochEvent(0.2, 0));
+  EQ.insert(new SpikeEvent(0.9, 0));
+  EQ.insert(new EpochEvent(0.3, 0));
+  EQ.insert(new SpikeEvent(0.7, 0));
+
+  int limit = EQ.size();
+  for (int i = 0; i < limit; ++i)
+  {
+    Event *event = EQ.get_min();
+    std::cout << event->time << std::endl;
+    EQ.del_min();
+  }
 
 /*
   // export results to binary file
