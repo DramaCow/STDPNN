@@ -4,29 +4,25 @@ Event::Event(double time) : time(time)
 {
 }
 
-double Event::get_time()
-{
-  return time;
-}
-
 EventQueue::EventQueue()
 {
   event_list = {nullptr};
   current_size = 0;
 }
 
-/*
-  void insert(Event *event);
-  Event * getMin();
-  Event * delMin();
-*/
+EventQueue::~EventQueue()
+{
+  for (auto &event : event_list)
+  {
+    delete event;
+  }
+}
 
-Event * EventQueue::insert(Event *event)
+void EventQueue::insert(Event *event)
 {
   event_list.push_back(event);
   current_size = current_size + 1;
   perc_up(current_size);
-  return event;
 }
 
 Event * EventQueue::get_min()
@@ -34,9 +30,9 @@ Event * EventQueue::get_min()
   return event_list[1];
 }
 
-Event * EventQueue::del_min()
+void EventQueue::del_min()
 {
-  Event *retval = event_list[1];
+  Event *delval = event_list[1];
   event_list[1] = event_list[current_size];
 
   current_size = current_size - 1;
@@ -44,14 +40,14 @@ Event * EventQueue::del_min()
 
   perc_down(1);
 
-  return retval;
+  delete delval;
 }
 
 void EventQueue::perc_up(int idx)
 {
   while (idx/2 > 0)
   {
-    if (event_list[idx]->get_time() < event_list[idx/2]->get_time())
+    if (event_list[idx]->time < event_list[idx/2]->time)
     {
       Event *tmp = event_list[idx/2];
       event_list[idx/2] = event_list[idx];
@@ -66,7 +62,7 @@ void EventQueue::perc_down(int idx)
   while (2*idx <= current_size)
   {
     int mc = min_child(idx);
-    if (event_list[idx]->get_time() > event_list[mc]->get_time())
+    if (event_list[idx]->time > event_list[mc]->time)
     {
       Event *tmp = event_list[idx];
       event_list[idx] = event_list[mc];
@@ -83,7 +79,7 @@ int EventQueue::min_child(int idx)
     return 2*idx;
   }
 
-  if (event_list[2*idx]->get_time() < event_list[2*idx + 1]->get_time())
+  if (event_list[2*idx]->time < event_list[2*idx + 1]->time)
   {
     return 2*idx;
   }

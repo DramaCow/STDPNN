@@ -1,6 +1,7 @@
-#include <cstdio>
+#include <iostream>
 #include <random>
 #include "neuron.hpp"
+#include "event.hpp"
 
 int main(int argc, char *argv[]) 
 {
@@ -9,10 +10,9 @@ int main(int argc, char *argv[])
     printf("usage: %s <output_filename>\n", argv[0]);
     return 1;
   }
-
+/*
   PPNeuron I[1000];
   IFNeuron N(0, EXCITATORY);
-  
   double t_sim = 0.0;
   for (int i = 0; i < 10; ++i)
   {
@@ -29,7 +29,12 @@ int main(int argc, char *argv[])
       I[a].update(t_sim);
     }
   }
+*/
 
+  EventQueue EQ;
+  EQ.insert(new Event(0.5));
+
+/*
   // export results to binary file
   FILE* file = fopen(argv[1], "wb");
   int entries = N.t_record.size();
@@ -37,6 +42,12 @@ int main(int argc, char *argv[])
   fwrite(&N.t_record[0], sizeof(double), entries, file);
   fwrite(&N.V_record[0], sizeof(double), entries, file);
   fclose(file);
-
+*/
   return 0;
 }
+/*
+  for (auto iter = EQ.event_list.begin()+1; iter != EQ.event_list.end(); ++iter)
+  {
+    std::cout << (*iter)->time << std::endl;
+  }
+*/

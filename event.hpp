@@ -7,24 +7,22 @@ class Event
 {
   public:
     Event(double time);
-
-    double get_time();
-
-  private:
-    double time;
+    const double time;
 };
 
 class EventQueue
 {
   public:
     EventQueue();
+    ~EventQueue();
 
-    Event * insert(Event *event);
+    void insert(Event *event);
     Event * get_min();
-    Event * del_min();
+    void del_min();
 
+    std::vector<Event*> event_list; // TODO: remove!
   private:
-    std::vector<Event*> event_list;
+    //std::vector<Event*> event_list;
     int current_size;
 
     void perc_up(int idx);
