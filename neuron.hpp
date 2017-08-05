@@ -22,6 +22,9 @@ class Neuron
     virtual bool is_spiking() = 0;
     virtual double next_spike_time(double t) = 0;
 
+    double get_x();
+    double get_y();
+
   protected:
     double t_last;
     double t_next;

@@ -42,13 +42,13 @@ int main(int argc, char *argv[])
 
   // initialise event queue
   EventQueue EQ;
-  EQ.insert(new EpochEvent(0.0, 0));
-  EQ.insert(new EpochEvent(0.0, 1));
+  EQ.insert(new EpochEvent(0.0, 1, 0));
+  EQ.insert(new EpochEvent(0.0, 1, 1));
 
   // set up recording
   double rec_period = 0.5;
-  EQ.insert(new RecordEvent(0.0));
-  EQ.insert(new RecordEvent(duration));
+  EQ.insert(new RecordEvent(0.0, 2));
+  EQ.insert(new RecordEvent(duration, 2));
 
   // main loop
   while (t_sim <= duration && EQ.size() > 0)
@@ -70,12 +70,47 @@ int main(int argc, char *argv[])
           synch_event_inserted = true;
         }
       }
-    }
+   }
 
     // event (asynchronous) update
     if (!synch_event_inserted)
     {
-      e->process();
+      // TODO: use e->process polymorphism
+      switch (e->type)
+      {
+        case 0: {
+          SpikeEvent *se = dynamic_cast<SpikeEvent*>(e);
+
+          se->neuron->update(t_sim);
+
+          if (se->neuron->is_spiking())
+          {
+            for (Synapse *&sy : sn.outputs(se->neuron))
+            {
+              sy->post->update(t_sim);
+              sy->pre_spike();
+            }
+          }
+
+
+          break;
+        }
+
+        case 1: {
+          EpochEvent *ee = dynamic_cast<EpochEvent*>(e);
+          break;
+        }
+
+        case 2: {
+          RecordEvent *re = dynamic_cast<RecordEvent*>(e);
+          break;
+        }
+
+        default: {
+          std::cout << "ERROR!" << std::endl;
+          return 1;
+        }
+      }
       EQ.del_min();
     }
   }

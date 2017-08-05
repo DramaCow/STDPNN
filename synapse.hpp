@@ -12,8 +12,11 @@ class Synapse
   public:
     Synapse(Neuron *pre, Neuron *post, double w);
 
-    const Neuron *pre;
-    const Neuron *post;
+    Neuron *const pre;
+    Neuron *const post;
+
+    void pre_spike();
+    void post_spike();
 
     double get_w();
 

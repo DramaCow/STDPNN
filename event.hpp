@@ -7,18 +7,20 @@
 class Event
 {
   public:
-    Event(double time);
+    Event(double time, int type);
     virtual ~Event() {} // necessary for polymorphism
     const double time;
 
     virtual void process() = 0;
+
+    const int type;
 };
 
 class SpikeEvent : public Event
 {
   public:
-    SpikeEvent(double time, Neuron *neuron);
-    const Neuron *const neuron;
+    SpikeEvent(double time, int type, Neuron *neuron);
+    Neuron *const neuron;
 
     virtual void process() {}
 };
@@ -26,7 +28,7 @@ class SpikeEvent : public Event
 class EpochEvent : public Event
 {
   public:
-    EpochEvent(double time, int g_id);
+    EpochEvent(double time, int type, int g_id);
     const int g_id;
 
     virtual void process() {}
@@ -35,7 +37,7 @@ class EpochEvent : public Event
 class RecordEvent : public Event
 {
   public:
-    RecordEvent(double time);
+    RecordEvent(double time, int type);
 
     virtual void process() {}
 };

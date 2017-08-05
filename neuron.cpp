@@ -33,6 +33,16 @@ void Neuron::spike()
   y -= A_n;
 }
 
+double Neuron::get_x()
+{
+  return x;
+}
+
+double Neuron::get_y()
+{
+  return y;
+}
+
 PPNeuron::PPNeuron(int id, int type) : Neuron(id, type)
 {
   std::random_device rd; // slow rng for one-off seed (uses  device entropy)

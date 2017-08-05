@@ -1,18 +1,18 @@
 #include "event.hpp"
 
-Event::Event(double time) : time(time)
+Event::Event(double time, int type) : time(time), type(type)
 {
 }
 
-SpikeEvent::SpikeEvent(double time, Neuron *neuron) : Event(time), neuron(neuron)
+SpikeEvent::SpikeEvent(double time, int type, Neuron *neuron) : Event(time, type), neuron(neuron)
 {
 }
 
-EpochEvent::EpochEvent(double time, int g_id) : Event(time), g_id(g_id)
+EpochEvent::EpochEvent(double time, int type, int g_id) : Event(time, type), g_id(g_id)
 {
 }
 
-RecordEvent::RecordEvent(double time) : Event(time)
+RecordEvent::RecordEvent(double time, int type) : Event(time, type)
 {
 }
 
