@@ -111,7 +111,7 @@ void IFNeuron::receive_spike(int source_type, double strength)
   }
   else if (source_type == EXCITATORY)
   {
-    g_ex += 1.1*strength;
+    g_ex += 1.0*strength;
   }
 }
 

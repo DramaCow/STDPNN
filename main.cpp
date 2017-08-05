@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdio>
 #include <random>
 #include <cmath>
 #include <string>
@@ -18,7 +19,7 @@ int main(int argc, char *argv[])
   }
 
   // global config
-  const double duration = 100.0;
+  const double duration = 50.0;
   const double ave_epoch_period = 0.02;
 
   // neuron config
@@ -59,6 +60,7 @@ int main(int argc, char *argv[])
   {
     t_record[i] = i*rec_period;
   }
+  EQ.insert(new RecordEvent(t_sim, 2, 0));
 
   // random number generator engine
   std::mt19937 gen;
@@ -84,7 +86,6 @@ int main(int argc, char *argv[])
         if (s_neuron[id]->is_spiking())
         {
           EQ.insert(new SpikeEvent(t_sim, 0, s_neuron[id]));
-          std::cout << t_sim << std::endl;
           synch_event_inserted = true;
         }
       }
@@ -176,6 +177,36 @@ int main(int argc, char *argv[])
         case 2: {
           RecordEvent *re = dynamic_cast<RecordEvent*>(e);
 
+          printf("[%.2f s]\n", t_sim);
+
+          double ave_w_1 = 0.0;
+          for (int id = 0; id < a_num/2; ++id)
+          {
+            for (Synapse *&sy : sn.outputs(a_neuron[id]))
+            {
+              ave_w_1 += sy->get_w();
+            }
+          }
+          ave_w_1 /= (a_num/2)*W_MAX;
+
+          double ave_w_2 = 0.0;
+          for (int id = a_num/2; id < a_num; ++id)
+          {
+            for (Synapse *&sy : sn.outputs(a_neuron[id]))
+            {
+              ave_w_2 += sy->get_w();
+            }
+          }
+          ave_w_2 /= (a_num/2)*W_MAX;
+
+          w1_record[re->idx] = ave_w_1; 
+          w2_record[re->idx] = ave_w_2; 
+
+          double t_delay = rec_period < (duration-t_sim) ? rec_period : (duration-t_sim);
+          if (t_delay > 0)
+          {
+            EQ.insert(new RecordEvent(t_sim + t_delay, 2, re->idx + 1));
+          }
 
           break;
         }
@@ -224,6 +255,14 @@ int main(int argc, char *argv[])
         fwrite(&w, sizeof(double), 1, file);
       }
     }
+    fclose(file);
+  }
+  {
+    FILE* file = fopen((fig_num + "D.dat").c_str(), "wb");
+    fwrite(&rec_entries, sizeof(int), 1, file);
+    fwrite(&t_record[0], sizeof(double), rec_entries, file);
+    fwrite(&w1_record[0], sizeof(double), rec_entries, file);
+    fwrite(&w2_record[0], sizeof(double), rec_entries, file);
     fclose(file);
   }
 
