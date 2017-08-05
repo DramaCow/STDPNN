@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 */
 
   // global config
-  double duration = 10.0;
+  double duration = 10000.0;
 
   // neuron config
   const int a_num = 1000;
@@ -45,18 +45,50 @@ int main(int argc, char *argv[])
   EQ.insert(new EpochEvent(0.0, 0));
   EQ.insert(new EpochEvent(0.0, 1));
 
+  // set up recording
   double rec_period = 0.5;
   EQ.insert(new RecordEvent(0.0));
+  EQ.insert(new RecordEvent(duration));
 
-/*
+  // main loop
+  while (t_sim <= duration && EQ.size() > 0)
+  {
+    Event *e = EQ.get_min();
+
+    // synchronous update
+    bool synch_event_inserted = false;
+    while (t_sim < e->time && !synch_event_inserted)
+    {
+      double dt = dt_max <= (e->time - t_sim) ? dt_max : (e->time - t_sim);
+      t_sim += dt;
+      for (int id = 0; id < s_num; ++id)
+      {
+        s_neuron[id]->step(dt);
+        if (s_neuron[id]->is_spiking())
+        {
+          // INSERT EVENT HERE
+          synch_event_inserted = true;
+        }
+      }
+    }
+
+    // event (asynchronous) update
+    if (!synch_event_inserted)
+    {
+      e->process();
+      EQ.del_min();
+    }
+  }
+
   // export results to binary file
+  IFNeuron *N = dynamic_cast<IFNeuron*>(s_neuron[0]);
   FILE* file = fopen(argv[1], "wb");
-  int entries = N.t_record.size();
+  int entries = N->t_record.size();
   fwrite(&entries, sizeof(int), 1, file);
-  fwrite(&N.t_record[0], sizeof(double), entries, file);
-  fwrite(&N.V_record[0], sizeof(double), entries, file);
+  fwrite(&N->t_record[0], sizeof(double), entries, file);
+  fwrite(&N->V_record[0], sizeof(double), entries, file);
   fclose(file);
-*/
+
   return 0;
 }
 /*

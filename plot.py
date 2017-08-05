@@ -7,8 +7,12 @@ if len(sys.argv) <= 1:
 else:
   with open(sys.argv[1], "rb") as f:
     count, = np.fromfile(f, dtype=np.int32, count=1)
-    t_record = np.fromfile(f, dtype=np.float64, count=count)
-    V_record = np.fromfile(f, dtype=np.float64, count=count)
+    x = np.fromfile(f, dtype=np.float64, count=count)
+    y = np.fromfile(f, dtype=np.float64, count=count)
 
-    plt.plot(t_record, V_record)
+    print("count =", count)
+    print("x =", min(x), ":", max(x))
+    print("y =", min(y), ":", max(y))
+
+    plt.plot(x, y)
     plt.show()
