@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
           synch_event_inserted = true;
         }
       }
-   }
+    }
 
     // event (asynchronous) update
     if (!synch_event_inserted)
@@ -89,9 +89,29 @@ int main(int argc, char *argv[])
             {
               sy->post->update(t_sim);
               sy->pre_spike();
-            }
-          }
+              sy->post->receive_spike(sy->post->type, sy->get_w());
 
+              double t_next = sy->post->next_spike_time(t_sim);
+              if (t_next <= duration)
+              {
+                EQ.insert(new SpikeEvent(t_next, 0, sy->post));
+              }
+            }
+
+            for (Synapse *&sy : sn.inputs(se->neuron))
+            {
+              sy->pre->update(t_sim);
+              sy->post_spike();
+            }
+
+            se->neuron->spike();
+          }
+          
+          double t_next = se->neuron->next_spike_time(t_sim);
+          if (t_next <= duration)
+          {
+            EQ.insert(new SpikeEvent(t_next, 0, se->neuron));
+          }
 
           break;
         }
