@@ -1,12 +1,10 @@
-#ifndef __NEURON_H
-#define __NEURON_H
+#ifndef NEURON_H
+#define NEURON_H
 
 #include <random>
 
 #define INHIBITORY 0
 #define EXCITATORY 1
-
-#define UNUSED(x) (void)(x)
 
 class Neuron
 {
@@ -20,7 +18,7 @@ class Neuron
     virtual void spike();  
 
     virtual void step(double dt) = 0;
-    virtual void receive_spike() = 0;
+    virtual void receive_spike(int source_type, double strength) = 0;
     virtual bool is_spiking() = 0;
     virtual double next_spike_time(double t) = 0;
 
@@ -37,8 +35,8 @@ class PPNeuron : public Neuron
   public:
     PPNeuron(int id, int type);
 
-    virtual void step(double dt) { UNUSED(dt); }
-    virtual void receive_spike() {}
+    virtual void step(double dt) {}
+    virtual void receive_spike(int source_type, double strength) {}
     virtual bool is_spiking();
     virtual double next_spike_time(double t);
 
@@ -56,7 +54,7 @@ class IFNeuron : public Neuron
     virtual void spike();  
 
     virtual void step(double dt);
-    virtual void receive_spike();
+    virtual void receive_spike(int source_type, double strength);
     virtual bool is_spiking();
     virtual double next_spike_time(double t);
 

@@ -2,7 +2,7 @@ EXE ?= start
 
 CC := g++
 DEBUG := -g
-CFLAGS := -Wall -Wextra -Werror -std=c++11 -pedantic
+CFLAGS := -Wextra -Werror -std=c++11 -pedantic -Wno-error=unused-variable
 LIBS := -lm
 
 SRCS := $(shell find . -name '*.cpp')

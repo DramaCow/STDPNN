@@ -90,9 +90,16 @@ void IFNeuron::step(double dt)
   t_record.push_back(t_record.back() + dt);
 }
 
-void IFNeuron::receive_spike()
+void IFNeuron::receive_spike(int source_type, double strength)
 {
-  // TODO:
+  if (source_type == INHIBITORY)
+  {
+    g_in += 1.0*strength;
+  }
+  else if (source_type == EXCITATORY)
+  {
+    g_ex += 1.1*strength;
+  }
 }
 
 bool IFNeuron::is_spiking()
@@ -102,7 +109,6 @@ bool IFNeuron::is_spiking()
 
 double IFNeuron::next_spike_time(double t)
 {
-  (void)t;
   return INFINITY;
 }
 

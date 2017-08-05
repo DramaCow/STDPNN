@@ -1,8 +1,7 @@
-#ifndef __SYNAPSE_H
-#define __SYNAPSE_H
+#ifndef SYNAPSE_H
+#define SYNAPSE_H
 
 #include "neuron.hpp"
-
 #include <vector>
 
 #define W_MIN 0.0   // minimum peak conductance
@@ -33,12 +32,11 @@ class SynapseNetwork
     std::vector<Synapse *> & inputs(Neuron *post);
     std::vector<Synapse *> & outputs(Neuron *pre);
 
-    std::vector<std::vector<Synapse *>> A_post;
+    std::vector<std::vector<Synapse *>> A_post; // TODO: move
     std::vector<std::vector<Synapse *>> A_pre;
 
   private:
     int num_neurons;
-
 };
 
 #endif

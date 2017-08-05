@@ -11,6 +11,41 @@ int main(int argc, char *argv[])
     printf("usage: %s <output_filename>\n", argv[0]);
     return 1;
   }
+
+  // global config
+  double duration = 10.0;
+
+  // neuron config
+  const int a_num = 1000;
+  const int s_num = 1;
+  Neuron *a_neuron[a_num];
+  for (int id = 0; id < a_num; ++id)
+  {
+    a_neuron[id] = new PPNeuron(id, EXCITATORY);
+  }
+  Neuron *s_neuron[1];
+  s_neuron[0] = new IFNeuron(a_num, EXCITATORY);
+
+  // network config
+  SynapseNetwork sn(a_num + s_num);
+  for (int id = 0; id < a_num; ++id)
+  {
+    sn.add_edge(a_neuron[id], s_neuron[0], (W_MAX + W_MIN)/2.0);
+  }
+
+  // important variables and constants
+  double dt_max = 0.0005;
+  double t_sim = 0.0;
+  double t_epoch[2] = { 0.0, 0.0 };
+
+  // initialise event queue
+  EventQueue EQ;
+  EQ.insert(new EpochEvent(0.0, 0));
+  EQ.insert(new EpochEvent(0.0, 1));
+
+  double rec_period = 0.5;
+  EQ.insert(new RecordEvent(0.0));
+
 /*
   PPNeuron I[1000];
   IFNeuron N(0, EXCITATORY);
@@ -29,33 +64,6 @@ int main(int argc, char *argv[])
     {
       I[a].update(t_sim);
     }
-  }
-*/
-
-  Neuron *n1 = new PPNeuron(0, EXCITATORY);
-  Neuron *n2 = new PPNeuron(1, EXCITATORY);
-  Neuron *n3 = new PPNeuron(2, EXCITATORY);
-  Neuron *n4 = new PPNeuron(3, EXCITATORY);
-  SynapseNetwork sn(4);
-  sn.add_edge(n1, n2, W_MAX);
-  sn.add_edge(n1, n3, W_MAX);
-  sn.add_edge(n1, n4, W_MAX);
-
-/*
-  EventQueue EQ;
-  EQ.insert(new EpochEvent(0.5, 0));
-  EQ.insert(new RecordEvent(0.1));
-  EQ.insert(new EpochEvent(0.2, 0));
-  EQ.insert(new SpikeEvent(0.9, n1));
-  EQ.insert(new EpochEvent(0.3, 0));
-  EQ.insert(new SpikeEvent(0.7, n1));
-
-  int limit = EQ.size();
-  for (int i = 0; i < limit; ++i)
-  {
-    Event *event = EQ.get_min();
-    std::cout << event->time << std::endl;
-    EQ.del_min();
   }
 */
 
