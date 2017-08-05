@@ -6,11 +6,13 @@
 
 int main(int argc, char *argv[]) 
 {
+/*
   if (argc < 2)
   {
     printf("usage: %s <output_filename>\n", argv[0]);
     return 1;
   }
+*/
 
   // global config
   double duration = 10.0;
@@ -45,27 +47,6 @@ int main(int argc, char *argv[])
 
   double rec_period = 0.5;
   EQ.insert(new RecordEvent(0.0));
-
-/*
-  PPNeuron I[1000];
-  IFNeuron N(0, EXCITATORY);
-  double t_sim = 0.0;
-  for (int i = 0; i < 10; ++i)
-  {
-    while (!N.is_spiking())
-    {
-      t_sim += 0.0005;
-      N.step(0.0005);
-    }
-    N.update(t_sim);
-    N.spike();
-
-    for (int a = 0; a < 1000; ++a)
-    {
-      I[a].update(t_sim);
-    }
-  }
-*/
 
 /*
   // export results to binary file
