@@ -1,31 +1,35 @@
 #include <iostream>
 #include <random>
+#include <cmath>
+#include <string>
 #include "neuron.hpp"
 #include "synapse.hpp"
 #include "event.hpp"
 
+double corr_fr(double x, double y);
+double uncorr_fr(double x);
+
 int main(int argc, char *argv[]) 
 {
-/*
   if (argc < 2)
   {
-    printf("usage: %s <output_filename>\n", argv[0]);
+    printf("usage: %s <fig_num>\n", argv[0]);
     return 1;
   }
-*/
 
   // global config
-  double duration = 10000.0;
+  const double duration = 100.0;
+  const double ave_epoch_period = 0.02;
 
   // neuron config
   const int a_num = 1000;
   const int s_num = 1;
-  Neuron *a_neuron[a_num];
+  PPNeuron *a_neuron[a_num];
   for (int id = 0; id < a_num; ++id)
   {
     a_neuron[id] = new PPNeuron(id, EXCITATORY);
   }
-  Neuron *s_neuron[1];
+  IFNeuron *s_neuron[1];
   s_neuron[0] = new IFNeuron(a_num, EXCITATORY);
 
   // network config
@@ -36,7 +40,7 @@ int main(int argc, char *argv[])
   }
 
   // important variables and constants
-  double dt_max = 0.0005;
+  const double dt_max = 0.000005;
   double t_sim = 0.0;
   double t_epoch[2] = { 0.0, 0.0 };
 
@@ -46,9 +50,22 @@ int main(int argc, char *argv[])
   EQ.insert(new EpochEvent(0.0, 1, 1));
 
   // set up recording
-  double rec_period = 0.5;
-  EQ.insert(new RecordEvent(0.0, 2));
-  EQ.insert(new RecordEvent(duration, 2));
+  const double rec_period = 0.5;
+  const int rec_entries = int(duration/rec_period) + 1;
+  double w1_record[rec_entries];
+  double w2_record[rec_entries];
+  double t_record[rec_entries];
+  for (int i = 0; i < rec_entries; ++i)
+  {
+    t_record[i] = i*rec_period;
+  }
+
+  // random number generator engine
+  std::mt19937 gen;
+  {
+    std::random_device rd; // slow rng for one-off seed (uses  device entropy)
+    gen.seed(rd()); // standard mersenne_twister_engine
+  }
 
   // main loop
   while (t_sim <= duration && EQ.size() > 0)
@@ -66,7 +83,8 @@ int main(int argc, char *argv[])
         s_neuron[id]->step(dt);
         if (s_neuron[id]->is_spiking())
         {
-          // INSERT EVENT HERE
+          EQ.insert(new SpikeEvent(t_sim, 0, s_neuron[id]));
+          std::cout << t_sim << std::endl;
           synch_event_inserted = true;
         }
       }
@@ -118,16 +136,52 @@ int main(int argc, char *argv[])
 
         case 1: {
           EpochEvent *ee = dynamic_cast<EpochEvent*>(e);
+
+          if (ee->group_id == 0)
+          {
+            double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(gen);
+            for (int id = 0; id < a_num/2 ; ++id)
+            {
+              double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(gen);
+              a_neuron[id]->fr = corr_fr(norm_var_x, norm_var_y);
+              //a_neuron[id]->fr = uncorr_fr(norm_var_x);
+
+              double t_next = a_neuron[id]->next_spike_time(t_sim);
+              if (t_next <= duration)
+              {
+                EQ.insert(new SpikeEvent(t_next, 0, a_neuron[id]));
+              } 
+            }
+          }
+          else if (ee->group_id == 1)
+          {
+            //double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(gen);
+            for (int id = a_num/2; id < a_num; ++id)
+            {
+              double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(gen);
+              //a_neuron[id]->fr = corr_fr(norm_var_x, norm_var_y);
+              a_neuron[id]->fr = uncorr_fr(norm_var_x);
+
+              double t_next = a_neuron[id]->next_spike_time(t_sim);
+              if (t_next <= duration)
+              {
+                EQ.insert(new SpikeEvent(t_next, 0, a_neuron[id]));
+              } 
+            }
+          }
+
           break;
         }
 
         case 2: {
           RecordEvent *re = dynamic_cast<RecordEvent*>(e);
+
+
           break;
         }
 
         default: {
-          std::cout << "ERROR!" << std::endl;
+          std::cout << "ERROR - INVALID EVENT!" << std::endl;
           return 1;
         }
       }
@@ -135,27 +189,60 @@ int main(int argc, char *argv[])
     }
   }
 
-  // export results to binary file
-  IFNeuron *N = dynamic_cast<IFNeuron*>(s_neuron[0]);
-  FILE* file = fopen(argv[1], "wb");
-  int entries = N->t_record.size();
-  fwrite(&entries, sizeof(int), 1, file);
-  fwrite(&N->t_record[0], sizeof(double), entries, file);
-  fwrite(&N->V_record[0], sizeof(double), entries, file);
-  fclose(file);
+  // export results to binary files
+  std::string fig_num(argv[1]);
+  {
+    IFNeuron *N = dynamic_cast<IFNeuron*>(s_neuron[0]);
+    FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");
+    int entries = N->t_record.size();
+    fwrite(&entries, sizeof(int), 1, file);
+    fwrite(&N->t_record[0], sizeof(double), entries, file);
+    fwrite(&N->V_record[0], sizeof(double), entries, file);
+    fclose(file);
+  }
+  {
+    IFNeuron *N = dynamic_cast<IFNeuron*>(s_neuron[0]);
+    FILE* file = fopen((fig_num + "B.dat").c_str(), "wb");
+    int entries = N->t_record.size();
+    fwrite(&entries, sizeof(int), 1, file);
+    fwrite(&N->t_record[0], sizeof(double), entries, file);
+    fwrite(&N->g_record[0], sizeof(double), entries, file);
+    fclose(file);
+  }
+  {
+    FILE* file = fopen((fig_num + "C.dat").c_str(), "wb");
+    fwrite(&a_num, sizeof(int), 1, file);
+    for (double id = 0.0; id < a_num; id+=1.0)
+    {
+      fwrite(&id, sizeof(double), 1, file); 
+    }
+    for (int id = 0; id < a_num; ++id)
+    {
+      for (Synapse *&sy : sn.outputs(a_neuron[id]))
+      {
+        double w = sy->get_w();
+        fwrite(&w, sizeof(double), 1, file);
+      }
+    }
+    fclose(file);
+  }
 
   return 0;
 }
-/*
-  for (Synapse *&sy : sn.outputs(n1))
-  {
-    std::cout << sy->pre->id << " --> " << sy->post->id << std::endl;
-  }
-  for (Synapse *&sy : sn.inputs(n1))
-  {
-    std::cout << sy->post->id << " <-- " << sy->pre->id << std::endl;
-  }
 
+#define FRF 0.3
+double corr_fr(double x, double y)
+{
+  double fr = 10.0*(1.0 + FRF*x + FRF*y);
+  return fr < 0.0 ? 0.0 : fr;
+}
+
+double uncorr_fr(double x)
+{
+  double fr = 10.0*(1.0 + FRF*sqrt(2.0)*x);
+  return fr < 0.0 ? 0.0 : fr;
+}
+/*
   for (auto iter = EQ.event_list.begin()+1; iter != EQ.event_list.end(); ++iter)
   {
     std::cout << (*iter)->time << std::endl;

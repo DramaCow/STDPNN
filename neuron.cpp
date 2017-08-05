@@ -74,10 +74,11 @@ IFNeuron::IFNeuron(int id, int type) : Neuron(id, type)
   E_in     = -88.0 * mV;
   tau_in   =   5.0 * ms;
 
-  V = V_rest;
+  V = V_reset;
   g_ex = g_in = 0;
 
   V_record.push_back(V);
+  g_record.push_back(g_ex);
   t_record.push_back(0.0);
 }
 
@@ -87,6 +88,7 @@ void IFNeuron::spike()
   V = V_reset;
 
   V_record.push_back(V);
+  g_record.push_back(g_ex);
   t_record.push_back(t_record.back());
 }
 
@@ -97,6 +99,7 @@ void IFNeuron::step(double dt)
   g_in += dt * dg_indt(g_in);
 
   V_record.push_back(V);
+  g_record.push_back(g_ex);
   t_record.push_back(t_record.back() + dt);
 }
 
@@ -124,7 +127,7 @@ double IFNeuron::next_spike_time(double t)
 
 double IFNeuron::dVdt(double V, double g_ex, double g_in)
 {
-  return (1.0/tau_m)*(V_rest - V + g_ex*(E_ex - V) + g_in*(E_in - V) + 0.021);
+  return (1.0/tau_m)*(V_rest - V + g_ex*(E_ex - V) + g_in*(E_in - V));
 }
 double IFNeuron::dg_exdt(double g_ex)
 {

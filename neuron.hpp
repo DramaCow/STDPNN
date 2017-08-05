@@ -43,9 +43,10 @@ class PPNeuron : public Neuron
     virtual bool is_spiking();
     virtual double next_spike_time(double t);
 
+    double fr;        // fire rate
+
   private:
     std::mt19937 gen; // random number generator
-    double fr;        // fire rate
     double t_next;    // time of next spike
 };
 
@@ -62,6 +63,7 @@ class IFNeuron : public Neuron
     virtual double next_spike_time(double t);
 
     std::vector<double> V_record;
+    std::vector<double> g_record;
     std::vector<double> t_record;
 
   private:

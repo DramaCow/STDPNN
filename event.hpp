@@ -28,8 +28,8 @@ class SpikeEvent : public Event
 class EpochEvent : public Event
 {
   public:
-    EpochEvent(double time, int type, int g_id);
-    const int g_id;
+    EpochEvent(double time, int type, int group_id);
+    const int group_id;
 
     virtual void process() {}
 };
@@ -37,7 +37,8 @@ class EpochEvent : public Event
 class RecordEvent : public Event
 {
   public:
-    RecordEvent(double time, int type);
+    RecordEvent(double time, int type, int idx);
+    const int idx;
 
     virtual void process() {}
 };

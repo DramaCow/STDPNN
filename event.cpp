@@ -8,11 +8,11 @@ SpikeEvent::SpikeEvent(double time, int type, Neuron *neuron) : Event(time, type
 {
 }
 
-EpochEvent::EpochEvent(double time, int type, int g_id) : Event(time, type), g_id(g_id)
+EpochEvent::EpochEvent(double time, int type, int group_id) : Event(time, type), group_id(group_id)
 {
 }
 
-RecordEvent::RecordEvent(double time, int type) : Event(time, type)
+RecordEvent::RecordEvent(double time, int type, int idx) : Event(time, type), idx(idx)
 {
 }
 
