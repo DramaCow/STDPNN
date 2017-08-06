@@ -17,7 +17,8 @@ Event::Event(double time) : time(time)
 {
 }
 
-EventManager::EventManager() : duration(1.0), t_sim(0.0),
+EventManager::EventManager() : 
+  duration(1000.0), t_sim(0.0),
   rec_period(0.5), rec_entries(int(duration/rec_period)+1), 
   w1_record(rec_entries,0), w2_record(rec_entries,0), t_record(rec_entries,0)
 {

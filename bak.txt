@@ -1,49 +1,3 @@
-        case 2: {
-          RecordEvent *re = dynamic_cast<RecordEvent*>(e);
-
-          printf("[%.2f s]\n", t_sim);
-
-          double ave_w_1 = 0.0;
-          for (int id = 0; id < a_num/2; ++id)
-          {
-            for (Synapse *&sy : sn.outputs(a_neuron[id]))
-            {
-              ave_w_1 += sy->get_w();
-            }
-          }
-          ave_w_1 /= (a_num/2)*W_MAX;
-
-          double ave_w_2 = 0.0;
-          for (int id = a_num/2; id < a_num; ++id)
-          {
-            for (Synapse *&sy : sn.outputs(a_neuron[id]))
-            {
-              ave_w_2 += sy->get_w();
-            }
-          }
-          ave_w_2 /= (a_num/2)*W_MAX;
-
-          w1_record[re->idx] = ave_w_1; 
-          w2_record[re->idx] = ave_w_2; 
-
-          double t_delay = rec_period < (duration-t_sim) ? rec_period : (duration-t_sim);
-          if (t_delay > 0)
-          {
-            EQ.insert(new RecordEvent(t_sim + t_delay, 2, re->idx + 1));
-          }
-
-          break;
-        }
-
-        default: {
-          std::cout << "ERROR - INVALID EVENT!" << std::endl;
-          return 1;
-        }
-      }
-      EQ.del_min();
-    }
-  }
-
   // export results to binary files
   std::string fig_num(argv[1]);
   {
@@ -90,5 +44,3 @@
     fclose(file);
   }
 
-
-  EM.insert(new RecordEvent(t_sim, 0));

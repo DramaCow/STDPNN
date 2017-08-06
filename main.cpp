@@ -60,5 +60,52 @@ int main(int argc, char *argv[])
     }
   }
 
+  // export results to binary files
+  std::string fig_num(argv[1]);
+  {
+    IFNeuron *N = snn.sn[0];
+    FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");
+    int entries = N->t_record.size();
+    fwrite(&entries, sizeof(int), 1, file);
+    fwrite(&N->t_record[0], sizeof(double), entries, file);
+    fwrite(&N->V_record[0], sizeof(double), entries, file);
+    fclose(file);
+  }
+  {
+    IFNeuron *N = snn.sn[0];
+    FILE* file = fopen((fig_num + "B.dat").c_str(), "wb");
+    int entries = N->t_record.size();
+    fwrite(&entries, sizeof(int), 1, file);
+    fwrite(&N->t_record[0], sizeof(double), entries, file);
+    fwrite(&N->g_record[0], sizeof(double), entries, file);
+    fclose(file);
+  }
+  {
+    FILE* file = fopen((fig_num + "C.dat").c_str(), "wb");
+    int entries = snn.an.size();
+    fwrite(&entries, sizeof(int), 1, file);
+    for (double id = 0.0; id < snn.an.size(); id+=1.0)
+    {
+      fwrite(&id, sizeof(double), 1, file); 
+    }
+    for (std::size_t id = 0; id < snn.an.size(); ++id)
+    {
+      for (Synapse *&sy : snn.con.out(snn.an[id]))
+      {
+        double w = sy->get_w()/W_MAX;
+        fwrite(&w, sizeof(double), 1, file);
+      }
+    }
+    fclose(file);
+  }
+  {
+    FILE* file = fopen((fig_num + "D.dat").c_str(), "wb");
+    fwrite(&EM.rec_entries, sizeof(int), 1, file);
+    fwrite(&EM.t_record[0], sizeof(double), EM.rec_entries, file);
+    fwrite(&EM.w1_record[0], sizeof(double), EM.rec_entries, file);
+    fwrite(&EM.w2_record[0], sizeof(double), EM.rec_entries, file);
+    fclose(file);
+  }
+
   return 0;
 }
