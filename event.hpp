@@ -2,6 +2,7 @@
 #define EVENT_H
 
 #include <vector>
+#include <random>
 #include "neuron.hpp"
 #include "SNN.hpp"
 
@@ -31,6 +32,8 @@ class EventManager
     const double duration;
     double t_sim;
 
+    std::mt19937 gen; // random number generator
+
   private:
     std::vector<Event*> event_list;
     int current_size;
@@ -54,7 +57,7 @@ class EpochEvent : public Event
     EpochEvent(double time, int group_id);
     const int group_id;
 
-    virtual void process(EventManager &EM, SNN &snn) {}
+    virtual void process(EventManager &EM, SNN &snn);
 };
 
 class RecordEvent : public Event
@@ -63,7 +66,7 @@ class RecordEvent : public Event
     RecordEvent(double time, int idx);
     const int idx;
 
-    virtual void process(EventManager &EM, SNN &snn) {}
+    virtual void process(EventManager &EM, SNN &snn);
 };
 
 #endif

@@ -21,6 +21,9 @@ EventManager::EventManager() : duration(1.0), t_sim(0.0)
 {
   event_list = {nullptr};
   current_size = 0;
+
+  std::random_device rd; // slow rng for one-off seed (uses  device entropy)
+  gen.seed(rd()); // standard mersenne_twister_engine
 }
 
 EventManager::~EventManager()
@@ -150,6 +153,20 @@ EpochEvent::EpochEvent(double time, int group_id) : Event(time), group_id(group_
 {
 }
 
+void EpochEvent::process(EventManager &EM, SNN &snn)
+{
+  if (group_id == 0)
+  {
+  }
+  else if (group_id == 1)
+  {
+  }
+}
+
 RecordEvent::RecordEvent(double time, int idx) : Event(time), idx(idx)
+{
+}
+
+void RecordEvent::process(EventManager &EM, SNN &snn)
 {
 }
