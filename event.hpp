@@ -31,6 +31,9 @@ class EventQueue
 
     int size();
 
+    const double duration;
+    double t_sim;
+
   private:
     std::vector<Event*> event_list;
     int current_size;
@@ -46,7 +49,7 @@ class SpikeEvent : public Event
     SpikeEvent(double time, int type, Neuron *neuron);
     Neuron *const neuron;
 
-    virtual void process(EventQueue &EQ, SNN &snn) {}
+    virtual void process(EventQueue &EQ, SNN &snn);
 };
 
 class EpochEvent : public Event

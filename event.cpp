@@ -4,7 +4,7 @@ Event::Event(double time, int type) : time(time), type(type)
 {
 }
 
-EventQueue::EventQueue()
+EventQueue::EventQueue() : duration(1.0), t_sim(0.0)
 {
   event_list = {nullptr};
   current_size = 0;
@@ -96,6 +96,41 @@ int EventQueue::min_child(int idx)
 
 SpikeEvent::SpikeEvent(double time, int type, Neuron *neuron) : Event(time, type), neuron(neuron)
 {
+}
+
+void SpikeEvent::process(EventQueue &EQ, SNN &snn)
+{
+  neuron->update(EQ.t_sim);
+
+  if (neuron->is_spiking())
+  {
+    for (Synapse *&sy : snn.con.out(neuron))
+    {
+      sy->post->update(EQ.t_sim);
+      sy->pre_spike();
+      sy->post->receive_spike(sy->post->type, sy->get_w());
+
+      double t_next = sy->post->next_spike_time(EQ.t_sim);
+      if (t_next <= EQ.duration)
+      {
+        EQ.insert(new SpikeEvent(t_next, 0, sy->post));
+      }
+    }
+
+    for (Synapse *&sy : snn.con.in(neuron))
+    {
+      sy->pre->update(EQ.t_sim);
+      sy->post_spike();
+    }
+
+    neuron->spike();
+  }
+          
+  double t_next = neuron->next_spike_time(EQ.t_sim);
+  if (t_next <= EQ.duration)
+  {
+    EQ.insert(new SpikeEvent(t_next, 0, neuron));
+  }
 }
 
 EpochEvent::EpochEvent(double time, int type, int group_id) : Event(time, type), group_id(group_id)

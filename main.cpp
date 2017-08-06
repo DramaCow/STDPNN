@@ -21,10 +21,7 @@ int main(int argc, char *argv[])
   }
 
   // global config
-  const double duration = 50.0;
-  const double ave_epoch_period = 0.02;
   const double dt_max = 0.0005;
-  double t_sim = 0.0;
 
   // initialise simulation state
   SNN snn;
@@ -47,23 +44,23 @@ int main(int argc, char *argv[])
   */
 
   // main loop
-  while (t_sim <= duration && EQ.size() > 0)
+  while (EQ.t_sim <= EQ.duration && EQ.size() > 0)
   {
     Event *e = EQ.get_min();
 
     // synchronous update
     bool synch_event_inserted = false;
-    while (t_sim < e->time && !synch_event_inserted)
+    while (EQ.t_sim < e->time && !synch_event_inserted)
     {
-      double dt = (dt_max <= (e->time-t_sim)) ? dt_max : (e->time-t_sim);
-      t_sim += dt;
+      double dt = (dt_max <= (e->time-EQ.t_sim)) ? dt_max : (e->time-EQ.t_sim);
+      EQ.t_sim += dt;
 
       for (Neuron *&neuron : snn.sn)
       {
         neuron->step(dt);
         if (neuron->is_spiking())
         {
-          EQ.insert(new SpikeEvent(t_sim, 0, neuron));
+          EQ.insert(new SpikeEvent(EQ.t_sim, 0, neuron));
           synch_event_inserted = true;
         }
       }
