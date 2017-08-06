@@ -10,8 +10,8 @@ class SNN
   public:
     SNN();
 
-    std::array<Neuron*, 1000> an; // asynchronous neurons
-    std::array<Neuron*, 1> sn;    // synchronous neurons
+    std::array<PPNeuron*, 1000> an; // asynchronous neurons
+    std::array<IFNeuron*, 1> sn;    // synchronous neurons
 
     SynapseNetwork con;
 };

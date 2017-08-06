@@ -157,9 +157,38 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
 {
   if (group_id == 0)
   {
+    auto begin = std::begin(snn.an);
+    auto end = std::begin(snn.an) + snn.an.size()/2;
+
+    double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
+    for (auto it = begin; it < end; ++it)
+    {
+      double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
+      (*it)->fr = corr_fr(norm_var_x, norm_var_y);
+
+      double t_next = (*it)->next_spike_time(EM.t_sim);
+      if (t_next <= EM.duration)
+      {
+        EM.insert(new SpikeEvent(t_next, (*it)));
+      } 
+    }
   }
   else if (group_id == 1)
   {
+    auto begin = std::begin(snn.an) + snn.an.size()/2;
+    auto end = std::end(snn.an);
+
+    for (auto it = begin; it < end; ++it)
+    {
+      double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
+      (*it)->fr = uncorr_fr(norm_var_x);
+
+      double t_next = (*it)->next_spike_time(EM.t_sim);
+      if (t_next <= EM.duration)
+      {
+        EM.insert(new SpikeEvent(t_next, (*it)));
+      } 
+    }
   }
 }
 
