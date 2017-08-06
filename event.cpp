@@ -17,13 +17,20 @@ Event::Event(double time) : time(time)
 {
 }
 
-EventManager::EventManager() : duration(1.0), t_sim(0.0)
+EventManager::EventManager() : duration(1.0), t_sim(0.0),
+  rec_period(0.5), rec_entries(int(duration/rec_period)+1), 
+  w1_record(rec_entries,0), w2_record(rec_entries,0), t_record(rec_entries,0)
 {
   event_list = {nullptr};
   current_size = 0;
 
   std::random_device rd; // slow rng for one-off seed (uses  device entropy)
   gen.seed(rd()); // standard mersenne_twister_engine
+
+  for (int i = 0; i < rec_entries; ++i)
+  {
+    t_record[i] = rec_period*i;
+  }
 }
 
 EventManager::~EventManager()

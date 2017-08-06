@@ -34,6 +34,12 @@ class EventManager
 
     std::mt19937 gen; // random number generator
 
+    const double rec_period;
+    const int rec_entries;
+    std::vector<double> w1_record;
+    std::vector<double> w2_record;
+    std::vector<double> t_record;
+
   private:
     std::vector<Event*> event_list;
     int current_size;
