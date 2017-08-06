@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
   {
     t_record[i] = i*rec_period;
   }
-  EM.insert(new RecordEvent(t_sim, 2, 0));
+  EM.insert(new RecordEvent(t_sim, 0));
   */
 
   // main loop
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
         neuron->step(dt);
         if (neuron->is_spiking())
         {
-          EM.insert(new SpikeEvent(EM.t_sim, 0, neuron));
+          EM.insert(new SpikeEvent(EM.t_sim, neuron));
           synch_event_inserted = true;
         }
       }
@@ -69,6 +69,7 @@ int main(int argc, char *argv[])
     // event (asynchronous) update
     if (!synch_event_inserted)
     {
+      e->process(EM, snn);
       EM.del_min();
     }
   }

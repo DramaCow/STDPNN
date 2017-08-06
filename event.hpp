@@ -10,13 +10,11 @@ class EventManager; // forward declaration
 class Event
 {
   public:
-    Event(double time, int type);
+    Event(double time);
     virtual ~Event() {} // necessary for polymorphism
     const double time;
 
     virtual void process(EventManager &EM, SNN &snn) = 0;
-
-    const int type;
 };
 
 class EventManager
@@ -44,7 +42,7 @@ class EventManager
 class SpikeEvent : public Event
 {
   public:
-    SpikeEvent(double time, int type, Neuron *neuron);
+    SpikeEvent(double time, Neuron *neuron);
     Neuron *const neuron;
 
     virtual void process(EventManager &EM, SNN &snn);
@@ -53,7 +51,7 @@ class SpikeEvent : public Event
 class EpochEvent : public Event
 {
   public:
-    EpochEvent(double time, int type, int group_id);
+    EpochEvent(double time, int group_id);
     const int group_id;
 
     virtual void process(EventManager &EM, SNN &snn) {}
@@ -62,7 +60,7 @@ class EpochEvent : public Event
 class RecordEvent : public Event
 {
   public:
-    RecordEvent(double time, int type, int idx);
+    RecordEvent(double time, int idx);
     const int idx;
 
     virtual void process(EventManager &EM, SNN &snn) {}

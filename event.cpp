@@ -1,6 +1,6 @@
 #include "event.hpp"
 
-Event::Event(double time, int type) : time(time), type(type)
+Event::Event(double time) : time(time)
 {
 }
 
@@ -94,7 +94,7 @@ int EventManager::min_child(int idx)
   }
 }
 
-SpikeEvent::SpikeEvent(double time, int type, Neuron *neuron) : Event(time, type), neuron(neuron)
+SpikeEvent::SpikeEvent(double time, Neuron *neuron) : Event(time), neuron(neuron)
 {
 }
 
@@ -113,7 +113,7 @@ void SpikeEvent::process(EventManager &EQ, SNN &snn)
       double t_next = sy->post->next_spike_time(EQ.t_sim);
       if (t_next <= EQ.duration)
       {
-        EQ.insert(new SpikeEvent(t_next, 0, sy->post));
+        EQ.insert(new SpikeEvent(t_next, sy->post));
       }
     }
 
@@ -129,14 +129,14 @@ void SpikeEvent::process(EventManager &EQ, SNN &snn)
   double t_next = neuron->next_spike_time(EQ.t_sim);
   if (t_next <= EQ.duration)
   {
-    EQ.insert(new SpikeEvent(t_next, 0, neuron));
+    EQ.insert(new SpikeEvent(t_next, neuron));
   }
 }
 
-EpochEvent::EpochEvent(double time, int type, int group_id) : Event(time, type), group_id(group_id)
+EpochEvent::EpochEvent(double time, int group_id) : Event(time), group_id(group_id)
 {
 }
 
-RecordEvent::RecordEvent(double time, int type, int idx) : Event(time, type), idx(idx)
+RecordEvent::RecordEvent(double time, int idx) : Event(time), idx(idx)
 {
 }
