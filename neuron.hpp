@@ -6,6 +6,8 @@
 #define INHIBITORY 0
 #define EXCITATORY 1
 
+class Synapse;
+
 class Neuron
 {
   public:
@@ -18,7 +20,7 @@ class Neuron
     virtual void spike();  
 
     virtual void step(double dt) = 0;
-    virtual void receive_spike(int source_type, double strength) = 0;
+    virtual void receive_spike(Synapse *sy) = 0;
     virtual bool is_spiking() = 0;
     virtual double next_spike_time(double t) = 0;
 
@@ -33,13 +35,15 @@ class Neuron
     double y;
 };
 
+#include "synapse.hpp"
+
 class PPNeuron : public Neuron
 {
   public:
     PPNeuron(int id, int type);
 
     virtual void step(double dt) {}
-    virtual void receive_spike(int source_type, double strength) {}
+    virtual void receive_spike(Synapse *sy) {}
     virtual bool is_spiking();
     virtual double next_spike_time(double t);
 
@@ -58,7 +62,7 @@ class IFNeuron : public Neuron
     virtual void spike();  
 
     virtual void step(double dt);
-    virtual void receive_spike(int source_type, double strength);
+    virtual void receive_spike(Synapse *sy);
     virtual bool is_spiking();
     virtual double next_spike_time(double t);
 

@@ -1,48 +1,3 @@
-
-    // event (asynchronous) update
-    if (!synch_event_inserted)
-    {
-      // TODO: use e->process polymorphism
-      switch (e->type)
-      {
-        case 0: {
-          SpikeEvent *se = dynamic_cast<SpikeEvent*>(e);
-
-          se->neuron->update(t_sim);
-
-          if (se->neuron->is_spiking())
-          {
-            for (Synapse *&sy : snn.con.out(se->neuron))
-            {
-              sy->post->update(t_sim);
-              sy->pre_spike();
-              sy->post->receive_spike(sy->post->type, sy->get_w());
-
-              double t_next = sy->post->next_spike_time(t_sim);
-              if (t_next <= duration)
-              {
-                EQ.insert(new SpikeEvent(t_next, 0, sy->post));
-              }
-            }
-
-            for (Synapse *&sy : snn.con.in(se->neuron))
-            {
-              sy->pre->update(t_sim);
-              sy->post_spike();
-            }
-
-            se->neuron->spike();
-          }
-          
-          double t_next = se->neuron->next_spike_time(t_sim);
-          if (t_next <= duration)
-          {
-            EQ.insert(new SpikeEvent(t_next, 0, se->neuron));
-          }
-
-          break;
-        }
-
         case 1: {
           EpochEvent *ee = dynamic_cast<EpochEvent*>(e);
 
@@ -173,3 +128,15 @@
     fwrite(&w2_record[0], sizeof(double), rec_entries, file);
     fclose(file);
   }
+
+
+  const double rec_period = 0.5;
+  const int rec_entries = int(duration/rec_period) + 1;
+  double w1_record[rec_entries];
+  double w2_record[rec_entries];
+  double t_record[rec_entries];
+  for (int i = 0; i < rec_entries; ++i)
+  {
+    t_record[i] = i*rec_period;
+  }
+  EM.insert(new RecordEvent(t_sim, 0));

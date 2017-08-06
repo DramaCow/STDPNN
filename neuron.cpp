@@ -103,15 +103,15 @@ void IFNeuron::step(double dt)
   t_record.push_back(t_record.back() + dt);
 }
 
-void IFNeuron::receive_spike(int source_type, double strength)
+void IFNeuron::receive_spike(Synapse *sy)
 {
-  if (source_type == INHIBITORY)
+  if (sy->pre->type == INHIBITORY)
   {
-    g_in += 1.0*strength;
+    g_in += 1.0*sy->get_w();
   }
-  else if (source_type == EXCITATORY)
+  else if (sy->pre->type == EXCITATORY)
   {
-    g_ex += 1.0*strength;
+    g_ex += 1.0*sy->get_w();
   }
 }
 

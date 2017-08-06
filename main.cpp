@@ -29,20 +29,6 @@ int main(int argc, char *argv[])
   // initialise event queue
   EventManager EM;
 
-  // set up recording
-  /*
-  const double rec_period = 0.5;
-  const int rec_entries = int(duration/rec_period) + 1;
-  double w1_record[rec_entries];
-  double w2_record[rec_entries];
-  double t_record[rec_entries];
-  for (int i = 0; i < rec_entries; ++i)
-  {
-    t_record[i] = i*rec_period;
-  }
-  EM.insert(new RecordEvent(t_sim, 0));
-  */
-
   // main loop
   while (EM.t_sim <= EM.duration && EM.size() > 0)
   {
@@ -75,17 +61,4 @@ int main(int argc, char *argv[])
   }
 
   return 0;
-}
-
-#define FRF 0.3
-double corr_fr(double x, double y)
-{
-  double fr = 10.0*(1.0 + FRF*x + FRF*y);
-  return fr < 0.0 ? 0.0 : fr;
-}
-
-double uncorr_fr(double x)
-{
-  double fr = 10.0*(1.0 + FRF*sqrt(2.0)*x);
-  return fr < 0.0 ? 0.0 : fr;
 }

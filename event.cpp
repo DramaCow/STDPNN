@@ -1,5 +1,18 @@
 #include "event.hpp"
 
+#define FRF 0.3
+double corr_fr(double x, double y)
+{
+  double fr = 10.0*(1.0 + FRF*x + FRF*y);
+  return fr < 0.0 ? 0.0 : fr;
+}
+
+double uncorr_fr(double x)
+{
+  double fr = 10.0*(1.0 + FRF*sqrt(2.0)*x);
+  return fr < 0.0 ? 0.0 : fr;
+}
+
 Event::Event(double time) : time(time)
 {
 }
@@ -108,7 +121,7 @@ void SpikeEvent::process(EventManager &EQ, SNN &snn)
     {
       sy->post->update(EQ.t_sim);
       sy->pre_spike();
-      sy->post->receive_spike(sy->post->type, sy->get_w());
+      sy->post->receive_spike(sy);
 
       double t_next = sy->post->next_spike_time(EQ.t_sim);
       if (t_next <= EQ.duration)
