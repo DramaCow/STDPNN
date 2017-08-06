@@ -32,8 +32,8 @@ class SynapseNetwork
 
     void add_edge(Neuron *pre, Neuron *post, double w);
 
-    std::vector<Synapse *> & inputs(Neuron *post);
-    std::vector<Synapse *> & outputs(Neuron *pre);
+    std::vector<Synapse *> & in(Neuron *post);
+    std::vector<Synapse *> & out(Neuron *pre);
 
     std::vector<std::vector<Synapse *>> A_post; // TODO: move
     std::vector<std::vector<Synapse *>> A_pre;

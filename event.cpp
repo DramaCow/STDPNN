@@ -4,18 +4,6 @@ Event::Event(double time, int type) : time(time), type(type)
 {
 }
 
-SpikeEvent::SpikeEvent(double time, int type, Neuron *neuron) : Event(time, type), neuron(neuron)
-{
-}
-
-EpochEvent::EpochEvent(double time, int type, int group_id) : Event(time, type), group_id(group_id)
-{
-}
-
-RecordEvent::RecordEvent(double time, int type, int idx) : Event(time, type), idx(idx)
-{
-}
-
 EventQueue::EventQueue()
 {
   event_list = {nullptr};
@@ -104,4 +92,16 @@ int EventQueue::min_child(int idx)
   {
     return 2*idx + 1;
   }
+}
+
+SpikeEvent::SpikeEvent(double time, int type, Neuron *neuron) : Event(time, type), neuron(neuron)
+{
+}
+
+EpochEvent::EpochEvent(double time, int type, int group_id) : Event(time, type), group_id(group_id)
+{
+}
+
+RecordEvent::RecordEvent(double time, int type, int idx) : Event(time, type), idx(idx)
+{
 }

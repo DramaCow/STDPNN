@@ -3,6 +3,9 @@
 
 #include <vector>
 #include "neuron.hpp"
+#include "SNN.hpp"
+
+class EventQueue; // forward declaration
 
 class Event
 {
@@ -11,36 +14,9 @@ class Event
     virtual ~Event() {} // necessary for polymorphism
     const double time;
 
-    virtual void process() = 0;
+    virtual void process(EventQueue &EQ, SNN &snn) = 0;
 
     const int type;
-};
-
-class SpikeEvent : public Event
-{
-  public:
-    SpikeEvent(double time, int type, Neuron *neuron);
-    Neuron *const neuron;
-
-    virtual void process() {}
-};
-
-class EpochEvent : public Event
-{
-  public:
-    EpochEvent(double time, int type, int group_id);
-    const int group_id;
-
-    virtual void process() {}
-};
-
-class RecordEvent : public Event
-{
-  public:
-    RecordEvent(double time, int type, int idx);
-    const int idx;
-
-    virtual void process() {}
 };
 
 class EventQueue
@@ -55,14 +31,40 @@ class EventQueue
 
     int size();
 
-    std::vector<Event*> event_list; // TODO: remove!
   private:
-    //std::vector<Event*> event_list;
+    std::vector<Event*> event_list;
     int current_size;
 
     void perc_up(int idx);
     void perc_down(int idx);
     int min_child(int idx);
+};
+
+class SpikeEvent : public Event
+{
+  public:
+    SpikeEvent(double time, int type, Neuron *neuron);
+    Neuron *const neuron;
+
+    virtual void process(EventQueue &EQ, SNN &snn) {}
+};
+
+class EpochEvent : public Event
+{
+  public:
+    EpochEvent(double time, int type, int group_id);
+    const int group_id;
+
+    virtual void process(EventQueue &EQ, SNN &snn) {}
+};
+
+class RecordEvent : public Event
+{
+  public:
+    RecordEvent(double time, int type, int idx);
+    const int idx;
+
+    virtual void process(EventQueue &EQ, SNN &snn) {}
 };
 
 #endif

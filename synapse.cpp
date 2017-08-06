@@ -47,12 +47,12 @@ void SynapseNetwork::add_edge(Neuron *pre, Neuron *post, double w)
   A_pre[post->id].push_back(sy);
 }
 
-std::vector<Synapse *> & SynapseNetwork::inputs(Neuron *post)
+std::vector<Synapse *> & SynapseNetwork::in(Neuron *post)
 {
   return A_pre[post->id];
 }
 
-std::vector<Synapse *> & SynapseNetwork::outputs(Neuron *pre)
+std::vector<Synapse *> & SynapseNetwork::out(Neuron *pre)
 {
   return A_post[pre->id];
 }
