@@ -7,6 +7,8 @@
 #include "synapse.hpp"
 #include "event.hpp"
 
+#include "SNN.hpp"
+
 double corr_fr(double x, double y);
 double uncorr_fr(double x);
 
