@@ -205,4 +205,38 @@ RecordEvent::RecordEvent(double time, int idx) : Event(time), idx(idx)
 
 void RecordEvent::process(EventManager &EM, SNN &snn)
 {
+  printf("[%.2f s]\n", EM.t_sim);
+
+  auto begin = std::begin(snn.an);
+  auto middle = std::begin(snn.an) + snn.an.size()/2;
+  auto end = std::end(snn.an);
+
+  double ave_w_1 = 0.0;
+  for (auto it = begin; it < middle; ++it)
+  {
+    for (Synapse *&sy : snn.con.out(*it))
+    {
+      ave_w_1 += sy->get_w();
+    }
+  }
+  ave_w_1 /= snn.an.size()*W_MAX/2;
+
+  double ave_w_2 = 0.0;
+  for (auto it = middle; it < end; ++it)
+  {
+    for (Synapse *&sy : snn.con.out(*it))
+    {
+      ave_w_2 += sy->get_w();
+    }
+  }
+  ave_w_2 /= snn.an.size()*W_MAX/2;
+
+  EM.w1_record[idx] = ave_w_1; 
+  EM.w2_record[idx] = ave_w_2; 
+
+  double t_delay = EM.rec_period < (EM.duration-EM.t_sim) ? EM.rec_period : (EM.duration-EM.t_sim);
+  if (t_delay > 0)
+  {
+    EM.insert(new RecordEvent(EM.t_sim + t_delay, idx+1));
+  }
 }
