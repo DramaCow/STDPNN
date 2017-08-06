@@ -9,9 +9,6 @@
 
 #include "SNN.hpp"
 
-double corr_fr(double x, double y);
-double uncorr_fr(double x);
-
 int main(int argc, char *argv[]) 
 {
   if (argc < 2)
@@ -28,6 +25,9 @@ int main(int argc, char *argv[])
 
   // initialise event queue
   EventManager EM;
+  EM.insert(new EpochEvent(0.0, 0));
+  EM.insert(new EpochEvent(0.0, 1));
+  EM.insert(new RecordEvent(0.0, 0));
 
   // main loop
   while (EM.t_sim <= EM.duration && EM.size() > 0)
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
       double dt = (dt_max <= (e->time-EM.t_sim)) ? dt_max : (e->time-EM.t_sim);
       EM.t_sim += dt;
 
-      for (Neuron *&neuron : snn.sn)
+      for (IFNeuron *&neuron : snn.sn)
       {
         neuron->step(dt);
         if (neuron->is_spiking())
