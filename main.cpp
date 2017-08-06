@@ -60,8 +60,11 @@ int main(int argc, char *argv[])
     }
   }
 
-  // export results to binary files
+  // figure number as string
   std::string fig_num(argv[1]);
+
+  // export results to binary files
+  /*
   {
     IFNeuron *N = snn.sn[0];
     FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");
@@ -80,6 +83,7 @@ int main(int argc, char *argv[])
     fwrite(&N->g_record[0], sizeof(double), entries, file);
     fclose(file);
   }
+  */
   {
     FILE* file = fopen((fig_num + "C.dat").c_str(), "wb");
     int entries = snn.an.size();

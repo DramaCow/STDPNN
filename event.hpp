@@ -30,7 +30,9 @@ class EventManager
     int size();
 
     const double duration;
+    const double epoch_freq;
     double t_sim;
+    double t_epoch[2];
 
     std::mt19937 gen; // random number generator
 

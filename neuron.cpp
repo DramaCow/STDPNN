@@ -11,7 +11,7 @@
 #define A_n   A_p*B
 #define tau_n 0.002
 
-Neuron::Neuron(int id, int type): id(id), type(type)
+Neuron::Neuron(int id, int type): id(id), type(type), group_id(id >= 500)
 {
   this->t_last = 0.0;
   this->t_next = INFINITY;
@@ -48,7 +48,7 @@ PPNeuron::PPNeuron(int id, int type) : Neuron(id, type)
   std::random_device rd; // slow rng for one-off seed (uses  device entropy)
   gen.seed(rd()); // standard mersenne_twister_engine
 
-  this->fr = 20;
+  this->fr = 0.0;
 }
 
 bool PPNeuron::is_spiking()
@@ -86,6 +86,8 @@ void IFNeuron::spike()
 {
   Neuron::spike();
   V = V_reset;
+
+  std::cout << x << ", " << y << std::endl;
 
   V_record.push_back(V);
   g_record.push_back(g_ex);

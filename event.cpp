@@ -18,7 +18,7 @@ Event::Event(double time) : time(time)
 }
 
 EventManager::EventManager() : 
-  duration(1000.0), t_sim(0.0),
+  duration(100.0), epoch_freq(50.0), t_sim(0.0), t_epoch{0.0, 0.0},
   rec_period(0.5), rec_entries(int(duration/rec_period)+1), 
   w1_record(rec_entries,0), w2_record(rec_entries,0), t_record(rec_entries,0)
 {
@@ -122,38 +122,38 @@ SpikeEvent::SpikeEvent(double time, Neuron *neuron) : Event(time), neuron(neuron
 {
 }
 
-void SpikeEvent::process(EventManager &EQ, SNN &snn)
+void SpikeEvent::process(EventManager &EM, SNN &snn)
 {
-  neuron->update(EQ.t_sim);
+  neuron->update(EM.t_sim);
 
   if (neuron->is_spiking())
   {
     for (Synapse *&sy : snn.con.out(neuron))
     {
-      sy->post->update(EQ.t_sim);
+      sy->post->update(EM.t_sim);
       sy->pre_spike();
       sy->post->receive_spike(sy);
 
-      double t_next = sy->post->next_spike_time(EQ.t_sim);
-      if (t_next <= EQ.duration)
+      double t_next = sy->post->next_spike_time(EM.t_sim);
+      if (t_next <= EM.t_epoch[sy->post->group_id])//EM.duration)
       {
-        EQ.insert(new SpikeEvent(t_next, sy->post));
+        EM.insert(new SpikeEvent(t_next, sy->post));
       }
     }
 
     for (Synapse *&sy : snn.con.in(neuron))
     {
-      sy->pre->update(EQ.t_sim);
+      sy->pre->update(EM.t_sim);
       sy->post_spike();
     }
 
     neuron->spike();
   }
           
-  double t_next = neuron->next_spike_time(EQ.t_sim);
-  if (t_next <= EQ.duration)
+  double t_next = neuron->next_spike_time(EM.t_sim);
+  if (t_next <= EM.t_epoch[neuron->group_id])//EM.duration)
   {
-    EQ.insert(new SpikeEvent(t_next, neuron));
+    EM.insert(new SpikeEvent(t_next, neuron));
   }
 }
 
@@ -163,39 +163,48 @@ EpochEvent::EpochEvent(double time, int group_id) : Event(time), group_id(group_
 
 void EpochEvent::process(EventManager &EM, SNN &snn)
 {
-  if (group_id == 0)
+  double t_period = INFINITY;//std::exponential_distribution<double>{EM.epoch_freq}(EM.gen);
+  double t_delay = t_period < EM.duration-EM.t_sim ? t_period : EM.duration-EM.t_sim;
+
+  if (t_delay > 0.0)
   {
-    auto begin = std::begin(snn.an);
-    auto end = std::begin(snn.an) + snn.an.size()/2;
+    EM.t_epoch[group_id] += t_delay;
+    EM.insert(new EpochEvent(EM.t_epoch[group_id], group_id));
 
-    double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
-    for (auto it = begin; it < end; ++it)
+    if (group_id == 0)
     {
-      double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
-      (*it)->fr = corr_fr(norm_var_x, norm_var_y);
-
-      double t_next = (*it)->next_spike_time(EM.t_sim);
-      if (t_next <= EM.duration)
+      auto begin = std::begin(snn.an);
+      auto end = std::begin(snn.an) + snn.an.size()/2;
+  
+      double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
+      for (auto it = begin; it < end; ++it)
       {
-        EM.insert(new SpikeEvent(t_next, (*it)));
-      } 
+        double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
+        (*it)->fr = corr_fr(norm_var_x, norm_var_y);
+  
+        double t_next = (*it)->next_spike_time(EM.t_sim);
+        if (t_next <= EM.t_epoch[group_id])//EM.duration)
+        {
+          EM.insert(new SpikeEvent(t_next, (*it)));
+        } 
+      }
     }
-  }
-  else if (group_id == 1)
-  {
-    auto begin = std::begin(snn.an) + snn.an.size()/2;
-    auto end = std::end(snn.an);
-
-    for (auto it = begin; it < end; ++it)
+    else if (group_id == 1)
     {
-      double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
-      (*it)->fr = uncorr_fr(norm_var_x);
-
-      double t_next = (*it)->next_spike_time(EM.t_sim);
-      if (t_next <= EM.duration)
+      auto begin = std::begin(snn.an) + snn.an.size()/2;
+      auto end = std::end(snn.an);
+  
+      for (auto it = begin; it < end; ++it)
       {
-        EM.insert(new SpikeEvent(t_next, (*it)));
-      } 
+        double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
+        (*it)->fr = uncorr_fr(norm_var_x);
+  
+        double t_next = (*it)->next_spike_time(EM.t_sim);
+        if (t_next <= EM.t_epoch[group_id])//EM.duration)
+        {
+          EM.insert(new SpikeEvent(t_next, (*it)));
+        } 
+      }
     }
   }
 }

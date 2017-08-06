@@ -15,6 +15,7 @@ class Neuron
 
     const int id;
     const int type;
+    const int group_id;
 
     virtual void update(double t_curr);
     virtual void spike();  
