@@ -4,13 +4,13 @@ Event::Event(double time, int type) : time(time), type(type)
 {
 }
 
-EventQueue::EventQueue() : duration(1.0), t_sim(0.0)
+EventManager::EventManager() : duration(1.0), t_sim(0.0)
 {
   event_list = {nullptr};
   current_size = 0;
 }
 
-EventQueue::~EventQueue()
+EventManager::~EventManager()
 {
   for (auto &event : event_list)
   {
@@ -18,24 +18,24 @@ EventQueue::~EventQueue()
   }
 }
 
-int EventQueue::size()
+int EventManager::size()
 {
   return current_size;
 }
 
-void EventQueue::insert(Event *event)
+void EventManager::insert(Event *event)
 {
   event_list.push_back(event);
   current_size = current_size + 1;
   perc_up(current_size);
 }
 
-Event * EventQueue::get_min()
+Event * EventManager::get_min()
 {
   return event_list[1];
 }
 
-void EventQueue::del_min()
+void EventManager::del_min()
 {
   Event *delval = event_list[1];
   event_list[1] = event_list[current_size];
@@ -48,7 +48,7 @@ void EventQueue::del_min()
   delete delval;
 }
 
-void EventQueue::perc_up(int idx)
+void EventManager::perc_up(int idx)
 {
   while (idx/2 > 0)
   {
@@ -62,7 +62,7 @@ void EventQueue::perc_up(int idx)
   }
 }
 
-void EventQueue::perc_down(int idx)
+void EventManager::perc_down(int idx)
 {
   while (2*idx <= current_size)
   {
@@ -77,7 +77,7 @@ void EventQueue::perc_down(int idx)
   }
 }
 
-int EventQueue::min_child(int idx)
+int EventManager::min_child(int idx)
 {
   if (2*idx + 1 > current_size)
   {
@@ -98,7 +98,7 @@ SpikeEvent::SpikeEvent(double time, int type, Neuron *neuron) : Event(time, type
 {
 }
 
-void SpikeEvent::process(EventQueue &EQ, SNN &snn)
+void SpikeEvent::process(EventManager &EQ, SNN &snn)
 {
   neuron->update(EQ.t_sim);
 

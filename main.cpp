@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
   SNN snn;
 
   // initialise event queue
-  EventQueue EQ;
+  EventManager EM;
 
   // set up recording
   /*
@@ -40,27 +40,27 @@ int main(int argc, char *argv[])
   {
     t_record[i] = i*rec_period;
   }
-  EQ.insert(new RecordEvent(t_sim, 2, 0));
+  EM.insert(new RecordEvent(t_sim, 2, 0));
   */
 
   // main loop
-  while (EQ.t_sim <= EQ.duration && EQ.size() > 0)
+  while (EM.t_sim <= EM.duration && EM.size() > 0)
   {
-    Event *e = EQ.get_min();
+    Event *e = EM.get_min();
 
     // synchronous update
     bool synch_event_inserted = false;
-    while (EQ.t_sim < e->time && !synch_event_inserted)
+    while (EM.t_sim < e->time && !synch_event_inserted)
     {
-      double dt = (dt_max <= (e->time-EQ.t_sim)) ? dt_max : (e->time-EQ.t_sim);
-      EQ.t_sim += dt;
+      double dt = (dt_max <= (e->time-EM.t_sim)) ? dt_max : (e->time-EM.t_sim);
+      EM.t_sim += dt;
 
       for (Neuron *&neuron : snn.sn)
       {
         neuron->step(dt);
         if (neuron->is_spiking())
         {
-          EQ.insert(new SpikeEvent(EQ.t_sim, 0, neuron));
+          EM.insert(new SpikeEvent(EM.t_sim, 0, neuron));
           synch_event_inserted = true;
         }
       }
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
     // event (asynchronous) update
     if (!synch_event_inserted)
     {
-      EQ.del_min();
+      EM.del_min();
     }
   }
 

@@ -5,7 +5,7 @@
 #include "neuron.hpp"
 #include "SNN.hpp"
 
-class EventQueue; // forward declaration
+class EventManager; // forward declaration
 
 class Event
 {
@@ -14,21 +14,20 @@ class Event
     virtual ~Event() {} // necessary for polymorphism
     const double time;
 
-    virtual void process(EventQueue &EQ, SNN &snn) = 0;
+    virtual void process(EventManager &EM, SNN &snn) = 0;
 
     const int type;
 };
 
-class EventQueue
+class EventManager
 {
   public:
-    EventQueue();
-    ~EventQueue();
+    EventManager();
+    ~EventManager();
 
     void insert(Event *event);
     Event * get_min();
     void del_min();
-
     int size();
 
     const double duration;
@@ -37,7 +36,6 @@ class EventQueue
   private:
     std::vector<Event*> event_list;
     int current_size;
-
     void perc_up(int idx);
     void perc_down(int idx);
     int min_child(int idx);
@@ -49,7 +47,7 @@ class SpikeEvent : public Event
     SpikeEvent(double time, int type, Neuron *neuron);
     Neuron *const neuron;
 
-    virtual void process(EventQueue &EQ, SNN &snn);
+    virtual void process(EventManager &EM, SNN &snn);
 };
 
 class EpochEvent : public Event
@@ -58,7 +56,7 @@ class EpochEvent : public Event
     EpochEvent(double time, int type, int group_id);
     const int group_id;
 
-    virtual void process(EventQueue &EQ, SNN &snn) {}
+    virtual void process(EventManager &EM, SNN &snn) {}
 };
 
 class RecordEvent : public Event
@@ -67,7 +65,7 @@ class RecordEvent : public Event
     RecordEvent(double time, int type, int idx);
     const int idx;
 
-    virtual void process(EventQueue &EQ, SNN &snn) {}
+    virtual void process(EventManager &EM, SNN &snn) {}
 };
 
 #endif
