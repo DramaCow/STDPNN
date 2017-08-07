@@ -6,7 +6,7 @@
 #include "neuron.hpp"
 #include "synapse.hpp"
 #include "event.hpp"
-
+#include "units.hpp"
 #include "SNN.hpp"
 
 int main(int argc, char *argv[]) 
@@ -64,30 +64,43 @@ int main(int argc, char *argv[])
   std::string fig_num(argv[1]);
 
   // export results to binary files
-  /*
   {
     IFNeuron *N = snn.sn[0];
     FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");
-    int entries = N->t_record.size();
-    fwrite(&entries, sizeof(int), 1, file);
-    fwrite(&N->t_record[0], sizeof(double), entries, file);
-    fwrite(&N->V_record[0], sizeof(double), entries, file);
+    int count = N->t_record.size();
+    int num_plots = 1;
+    double ymin = -74.0*mV, ymax = -54.0*mV;
+    fwrite(&count, sizeof(int), 1, file);
+    fwrite(&num_plots, sizeof(int), 1, file);
+    fwrite(&ymin, sizeof(double), 1, file);
+    fwrite(&ymax, sizeof(double), 1, file);
+    fwrite(&N->t_record[0], sizeof(double), count, file);
+    fwrite(&N->V_record[0], sizeof(double), count, file);
     fclose(file);
   }
   {
     IFNeuron *N = snn.sn[0];
     FILE* file = fopen((fig_num + "B.dat").c_str(), "wb");
-    int entries = N->t_record.size();
-    fwrite(&entries, sizeof(int), 1, file);
-    fwrite(&N->t_record[0], sizeof(double), entries, file);
-    fwrite(&N->g_record[0], sizeof(double), entries, file);
+    int count = N->t_record.size();
+    double ymin = 0.0, ymax = 0.75;
+    int num_plots = 1;
+    fwrite(&count, sizeof(int), 1, file);
+    fwrite(&num_plots, sizeof(int), 1, file);
+    fwrite(&ymin, sizeof(double), 1, file);
+    fwrite(&ymax, sizeof(double), 1, file);
+    fwrite(&N->t_record[0], sizeof(double), count, file);
+    fwrite(&N->g_record[0], sizeof(double), count, file);
     fclose(file);
   }
-  */
   {
     FILE* file = fopen((fig_num + "C.dat").c_str(), "wb");
-    int entries = snn.an.size();
-    fwrite(&entries, sizeof(int), 1, file);
+    int count = snn.an.size();
+    int num_plots = 1;
+    double ymin = 0.0, ymax = 1.0;
+    fwrite(&count, sizeof(int), 1, file);
+    fwrite(&num_plots, sizeof(int), 1, file);
+    fwrite(&ymin, sizeof(double), 1, file);
+    fwrite(&ymax, sizeof(double), 1, file);
     for (double id = 0.0; id < snn.an.size(); id+=1.0)
     {
       fwrite(&id, sizeof(double), 1, file); 
@@ -104,10 +117,16 @@ int main(int argc, char *argv[])
   }
   {
     FILE* file = fopen((fig_num + "D.dat").c_str(), "wb");
-    fwrite(&EM.rec_entries, sizeof(int), 1, file);
-    fwrite(&EM.t_record[0], sizeof(double), EM.rec_entries, file);
-    fwrite(&EM.w1_record[0], sizeof(double), EM.rec_entries, file);
-    fwrite(&EM.w2_record[0], sizeof(double), EM.rec_entries, file);
+    int count = EM.rec_entries;
+    int num_plots = 2;
+    double ymin = 0.0, ymax = 1.0;
+    fwrite(&count, sizeof(int), 1, file);
+    fwrite(&num_plots, sizeof(int), 1, file);
+    fwrite(&ymin, sizeof(double), 1, file);
+    fwrite(&ymax, sizeof(double), 1, file);
+    fwrite(&EM.t_record[0], sizeof(double), count, file);
+    fwrite(&EM.w1_record[0], sizeof(double), count, file);
+    fwrite(&EM.w2_record[0], sizeof(double), count, file);
     fclose(file);
   }
 

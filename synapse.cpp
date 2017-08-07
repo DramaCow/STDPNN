@@ -12,7 +12,6 @@ double Synapse::get_w()
 
 void Synapse::pre_spike()
 {
-  std::cout << post->get_y() * W_MAX << std::endl;
   w += post->get_y() * W_MAX;
   w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
 }

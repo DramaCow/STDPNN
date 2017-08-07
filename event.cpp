@@ -1,6 +1,6 @@
 #include "event.hpp"
 
-#define FRF 0.3
+#define FRF 1.0
 double corr_fr(double x, double y)
 {
   double fr = 10.0*(1.0 + FRF*x + FRF*y);
@@ -163,7 +163,7 @@ EpochEvent::EpochEvent(double time, int group_id) : Event(time), group_id(group_
 
 void EpochEvent::process(EventManager &EM, SNN &snn)
 {
-  double t_period = INFINITY;//std::exponential_distribution<double>{EM.epoch_freq}(EM.gen);
+  double t_period = std::exponential_distribution<double>{EM.epoch_freq}(EM.gen);
   double t_delay = t_period < EM.duration-EM.t_sim ? t_period : EM.duration-EM.t_sim;
 
   if (t_delay > 0.0)

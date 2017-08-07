@@ -87,8 +87,6 @@ void IFNeuron::spike()
   Neuron::spike();
   V = V_reset;
 
-  std::cout << x << ", " << y << std::endl;
-
   V_record.push_back(V);
   g_record.push_back(g_ex);
   t_record.push_back(t_record.back());

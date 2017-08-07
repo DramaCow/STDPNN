@@ -17,3 +17,15 @@ SNN::SNN() : con(1001)
     con.add_edge(neuron, sn[0], (W_MAX + W_MIN)/2);
   }
 }
+
+SNN::~SNN()
+{
+  for (PPNeuron *&neuron : an)
+  {
+    delete neuron;
+  }
+  for (IFNeuron *&neuron : sn)
+  {
+    delete neuron;
+  }
+}
