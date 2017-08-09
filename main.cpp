@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <cstdio>
 #include <random>
 #include <cmath>
@@ -18,7 +19,8 @@ int main(int argc, char *argv[])
   }
 
   // global config
-  const double dt_max = 0.0005;
+  const double dt_max = 0.00005;
+  double t_sim = 0.0;
 
   // initialise simulation state
   SNN snn;
@@ -29,24 +31,26 @@ int main(int argc, char *argv[])
   EM.insert(new EpochEvent(0.0, 1));
   EM.insert(new RecordEvent(0.0, 0));
 
+  std::cout << "simulation duration = " << EM.duration << " s" << std::endl;
+
   // main loop
-  while (EM.t_sim <= EM.duration && EM.size() > 0)
+  while (t_sim <= EM.duration && EM.size() > 0)
   {
     Event *e = EM.get_min();
 
     // synchronous update
     bool synch_event_inserted = false;
-    while (EM.t_sim < e->time && !synch_event_inserted)
+    while (t_sim < e->time && !synch_event_inserted)
     {
-      double dt = (dt_max <= (e->time-EM.t_sim)) ? dt_max : (e->time-EM.t_sim);
-      EM.t_sim += dt;
+      double dt = (dt_max <= (e->time-t_sim)) ? dt_max : (e->time-t_sim);
+      t_sim += dt;
 
       for (IFNeuron *&neuron : snn.sn)
       {
         neuron->step(dt);
         if (neuron->is_spiking())
         {
-          EM.insert(new SpikeEvent(EM.t_sim, neuron));
+          EM.insert(new SpikeEvent(t_sim, neuron)); // TODO: why bother inserting, just process it here
           synch_event_inserted = true;
         }
       }
@@ -63,37 +67,12 @@ int main(int argc, char *argv[])
   // figure number as string
   std::string fig_num(argv[1]);
 
+  std::cout << "\r COMPLETE [" << std::string(32, '#') << "] " << std::setprecision(2) << std::fixed << EM.duration << " s " << std::endl;
+  std::cout << " writing results to file...";
+
   // export results to binary files
   {
-    IFNeuron *N = snn.sn[0];
     FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");
-    int count = N->t_record.size();
-    int num_plots = 1;
-    double ymin = -74.0*mV, ymax = -54.0*mV;
-    fwrite(&count, sizeof(int), 1, file);
-    fwrite(&num_plots, sizeof(int), 1, file);
-    fwrite(&ymin, sizeof(double), 1, file);
-    fwrite(&ymax, sizeof(double), 1, file);
-    fwrite(&N->t_record[0], sizeof(double), count, file);
-    fwrite(&N->V_record[0], sizeof(double), count, file);
-    fclose(file);
-  }
-  {
-    IFNeuron *N = snn.sn[0];
-    FILE* file = fopen((fig_num + "B.dat").c_str(), "wb");
-    int count = N->t_record.size();
-    double ymin = 0.0, ymax = 0.75;
-    int num_plots = 1;
-    fwrite(&count, sizeof(int), 1, file);
-    fwrite(&num_plots, sizeof(int), 1, file);
-    fwrite(&ymin, sizeof(double), 1, file);
-    fwrite(&ymax, sizeof(double), 1, file);
-    fwrite(&N->t_record[0], sizeof(double), count, file);
-    fwrite(&N->g_record[0], sizeof(double), count, file);
-    fclose(file);
-  }
-  {
-    FILE* file = fopen((fig_num + "C.dat").c_str(), "wb");
     int count = snn.an.size();
     int num_plots = 1;
     double ymin = 0.0, ymax = 1.0;
@@ -116,7 +95,7 @@ int main(int argc, char *argv[])
     fclose(file);
   }
   {
-    FILE* file = fopen((fig_num + "D.dat").c_str(), "wb");
+    FILE* file = fopen((fig_num + "B.dat").c_str(), "wb");
     int count = EM.rec_entries;
     int num_plots = 2;
     double ymin = 0.0, ymax = 1.0;
@@ -129,6 +108,40 @@ int main(int argc, char *argv[])
     fwrite(&EM.w2_record[0], sizeof(double), count, file);
     fclose(file);
   }
+#ifdef DEBUG
+  {
+    IFNeuron *N = snn.sn[0];
+    FILE* file = fopen((fig_num + "C.dat").c_str(), "wb");
+    int count = N->t_record.size();
+    int num_plots = 1;
+    //double ymin = -74.0*mV, ymax = -54.0*mV;
+    double ymin = -0.006, ymax = 0.0;
+    fwrite(&count, sizeof(int), 1, file);
+    fwrite(&num_plots, sizeof(int), 1, file);
+    fwrite(&ymin, sizeof(double), 1, file);
+    fwrite(&ymax, sizeof(double), 1, file);
+    fwrite(&N->t_record[0], sizeof(double), count, file);
+    //fwrite(&N->V_record[0], sizeof(double), count, file);
+    fwrite(&N->y_record[0], sizeof(double), count, file);
+    fclose(file);
+  }
+  {
+    IFNeuron *N = snn.sn[0];
+    FILE* file = fopen((fig_num + "D.dat").c_str(), "wb");
+    int count = N->t_record.size();
+    double ymin = 0.0, ymax = 0.75;
+    int num_plots = 1;
+    fwrite(&count, sizeof(int), 1, file);
+    fwrite(&num_plots, sizeof(int), 1, file);
+    fwrite(&ymin, sizeof(double), 1, file);
+    fwrite(&ymax, sizeof(double), 1, file);
+    fwrite(&N->t_record[0], sizeof(double), count, file);
+    fwrite(&N->g_record[0], sizeof(double), count, file);
+    fclose(file);
+  }
+#endif
+
+  std::cout << "\r results written to file!  " << std::endl;
 
   return 0;
 }

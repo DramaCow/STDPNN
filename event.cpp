@@ -1,6 +1,8 @@
 #include "event.hpp"
+#include <iostream>
+#include <iomanip>
 
-#define FRF 1.0
+#define FRF 0.3
 double corr_fr(double x, double y)
 {
   double fr = 10.0*(1.0 + FRF*x + FRF*y);
@@ -18,8 +20,8 @@ Event::Event(double time) : time(time)
 }
 
 EventManager::EventManager() : 
-  duration(100.0), epoch_freq(50.0), t_sim(0.0), t_epoch{0.0, 0.0},
-  rec_period(0.5), rec_entries(int(duration/rec_period)+1), 
+  duration(100.0), epoch_freq(50.0), t_epoch{0.0, 0.0},
+  rec_period(5.0), rec_entries(int(duration/rec_period)+1), 
   w1_record(rec_entries,0), w2_record(rec_entries,0), t_record(rec_entries,0)
 {
   event_list = {nullptr};
@@ -124,34 +126,36 @@ SpikeEvent::SpikeEvent(double time, Neuron *neuron) : Event(time), neuron(neuron
 
 void SpikeEvent::process(EventManager &EM, SNN &snn)
 {
-  neuron->update(EM.t_sim);
+  neuron->update(time);
 
   if (neuron->is_spiking())
   {
+    // acting as PRE-synaptic neuron
     for (Synapse *&sy : snn.con.out(neuron))
     {
-      sy->post->update(EM.t_sim);
+      sy->post->update(time);
       sy->pre_spike();
       sy->post->receive_spike(sy);
 
-      double t_next = sy->post->next_spike_time(EM.t_sim);
-      if (t_next <= EM.t_epoch[sy->post->group_id])//EM.duration)
+      double t_next = sy->post->next_spike_time(time);
+      if (t_next <= EM.t_epoch[sy->post->group_id])
       {
         EM.insert(new SpikeEvent(t_next, sy->post));
       }
     }
 
+    // acting as POST-synaptic neuron
     for (Synapse *&sy : snn.con.in(neuron))
     {
-      sy->pre->update(EM.t_sim);
+      sy->pre->update(time);
       sy->post_spike();
     }
 
     neuron->spike();
   }
           
-  double t_next = neuron->next_spike_time(EM.t_sim);
-  if (t_next <= EM.t_epoch[neuron->group_id])//EM.duration)
+  double t_next = neuron->next_spike_time(time);
+  if (t_next <= EM.t_epoch[neuron->group_id])
   {
     EM.insert(new SpikeEvent(t_next, neuron));
   }
@@ -164,7 +168,7 @@ EpochEvent::EpochEvent(double time, int group_id) : Event(time), group_id(group_
 void EpochEvent::process(EventManager &EM, SNN &snn)
 {
   double t_period = std::exponential_distribution<double>{EM.epoch_freq}(EM.gen);
-  double t_delay = t_period < EM.duration-EM.t_sim ? t_period : EM.duration-EM.t_sim;
+  double t_delay = t_period < EM.duration-time ? t_period : EM.duration-time;
 
   if (t_delay > 0.0)
   {
@@ -182,7 +186,7 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
         double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
         (*it)->fr = corr_fr(norm_var_x, norm_var_y);
   
-        double t_next = (*it)->next_spike_time(EM.t_sim);
+        double t_next = (*it)->next_spike_time(time);
         if (t_next <= EM.t_epoch[group_id])//EM.duration)
         {
           EM.insert(new SpikeEvent(t_next, (*it)));
@@ -194,12 +198,14 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
       auto begin = std::begin(snn.an) + snn.an.size()/2;
       auto end = std::end(snn.an);
   
+      double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
       for (auto it = begin; it < end; ++it)
       {
         double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
-        (*it)->fr = uncorr_fr(norm_var_x);
+        //(*it)->fr = uncorr_fr(norm_var_x);
+        (*it)->fr = corr_fr(norm_var_x, norm_var_y);
   
-        double t_next = (*it)->next_spike_time(EM.t_sim);
+        double t_next = (*it)->next_spike_time(time);
         if (t_next <= EM.t_epoch[group_id])//EM.duration)
         {
           EM.insert(new SpikeEvent(t_next, (*it)));
@@ -215,7 +221,8 @@ RecordEvent::RecordEvent(double time, int idx) : Event(time), idx(idx)
 
 void RecordEvent::process(EventManager &EM, SNN &snn)
 {
-  printf("[%.2f s]\n", EM.t_sim);
+  int progress = 32*(time/EM.duration);
+  std::cout << "\r progress [" << std::string(progress, '#') << std::string(32-progress, ' ') << "] " << std::setprecision(2) << std::fixed << time << " s " << std::flush;
 
   auto begin = std::begin(snn.an);
   auto middle = std::begin(snn.an) + snn.an.size()/2;
@@ -229,7 +236,7 @@ void RecordEvent::process(EventManager &EM, SNN &snn)
       ave_w_1 += sy->get_w();
     }
   }
-  ave_w_1 /= snn.an.size()*W_MAX/2;
+  ave_w_1 /= snn.an.size()*W_MAX/2.0;
 
   double ave_w_2 = 0.0;
   for (auto it = middle; it < end; ++it)
@@ -239,14 +246,14 @@ void RecordEvent::process(EventManager &EM, SNN &snn)
       ave_w_2 += sy->get_w();
     }
   }
-  ave_w_2 /= snn.an.size()*W_MAX/2;
+  ave_w_2 /= snn.an.size()*W_MAX/2.0;
 
   EM.w1_record[idx] = ave_w_1; 
   EM.w2_record[idx] = ave_w_2; 
 
-  double t_delay = EM.rec_period < (EM.duration-EM.t_sim) ? EM.rec_period : (EM.duration-EM.t_sim);
+  double t_delay = EM.rec_period < (EM.duration-time) ? EM.rec_period : (EM.duration-time);
   if (t_delay > 0)
   {
-    EM.insert(new RecordEvent(EM.t_sim + t_delay, idx+1));
+    EM.insert(new RecordEvent(time + t_delay, idx+1));
   }
 }

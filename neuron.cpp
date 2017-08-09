@@ -6,10 +6,10 @@
 #include "units.hpp"
 
 #define A_p   0.005
-#define tau_p 0.002
+#define tau_p 0.020
 #define B     1.050
 #define A_n   A_p*B
-#define tau_n 0.002
+#define tau_n 0.020
 
 Neuron::Neuron(int id, int type): id(id), type(type), group_id(id >= 500)
 {
@@ -74,12 +74,15 @@ IFNeuron::IFNeuron(int id, int type) : Neuron(id, type)
   E_in     = -88.0 * mV;
   tau_in   =   5.0 * ms;
 
-  V = V_reset;
+  V = V_rest;
   g_ex = g_in = 0;
 
+#ifdef DEBUG
   V_record.push_back(V);
   g_record.push_back(g_ex);
   t_record.push_back(0.0);
+  y_record.push_back(y);
+#endif
 }
 
 void IFNeuron::spike()
@@ -87,9 +90,12 @@ void IFNeuron::spike()
   Neuron::spike();
   V = V_reset;
 
+#ifdef DEBUG
   V_record.push_back(V);
   g_record.push_back(g_ex);
   t_record.push_back(t_record.back());
+  y_record.push_back(y);
+#endif
 }
 
 void IFNeuron::step(double dt)
@@ -98,9 +104,12 @@ void IFNeuron::step(double dt)
   g_ex += dt * dg_exdt(g_ex);
   g_in += dt * dg_indt(g_in);
 
+#ifdef DEBUG
   V_record.push_back(V);
   g_record.push_back(g_ex);
   t_record.push_back(t_record.back() + dt);
+  y_record.push_back(y);
+#endif
 }
 
 void IFNeuron::receive_spike(Synapse *sy)
