@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
   EM.insert(new EpochEvent(0.0, 1));
   EM.insert(new RecordEvent(0.0, 0));
 
-  std::cout << "simulation duration = " << EM.duration << " s" << std::endl;
+  std::cout << "SIM " << argv[1] << " (duration=" << EM.duration << "s) :" << std::endl;
 
   // main loop
   while (t_sim <= EM.duration && EM.size() > 0)
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
   // figure number as string
   std::string fig_num(argv[1]);
 
-  std::cout << "\r COMPLETE [" << std::string(32, '#') << "] " << std::setprecision(2) << std::fixed << EM.duration << " s " << std::endl;
+  std::cout << "\r COMPLETE [" << std::string(32, '#') << "] " << std::setprecision(2) << std::fixed << EM.duration << "s " << std::endl;
   std::cout << " writing results to file...";
 
   // export results to binary files

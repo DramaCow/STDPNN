@@ -20,7 +20,7 @@ Event::Event(double time) : time(time)
 }
 
 EventManager::EventManager() : 
-  duration(100.0), epoch_freq(50.0), t_epoch{0.0, 0.0},
+  duration(10000.0), epoch_freq(50.0), t_epoch{0.0, 0.0},
   rec_period(5.0), rec_entries(int(duration/rec_period)+1), 
   w1_record(rec_entries,0), w2_record(rec_entries,0), t_record(rec_entries,0)
 {
@@ -222,7 +222,7 @@ RecordEvent::RecordEvent(double time, int idx) : Event(time), idx(idx)
 void RecordEvent::process(EventManager &EM, SNN &snn)
 {
   int progress = 32*(time/EM.duration);
-  std::cout << "\r progress [" << std::string(progress, '#') << std::string(32-progress, ' ') << "] " << std::setprecision(2) << std::fixed << time << " s " << std::flush;
+  std::cout << "\r progress [" << std::string(progress, '#') << std::string(32-progress, ' ') << "] " << std::setprecision(2) << std::fixed << time << "s " << std::flush;
 
   auto begin = std::begin(snn.an);
   auto middle = std::begin(snn.an) + snn.an.size()/2;
