@@ -19,7 +19,6 @@ SNN::SNN() : group{Group(std::begin(an), std::begin(an)+500), Group(std::begin(a
 
   for (PPNeuron *&neuron : an)
   {
-    //con.add_edge(neuron, sn[0], (W_MAX + W_MIN)/2);
     con.add_edge(neuron, sn[0], std::uniform_real_distribution<double>{W_MIN, W_MAX}(gen));
   }
 }

@@ -20,9 +20,11 @@ Event::Event(double time) : time(time)
 }
 
 EventManager::EventManager() : 
-  duration(10000.0), epoch_freq(50.0), t_epoch{0.0, 0.0},
-  rec_period(5.0), rec_entries(int(duration/rec_period)+1), 
-  w_record{std::vector<double>(rec_entries,0), std::vector<double>(rec_entries,0)}, t_record(rec_entries,0)
+  duration(10000.0),
+  epoch_freq(50.0), t_epoch{0.0, 0.0},
+  rec_period(5.0), rec_entries(int(duration/rec_period)+1),
+  w_record{std::vector<double>(rec_entries,0), std::vector<double>(rec_entries,0)}, 
+  t_record(rec_entries,0)
 {
   event_list = {nullptr};
   current_size = 0;
@@ -199,7 +201,7 @@ void RecordEvent::process(EventManager &EM, SNN &snn)
   int progress = 32*(time/EM.duration);
   std::cout << "\r progress [" << std::string(progress, '#') << std::string(32-progress, ' ') << "] " << std::setprecision(2) << std::fixed << time << "s " << std::flush;
 
-  for (int group_id = 0; group_id < 2; ++group_id)
+  for (std::size_t group_id = 0; group_id < snn.group.size(); ++group_id)
   {
     double sum_w = 0.0;
     for (PPNeuron *&neuron : snn.group[group_id])
