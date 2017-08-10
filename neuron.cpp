@@ -11,7 +11,7 @@
 #define A_n   A_p*B
 #define tau_n 0.020
 
-Neuron::Neuron(int id, int type): id(id), type(type), group_id(id >= 500)
+Neuron::Neuron(int id, int type, int group_id): id(id), type(type), group_id(group_id)
 {
   this->t_last = 0.0;
   this->t_next = INFINITY;
@@ -43,7 +43,7 @@ double Neuron::get_y()
   return y;
 }
 
-PPNeuron::PPNeuron(int id, int type) : Neuron(id, type)
+PPNeuron::PPNeuron(int id, int type, int group_id) : Neuron(id, type, group_id)
 {
   std::random_device rd; // slow rng for one-off seed (uses  device entropy)
   gen.seed(rd()); // standard mersenne_twister_engine
@@ -61,7 +61,7 @@ double PPNeuron::next_spike_time(double t)
   return t_next = fr > 0 ? t + std::exponential_distribution<double>{fr}(gen) : INFINITY;
 }
 
-IFNeuron::IFNeuron(int id, int type) : Neuron(id, type)
+IFNeuron::IFNeuron(int id, int type, int group_id) : Neuron(id, type, group_id)
 {
   tau_m    =  20.0 * ms;
   V_rest   = -74.0 * mV;

@@ -11,7 +11,7 @@ class Synapse;
 class Neuron
 {
   public:
-    Neuron(int id, int type);
+    Neuron(int id, int type, int group_id);
 
     const int id;
     const int type;
@@ -41,7 +41,7 @@ class Neuron
 class PPNeuron : public Neuron
 {
   public:
-    PPNeuron(int id, int type);
+    PPNeuron(int id, int type, int group_id);
 
     virtual void step(double dt) {}
     virtual void receive_spike(Synapse *sy) {}
@@ -58,7 +58,7 @@ class PPNeuron : public Neuron
 class IFNeuron : public Neuron
 {
   public:
-    IFNeuron(int id, int type);
+    IFNeuron(int id, int type, int group_id);
 
     virtual void spike();  
 
