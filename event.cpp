@@ -22,7 +22,7 @@ Event::Event(double time) : time(time)
 EventManager::EventManager() : 
   duration(10000.0), epoch_freq(50.0), t_epoch{0.0, 0.0},
   rec_period(5.0), rec_entries(int(duration/rec_period)+1), 
-  w1_record(rec_entries,0), w2_record(rec_entries,0), t_record(rec_entries,0)
+  w_record{std::vector<double>(rec_entries,0), std::vector<double>(rec_entries,0)}, t_record(rec_entries,0)
 {
   event_list = {nullptr};
   current_size = 0;
@@ -199,32 +199,18 @@ void RecordEvent::process(EventManager &EM, SNN &snn)
   int progress = 32*(time/EM.duration);
   std::cout << "\r progress [" << std::string(progress, '#') << std::string(32-progress, ' ') << "] " << std::setprecision(2) << std::fixed << time << "s " << std::flush;
 
-  auto begin = std::begin(snn.an);
-  auto middle = std::begin(snn.an) + snn.an.size()/2;
-  auto end = std::end(snn.an);
-
-  double ave_w_1 = 0.0;
-  for (auto it = begin; it < middle; ++it)
+  for (int group_id = 0; group_id < 2; ++group_id)
   {
-    for (Synapse *&sy : snn.con.out(*it))
+    double sum_w = 0.0;
+    for (PPNeuron *&neuron : snn.group[group_id])
     {
-      ave_w_1 += sy->get_w();
+      for (Synapse *&sy : snn.con.out(neuron))
+      {
+        sum_w += sy->get_w();
+      }
     }
+    EM.w_record[group_id][idx] = sum_w / (snn.group[group_id].size * W_MAX);
   }
-  ave_w_1 /= snn.an.size()*W_MAX/2.0;
-
-  double ave_w_2 = 0.0;
-  for (auto it = middle; it < end; ++it)
-  {
-    for (Synapse *&sy : snn.con.out(*it))
-    {
-      ave_w_2 += sy->get_w();
-    }
-  }
-  ave_w_2 /= snn.an.size()*W_MAX/2.0;
-
-  EM.w1_record[idx] = ave_w_1; 
-  EM.w2_record[idx] = ave_w_2; 
 
   double t_delay = EM.rec_period < (EM.duration-time) ? EM.rec_period : (EM.duration-time);
   if (t_delay > 0)

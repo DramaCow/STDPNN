@@ -31,14 +31,13 @@ class EventManager
 
     const double duration;
     const double epoch_freq;
-    double t_epoch[2];
+    std::array<double,2> t_epoch;
 
     std::mt19937 gen; // random number generator
 
     const double rec_period;
     const int rec_entries;
-    std::vector<double> w1_record;
-    std::vector<double> w2_record;
+    std::array<std::vector<double>,2> w_record;
     std::vector<double> t_record;
 
   private:

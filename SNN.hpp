@@ -11,9 +11,10 @@
 class Group
 {
   public:
-    Group(std::array<PPNeuron*,A_NUM>::iterator b, std::array<PPNeuron*,A_NUM>::iterator e) : b(b), e(e) {}
+    Group(std::array<PPNeuron*,A_NUM>::iterator b, std::array<PPNeuron*,A_NUM>::iterator e) : b(b), e(e), size(std::distance(b, e)) {}
     std::array<PPNeuron*,A_NUM>::iterator begin() { return b; }
     std::array<PPNeuron*,A_NUM>::iterator end() { return e; }
+    const int size;
 
   private:
     std::array<PPNeuron*,A_NUM>::iterator b;

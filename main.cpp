@@ -106,8 +106,8 @@ int main(int argc, char *argv[])
     fwrite(&ymin, sizeof(double), 1, file);
     fwrite(&ymax, sizeof(double), 1, file);
     fwrite(&EM.t_record[0], sizeof(double), count, file);
-    fwrite(&EM.w1_record[0], sizeof(double), count, file);
-    fwrite(&EM.w2_record[0], sizeof(double), count, file);
+    fwrite(&EM.w_record[0][0], sizeof(double), count, file);
+    fwrite(&EM.w_record[1][0], sizeof(double), count, file);
     fclose(file);
   }
 #ifdef DEBUG
