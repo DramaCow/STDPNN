@@ -1,9 +1,10 @@
 #include "SNN.hpp"
 #include <random>
 
-SNN::SNN() : con(1001)
+SNN::SNN() : group{Group(std::begin(an), std::begin(an)+500), Group(std::begin(an)+500, std::end(an))}, con(1001)
 {
   int id = 0;
+
   for (PPNeuron *&neuron : an)
   {
     neuron = new PPNeuron(id++, EXCITATORY);

@@ -10,6 +10,8 @@
 #include "units.hpp"
 #include "SNN.hpp"
 
+#include <typeinfo>
+
 int main(int argc, char *argv[]) 
 {
   if (argc < 2)

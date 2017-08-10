@@ -175,42 +175,17 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
     EM.t_epoch[group_id] += t_delay;
     EM.insert(new EpochEvent(EM.t_epoch[group_id], group_id));
 
-    if (group_id == 0)
+    double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
+    for (PPNeuron *&neuron : snn.group[group_id])
     {
-      auto begin = std::begin(snn.an);
-      auto end = std::begin(snn.an) + snn.an.size()/2;
+      double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
+      neuron->fr = corr_fr(norm_var_x, norm_var_y);
   
-      double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
-      for (auto it = begin; it < end; ++it)
+      double t_next = neuron->next_spike_time(time);
+      if (t_next <= EM.t_epoch[group_id])
       {
-        double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
-        (*it)->fr = corr_fr(norm_var_x, norm_var_y);
-  
-        double t_next = (*it)->next_spike_time(time);
-        if (t_next <= EM.t_epoch[group_id])//EM.duration)
-        {
-          EM.insert(new SpikeEvent(t_next, (*it)));
-        } 
-      }
-    }
-    else if (group_id == 1)
-    {
-      auto begin = std::begin(snn.an) + snn.an.size()/2;
-      auto end = std::end(snn.an);
-  
-      double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
-      for (auto it = begin; it < end; ++it)
-      {
-        double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
-        //(*it)->fr = uncorr_fr(norm_var_x);
-        (*it)->fr = corr_fr(norm_var_x, norm_var_y);
-  
-        double t_next = (*it)->next_spike_time(time);
-        if (t_next <= EM.t_epoch[group_id])//EM.duration)
-        {
-          EM.insert(new SpikeEvent(t_next, (*it)));
-        } 
-      }
+        EM.insert(new SpikeEvent(t_next, neuron));
+      } 
     }
   }
 }
