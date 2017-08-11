@@ -2,18 +2,18 @@
 #include <random>
 
 SNN::SNN() : 
-  group{Group(std::begin(an), std::begin(an)+550), Group(std::begin(an)+550, std::end(an))}, 
+  group{Group(std::begin(an), std::begin(an)+(A_NUM/2)), Group(std::begin(an)+(A_NUM/2), std::end(an))}, 
   con(A_NUM+S_NUM)
 {
   int id = 0;
 
   for (PPNeuron *&neuron : an)
   {
-    neuron = new PPNeuron(id++, EXCITATORY, id >= A_NUM/2);
+    neuron = new PPNeuron(id++, (id % (A_NUM/2)) < 500 ? EXCITATORY : INHIBITORY, id >= A_NUM/2);
   }
   for (IFNeuron *&neuron : sn)
   {
-    neuron = new IFNeuron(id++, EXCITATORY, 0 /*doesn't matter*/);
+    neuron = new IFNeuron(id++, EXCITATORY /*doesn't matter*/, 0 /*also doesn't matter*/);
   }
 
   std::random_device rd;

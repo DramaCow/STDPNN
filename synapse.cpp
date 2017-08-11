@@ -12,14 +12,20 @@ double Synapse::get_w()
 
 void Synapse::pre_spike()
 {
-  w += post->get_y() * W_MAX;
-  w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
+  if (pre->type != INHIBITORY)
+  {
+    w += post->get_y() * W_MAX;
+    w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
+  }
 }
 
 void Synapse::post_spike()
 {
-  w += pre->get_x() * W_MAX;
-  w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
+  if (pre->type != INHIBITORY)
+  {
+    w += pre->get_x() * W_MAX;
+    w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
+  }
 }
 
 SynapseNetwork::SynapseNetwork(int num_neurons) :

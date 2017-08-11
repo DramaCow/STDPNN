@@ -33,6 +33,9 @@ int main(int argc, char *argv[])
   EM.insert(new EpochEvent(0.0, 1));
   EM.insert(new RecordEvent(0.0, 0));
 
+  // initialise some global recorders
+  std::vector<double> s_record;
+
   std::cout << "SIM " << argv[1] << " (duration=" << EM.duration << "s) :" << std::endl;
 
   // main loop
@@ -54,6 +57,8 @@ int main(int argc, char *argv[])
         {
           EM.insert(new SpikeEvent(t_sim, neuron)); // TODO: why bother inserting, just process it here
           synch_event_inserted = true;
+
+          s_record.push_back(t_sim);
         }
       }
     }
@@ -108,6 +113,12 @@ int main(int argc, char *argv[])
     fwrite(&EM.t_record[0], sizeof(double), count, file);
     fwrite(&EM.w_record[0][0], sizeof(double), count, file);
     fwrite(&EM.w_record[1][0], sizeof(double), count, file);
+    fclose(file);
+  }
+  {
+    FILE* file = fopen((fig_num + "S.dat").c_str(), "wb");
+    int count = s_record.size();
+    fwrite(&s_record[0], sizeof(double), count, file);
     fclose(file);
   }
 #ifdef DEBUG

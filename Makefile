@@ -1,7 +1,7 @@
 EXE ?= start
 
 CC := g++
-CFLAGS := -Wextra -Werror -std=c++11 -pedantic -Wno-error=unused-variable -Ofast -g
+CFLAGS := -Wextra -Werror -std=c++11 -pedantic -Wno-error=unused-variable -Ofast
 LIBS := -lm
 
 SRCS := $(shell find . -name '*.cpp')
@@ -17,4 +17,5 @@ $(EXE): $(OBJS)
 	$(CC) -c $(CFLAGS) $^ $(LIBS) -o $@
 
 clean:
-	rm *.o *.dat $(EXE)
+	rm *.o $(EXE)
+	#rm *.dat

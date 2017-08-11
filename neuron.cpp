@@ -120,7 +120,7 @@ void IFNeuron::receive_spike(Synapse *sy)
   }
   else if (sy->pre->type == EXCITATORY)
   {
-    g_ex += 1.0*sy->get_w();
+    g_ex += 1.1*sy->get_w();
   }
 }
 

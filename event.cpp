@@ -20,8 +20,8 @@ Event::Event(double time) : time(time)
 }
 
 EventManager::EventManager() : 
-  duration(10000.0),
-  epoch_freq(50.0), t_epoch{0.0, 0.0},
+  duration(1.0),
+  epoch_freq(20000.0), t_epoch{0.0, 0.0},
   rec_period(5.0), rec_entries(int(duration/rec_period)+1),
   w_record{std::vector<double>(rec_entries,0), std::vector<double>(rec_entries,0)}, 
   t_record(rec_entries,0)
@@ -178,6 +178,7 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
     EM.insert(new EpochEvent(EM.t_epoch[group_id], group_id));
 
     double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
+    //if (group_id == 0)
     for (PPNeuron *&neuron : snn.group[group_id])
     {
       double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
@@ -189,6 +190,19 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
         EM.insert(new SpikeEvent(t_next, neuron));
       } 
     }
+    /*
+    if (group_id == 1)
+    {
+      double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
+      neuron->fr = uncorr_fr(norm_var_x);
+  
+      double t_next = neuron->next_spike_time(time);
+      if (t_next <= EM.t_epoch[group_id])
+      {
+        EM.insert(new SpikeEvent(t_next, neuron));
+      } 
+    }
+    */
   }
 }
 
