@@ -20,8 +20,8 @@ Event::Event(double time) : time(time)
 }
 
 EventManager::EventManager() : 
-  duration(1.0),
-  epoch_freq(20000.0), t_epoch{0.0, 0.0},
+  duration(20000.0),
+  epoch_freq(50.0), t_epoch{0.0, 0.0},
   rec_period(5.0), rec_entries(int(duration/rec_period)+1),
   w_record{std::vector<double>(rec_entries,0), std::vector<double>(rec_entries,0)}, 
   t_record(rec_entries,0)
