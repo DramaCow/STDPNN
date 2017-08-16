@@ -170,8 +170,8 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
     EM.t_epoch[group_id] += t_delay;
     EM.insert(new EpochEvent(EM.t_epoch[group_id], group_id));
 
-    auto begin = group_id == 0 ? std::begin(snn.an)       : std::begin(snn.an) + 500;
-    auto end   = group_id == 0 ? std::begin(snn.an) + 500 : std::end(snn.an);
+    auto begin = group_id == 0 ? std::begin(snn.ppn)       : std::begin(snn.ppn) + 500;
+    auto end   = group_id == 0 ? std::begin(snn.ppn) + 500 : std::end(snn.ppn);
 
     double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
     for (auto it = begin; it < end; ++it)
