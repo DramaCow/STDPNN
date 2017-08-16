@@ -11,11 +11,10 @@ class Synapse;
 class Neuron
 {
   public:
-    Neuron(int id, int type, int group_id, double t_limit);
+    Neuron(int id, int type, double t_limit);
 
     const int id;
     const int type;
-    const int group_id;
     double t_limit;
 
     virtual void update(double t_curr);
@@ -42,7 +41,7 @@ class Neuron
 class PPNeuron : public Neuron
 {
   public:
-    PPNeuron(int id, int type, int group_id, double t_limit);
+    PPNeuron(int id, int type, double t_limit);
 
     virtual void step(double dt) {}
     virtual void receive_spike(Synapse *sy) {}
@@ -59,7 +58,7 @@ class PPNeuron : public Neuron
 class IFNeuron : public Neuron
 {
   public:
-    IFNeuron(int id, int type, int group_id, double t_limit);
+    IFNeuron(int id, int type, double t_limit);
 
     virtual void spike();  
 
@@ -92,7 +91,7 @@ class IFNeuron : public Neuron
 class IzNeuron : public Neuron
 {
   public:
-    IzNeuron(int id, int type, int group_id, double t_limit);
+    IzNeuron(int id, int type, double t_limit);
 
     virtual void spike();  
 
