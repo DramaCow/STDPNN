@@ -19,8 +19,8 @@ Event::Event(double time) : time(time)
 {
 }
 
-EventManager::EventManager() : 
-  duration(100),
+EventManager::EventManager(double duration) : 
+  duration(duration),
   epoch_freq(50.0), t_epoch{0.0, 0.0},
   rec_period(5.0), rec_entries(int(duration/rec_period)+1),
 

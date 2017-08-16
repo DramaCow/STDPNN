@@ -1,7 +1,7 @@
 #include "SNN.hpp"
 #include <random>
 
-SNN::SNN() : 
+SNN::SNN(double duration) : 
   group{Group(std::begin(an), std::begin(an)+(A_NUM/2)), Group(std::begin(an)+(A_NUM/2), std::end(an))}, 
   con(A_NUM+S_NUM)
 {

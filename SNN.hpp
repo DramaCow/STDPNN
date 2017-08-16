@@ -24,7 +24,7 @@ class Group
 class SNN
 {
   public:
-    SNN();
+    SNN(double duration);
     ~SNN();
 
     std::array<Neuron*, A_NUM> an; // asynchronous neurons

@@ -21,7 +21,7 @@ class Event
 class EventManager
 {
   public:
-    EventManager();
+    EventManager(double duration);
     ~EventManager();
 
     void insert(Event *event);

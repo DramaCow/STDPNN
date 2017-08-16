@@ -21,16 +21,17 @@ int main(int argc, char *argv[])
   }
 
   // global config
+  const double duration = 5000.0;
   const double dt_max = 0.00005;
   double t_sim = 0.0;
 
   // initialise simulation state
-  SNN snn;
+  SNN snn(duration);
 
   // initialise event queue
-  EventManager EM;
-//  EM.insert(new EpochEvent(0.0, 0));
-//  EM.insert(new EpochEvent(0.0, 1));
+  EventManager EM(duration);
+  EM.insert(new EpochEvent(0.0, 0));
+  EM.insert(new EpochEvent(0.0, 1));
   EM.insert(new RecordEvent(0.0, 0));
 
   // initialise some global recorders
@@ -78,7 +79,6 @@ int main(int argc, char *argv[])
   std::cout << " writing results to file...";
 
   // export results to binary files
-  /*
   {
     FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");
     int count = snn.an.size();
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
     }
     fclose(file);
   }
-  */
+  /*
   {
     FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");
 
@@ -143,6 +143,7 @@ int main(int argc, char *argv[])
 
     fclose(file);
   }
+  */
   /*
   {
     FILE* file = fopen((fig_num + "S.dat").c_str(), "wb");
