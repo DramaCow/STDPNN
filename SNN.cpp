@@ -7,19 +7,21 @@ SNN::SNN() :
 {
   int id = 0;
 
-  for (PPNeuron *&neuron : an)
+//  sn[0] = new IzNeuron(id, EXCITATORY, -1);
+
+  for (Neuron *&neuron : an)
   {
     neuron = new PPNeuron(id++, (id % (A_NUM/2)) < 500 ? EXCITATORY : INHIBITORY, id >= A_NUM/2);
   }
-  for (IFNeuron *&neuron : sn)
+  for (Neuron *&neuron : sn)
   {
-    neuron = new IFNeuron(id++, EXCITATORY /*doesn't matter*/, 0 /*also doesn't matter*/);
+    neuron = new IFNeuron(id++, EXCITATORY, 0);
   }
 
   std::random_device rd;
   std::mt19937 gen; // random number generator
 
-  for (PPNeuron *&neuron : an)
+  for (Neuron *&neuron : an)
   {
     con.add_edge(neuron, sn[0], std::uniform_real_distribution<double>{W_MIN, W_MAX}(gen));
   }
@@ -27,11 +29,11 @@ SNN::SNN() :
 
 SNN::~SNN()
 {
-  for (PPNeuron *&neuron : an)
+  for (Neuron *&neuron : an)
   {
     delete neuron;
   }
-  for (IFNeuron *&neuron : sn)
+  for (Neuron *&neuron : sn)
   {
     delete neuron;
   }

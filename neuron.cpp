@@ -1,3 +1,6 @@
+//#include <boost/numeric/odeint.hpp>
+//namespace odeint = boost::numeric::odeint;
+
 #include <cstdio>
 #include <cmath>
 #include <iostream>
@@ -76,26 +79,12 @@ IFNeuron::IFNeuron(int id, int type, int group_id) : Neuron(id, type, group_id)
 
   V = V_rest;
   g_ex = g_in = 0;
-
-#ifdef DEBUG
-  V_record.push_back(V);
-  g_record.push_back(g_ex);
-  t_record.push_back(0.0);
-  y_record.push_back(y);
-#endif
 }
 
 void IFNeuron::spike()
 {
   Neuron::spike();
   V = V_reset;
-
-#ifdef DEBUG
-  V_record.push_back(V);
-  g_record.push_back(g_ex);
-  t_record.push_back(t_record.back());
-  y_record.push_back(y);
-#endif
 }
 
 void IFNeuron::step(double dt)
@@ -103,13 +92,6 @@ void IFNeuron::step(double dt)
   V    += dt * dVdt(V, g_ex, g_in);
   g_ex += dt * dg_exdt(g_ex);
   g_in += dt * dg_indt(g_in);
-
-#ifdef DEBUG
-  V_record.push_back(V);
-  g_record.push_back(g_ex);
-  t_record.push_back(t_record.back() + dt);
-  y_record.push_back(y);
-#endif
 }
 
 void IFNeuron::receive_spike(Synapse *sy)
@@ -145,4 +127,66 @@ double IFNeuron::dg_exdt(double g_ex)
 double IFNeuron::dg_indt(double g_in)
 {
   return (1.0/tau_in)*(-g_in);
+}
+
+IzNeuron::IzNeuron(int id, int type, int group_id) : 
+  Neuron(id, type, group_id),
+
+  a      (  0.01 * 1          ), // dominant ion channel time const
+  b      (   -20 * pF/ms      ), // arbitrary scaling const
+  c      (   -55 * mV         ), // reset potential (mV),
+  k      (     1 * pF/(mV*mV) ), // arbitrary scaling const
+  v_r    (   -80 * mV         ), // rest potential (mV),
+  v_peak (    40 * mV         ), // peak potential (mV),
+  C      (  15.2 * pF         ), // capacitance (pF),
+  v_t    ( -29.7 * mV         ), // threshold potential (mV),
+  d      (    91 * (pF*mV)/ms ), // after spike reset of u
+
+  v(c), // membrane potential (mV),
+  u(0.0)  // recovery variable (contribution of dominant ion channel),
+{
+  v_record.push_back(v);
+  u_record.push_back(u);
+  t_record.push_back(0.0);
+}
+
+void IzNeuron::spike()
+{
+  Neuron::spike();
+  v = c;
+  u += d;
+
+  v_record.push_back(v);
+  u_record.push_back(u);
+  t_record.push_back(t_record.back());
+}
+
+void IzNeuron::step(double dt)
+{
+  // TODO: use 4th order runge-kutta, or whatever boost odeint implements
+  //v += dt * (1000*mV);
+  v += dt * (k*(v - v_r)*(v - v_t) - u + 1000*pA/*+ I*/)/C;
+  u += dt * a*(b*(v - v_r) - u);
+
+  //std::cout << a*(b*(v - v_r) - u) << std::endl;
+
+  v_record.push_back(v);
+  u_record.push_back(u);
+  t_record.push_back(t_record.back() + dt);
+}
+
+void IzNeuron::receive_spike(Synapse *sy)
+{
+  // TODO
+}
+
+bool IzNeuron::is_spiking()
+{
+  return v > v_peak;
+}
+
+double IzNeuron::next_spike_time(double t)
+{
+  // REDUNDANT
+  return INFINITY;
 }

@@ -5,20 +5,20 @@
 #include "synapse.hpp"
 #include <array>
 
-#define A_NUM 1100
+#define A_NUM 1000
 #define S_NUM 1
 
 class Group
 {
   public:
-    Group(std::array<PPNeuron*,A_NUM>::iterator b, std::array<PPNeuron*,A_NUM>::iterator e) : b(b), e(e), size(std::distance(b, e)) {}
-    std::array<PPNeuron*,A_NUM>::iterator begin() { return b; }
-    std::array<PPNeuron*,A_NUM>::iterator end() { return e; }
+    Group(std::array<Neuron*,A_NUM>::iterator b, std::array<Neuron*,A_NUM>::iterator e) : b(b), e(e), size(std::distance(b, e)) {}
+    std::array<Neuron*,A_NUM>::iterator begin() { return b; }
+    std::array<Neuron*,A_NUM>::iterator end() { return e; }
     const int size;
 
   private:
-    std::array<PPNeuron*,A_NUM>::iterator b;
-    std::array<PPNeuron*,A_NUM>::iterator e;
+    std::array<Neuron*,A_NUM>::iterator b;
+    std::array<Neuron*,A_NUM>::iterator e;
 };
 
 class SNN
@@ -27,8 +27,8 @@ class SNN
     SNN();
     ~SNN();
 
-    std::array<PPNeuron*, A_NUM> an; // asynchronous neurons
-    std::array<IFNeuron*, S_NUM> sn; // synchronous neurons
+    std::array<Neuron*, A_NUM> an; // asynchronous neurons
+    std::array<Neuron*, S_NUM> sn; // synchronous neurons
 
     SynapseNetwork con;
 

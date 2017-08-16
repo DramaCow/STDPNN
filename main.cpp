@@ -29,8 +29,8 @@ int main(int argc, char *argv[])
 
   // initialise event queue
   EventManager EM;
-  EM.insert(new EpochEvent(0.0, 0));
-  EM.insert(new EpochEvent(0.0, 1));
+//  EM.insert(new EpochEvent(0.0, 0));
+//  EM.insert(new EpochEvent(0.0, 1));
   EM.insert(new RecordEvent(0.0, 0));
 
   // initialise some global recorders
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
       double dt = (dt_max <= (e->time-t_sim)) ? dt_max : (e->time-t_sim);
       t_sim += dt;
 
-      for (IFNeuron *&neuron : snn.sn)
+      for (Neuron *&neuron : snn.sn)
       {
         neuron->step(dt);
         if (neuron->is_spiking())
@@ -74,10 +74,11 @@ int main(int argc, char *argv[])
   // figure number as string
   std::string fig_num(argv[1]);
 
-  std::cout << "\r COMPLETE [" << std::string(32, '#') << "] " << std::setprecision(2) << std::fixed << EM.duration << "s " << std::endl;
+  std::cout << "\r COMPLETE [" << std::string(32, '#') << "] " << /*std::setprecision(2) << std::fixed <<*/ EM.duration << "s " << std::endl;
   std::cout << " writing results to file...";
 
   // export results to binary files
+  /*
   {
     FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");
     int count = snn.an.size();
@@ -101,58 +102,55 @@ int main(int argc, char *argv[])
     }
     fclose(file);
   }
+  */
   {
-    FILE* file = fopen((fig_num + "B.dat").c_str(), "wb");
-    int count = EM.rec_entries;
-    int num_plots = 2;
-    double ymin = 0.0, ymax = 1.0;
+    FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");
+
+    IzNeuron *iz = dynamic_cast<IzNeuron*>(snn.sn[0]);
+
+    int count = iz->t_record.size();
+    int num_plots = 1;
+    double ymin = -80*mV, 
+           ymax = 40*mV;
+
     fwrite(&count, sizeof(int), 1, file);
     fwrite(&num_plots, sizeof(int), 1, file);
     fwrite(&ymin, sizeof(double), 1, file);
     fwrite(&ymax, sizeof(double), 1, file);
-    fwrite(&EM.t_record[0], sizeof(double), count, file);
-    fwrite(&EM.w_record[0][0], sizeof(double), count, file);
-    fwrite(&EM.w_record[1][0], sizeof(double), count, file);
+
+    fwrite(&iz->t_record[0], sizeof(double), count, file);
+    fwrite(&iz->v_record[0], sizeof(double), count, file);
+
     fclose(file);
   }
+  {
+    FILE* file = fopen((fig_num + "B.dat").c_str(), "wb");
+
+    IzNeuron *iz = dynamic_cast<IzNeuron*>(snn.sn[0]);
+
+    int count = iz->t_record.size();
+    int num_plots = 1;
+    double ymin = 0, 
+           ymax = 5e-10;
+
+    fwrite(&count, sizeof(int), 1, file);
+    fwrite(&num_plots, sizeof(int), 1, file);
+    fwrite(&ymin, sizeof(double), 1, file);
+    fwrite(&ymax, sizeof(double), 1, file);
+
+    fwrite(&iz->t_record[0], sizeof(double), count, file);
+    fwrite(&iz->u_record[0], sizeof(double), count, file);
+
+    fclose(file);
+  }
+  /*
   {
     FILE* file = fopen((fig_num + "S.dat").c_str(), "wb");
     int count = s_record.size();
     fwrite(&s_record[0], sizeof(double), count, file);
     fclose(file);
   }
-#ifdef DEBUG
-  {
-    IFNeuron *N = snn.sn[0];
-    FILE* file = fopen((fig_num + "C.dat").c_str(), "wb");
-    int count = N->t_record.size();
-    int num_plots = 1;
-    //double ymin = -74.0*mV, ymax = -54.0*mV;
-    double ymin = -0.006, ymax = 0.0;
-    fwrite(&count, sizeof(int), 1, file);
-    fwrite(&num_plots, sizeof(int), 1, file);
-    fwrite(&ymin, sizeof(double), 1, file);
-    fwrite(&ymax, sizeof(double), 1, file);
-    fwrite(&N->t_record[0], sizeof(double), count, file);
-    //fwrite(&N->V_record[0], sizeof(double), count, file);
-    fwrite(&N->y_record[0], sizeof(double), count, file);
-    fclose(file);
-  }
-  {
-    IFNeuron *N = snn.sn[0];
-    FILE* file = fopen((fig_num + "D.dat").c_str(), "wb");
-    int count = N->t_record.size();
-    double ymin = 0.0, ymax = 0.75;
-    int num_plots = 1;
-    fwrite(&count, sizeof(int), 1, file);
-    fwrite(&num_plots, sizeof(int), 1, file);
-    fwrite(&ymin, sizeof(double), 1, file);
-    fwrite(&ymax, sizeof(double), 1, file);
-    fwrite(&N->t_record[0], sizeof(double), count, file);
-    fwrite(&N->g_record[0], sizeof(double), count, file);
-    fclose(file);
-  }
-#endif
+  */
 
   std::cout << "\r results written to file!  " << std::endl;
 

@@ -20,9 +20,10 @@ Event::Event(double time) : time(time)
 }
 
 EventManager::EventManager() : 
-  duration(20000.0),
+  duration(100),
   epoch_freq(50.0), t_epoch{0.0, 0.0},
   rec_period(5.0), rec_entries(int(duration/rec_period)+1),
+
   w_record{std::vector<double>(rec_entries,0), std::vector<double>(rec_entries,0)}, 
   t_record(rec_entries,0)
 {
@@ -178,11 +179,10 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
     EM.insert(new EpochEvent(EM.t_epoch[group_id], group_id));
 
     double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
-    //if (group_id == 0)
-    for (PPNeuron *&neuron : snn.group[group_id])
+    for (Neuron *&neuron : snn.group[group_id])
     {
       double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
-      neuron->fr = corr_fr(norm_var_x, norm_var_y);
+      dynamic_cast<PPNeuron*>(neuron)->fr = corr_fr(norm_var_x, norm_var_y);
   
       double t_next = neuron->next_spike_time(time);
       if (t_next <= EM.t_epoch[group_id])
@@ -190,19 +190,6 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
         EM.insert(new SpikeEvent(t_next, neuron));
       } 
     }
-    /*
-    if (group_id == 1)
-    {
-      double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
-      neuron->fr = uncorr_fr(norm_var_x);
-  
-      double t_next = neuron->next_spike_time(time);
-      if (t_next <= EM.t_epoch[group_id])
-      {
-        EM.insert(new SpikeEvent(t_next, neuron));
-      } 
-    }
-    */
   }
 }
 
@@ -213,20 +200,9 @@ RecordEvent::RecordEvent(double time, int idx) : Event(time), idx(idx)
 void RecordEvent::process(EventManager &EM, SNN &snn)
 {
   int progress = 32*(time/EM.duration);
-  std::cout << "\r progress [" << std::string(progress, '#') << std::string(32-progress, ' ') << "] " << std::setprecision(2) << std::fixed << time << "s " << std::flush;
+  std::cout << "\r progress [" << std::string(progress, '#') << std::string(32-progress, ' ') << "] " << /*std::setprecision(2) << std::fixed <<*/ time << "s " << std::flush;
 
-  for (std::size_t group_id = 0; group_id < snn.group.size(); ++group_id)
-  {
-    double sum_w = 0.0;
-    for (PPNeuron *&neuron : snn.group[group_id])
-    {
-      for (Synapse *&sy : snn.con.out(neuron))
-      {
-        sum_w += sy->get_w();
-      }
-    }
-    EM.w_record[group_id][idx] = sum_w / (snn.group[group_id].size * W_MAX);
-  }
+  /* record data here */
 
   double t_delay = EM.rec_period < (EM.duration-time) ? EM.rec_period : (EM.duration-time);
   if (t_delay > 0)
