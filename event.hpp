@@ -72,4 +72,51 @@ class RecordEvent : public Event
     virtual void process(EventManager &EM, SNN &snn);
 };
 
+// ===
+
+class BaselineEvent : public Event
+{
+  public:
+    BaselineEvent(double time, int it);
+    const int it;
+
+    virtual void process(EventManager &EM, SNN &snn);
+};
+
+class LearningEvent : public Event
+{
+  public:
+    LearningEvent(double time, int it);
+    const int it;
+
+    virtual void process(EventManager &EM, SNN &snn);
+};
+
+class IntermissionEvent : public Event
+{
+  public:
+    IntermissionEvent(double time, int it);
+    const int it;
+
+    virtual void process(EventManager &EM, SNN &snn);
+};
+
+class ExtinctionEvent : public Event
+{
+  public:
+    ExtinctionEvent(double time, int it);
+    const int it;
+
+    virtual void process(EventManager &EM, SNN &snn);
+};
+
+class PostExtinctionEvent : public Event
+{
+  public:
+    PostExtinctionEvent(double time, int it);
+    const int it;
+
+    virtual void process(EventManager &EM, SNN &snn);
+};
+
 #endif

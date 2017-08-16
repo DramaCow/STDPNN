@@ -170,8 +170,8 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
     EM.t_epoch[group_id] += t_delay;
     EM.insert(new EpochEvent(EM.t_epoch[group_id], group_id));
 
-    auto begin = group_id == 0 ? std::begin(snn.ppn)       : std::begin(snn.ppn) + 500;
-    auto end   = group_id == 0 ? std::begin(snn.ppn) + 500 : std::end(snn.ppn);
+    auto begin = group_id == 0 ? std::begin(snn.ppn)       : std::begin(snn.ppn) + 100;
+    auto end   = group_id == 0 ? std::begin(snn.ppn) + 100 : std::end(snn.ppn);
 
     double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
     for (auto it = begin; it < end; ++it)
@@ -207,3 +207,44 @@ void RecordEvent::process(EventManager &EM, SNN &snn)
     EM.insert(new RecordEvent(time + t_delay, idx+1));
   }
 }
+
+BaselineEvent::BaselineEvent(double time, int it) : Event(time), it(it)
+{
+}
+
+void BaselineEvent::process(EventManager &EM, SNN &snn)
+{
+}
+
+LearningEvent::LearningEvent(double time, int it) : Event(time), it(it)
+{
+}
+
+void LearningEvent::process(EventManager &EM, SNN &snn)
+{
+}
+
+IntermissionEvent::IntermissionEvent(double time, int it) : Event(time), it(it)
+{
+}
+
+void IntermissionEvent::process(EventManager &EM, SNN &snn)
+{
+}
+
+ExtinctionEvent::ExtinctionEvent(double time, int it) : Event(time), it(it)
+{
+}
+
+void ExtinctionEvent::process(EventManager &EM, SNN &snn)
+{
+}
+
+PostExtinctionEvent::PostExtinctionEvent(double time, int it) : Event(time), it(it)
+{
+}
+
+void PostExtinctionEvent::process(EventManager &EM, SNN &snn)
+{
+}
+
