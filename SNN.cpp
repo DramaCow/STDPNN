@@ -11,11 +11,11 @@ SNN::SNN(double duration) :
 
   for (Neuron *&neuron : an)
   {
-    neuron = new PPNeuron(id++, (id % (A_NUM/2)) < 500 ? EXCITATORY : INHIBITORY, id >= A_NUM/2);
+    neuron = new PPNeuron(id++, (id % (A_NUM/2)) < 500 ? EXCITATORY : INHIBITORY, id >= A_NUM/2, duration);
   }
   for (Neuron *&neuron : sn)
   {
-    neuron = new IFNeuron(id++, EXCITATORY, 0);
+    neuron = new IFNeuron(id++, EXCITATORY, 0, duration);
   }
 
   std::random_device rd;
