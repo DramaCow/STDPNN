@@ -141,7 +141,7 @@ void SpikeEvent::process(EventManager &EM, SNN &snn)
       sy->post->receive_spike(sy);
 
       double t_next = sy->post->next_spike_time(time);
-      if (t_next <= EM.t_epoch[sy->post->group_id])
+      if (t_next <= sy->post->t_limit)
       {
         EM.insert(new SpikeEvent(t_next, sy->post));
       }
@@ -158,7 +158,7 @@ void SpikeEvent::process(EventManager &EM, SNN &snn)
   }
           
   double t_next = neuron->next_spike_time(time);
-  if (t_next <= EM.t_epoch[neuron->group_id])
+  if (t_next <= neuron->t_limit)
   {
     EM.insert(new SpikeEvent(t_next, neuron));
   }
@@ -181,6 +181,8 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
     double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
     for (Neuron *&neuron : snn.group[group_id])
     {
+      neuron->t_limit = EM.t_epoch[group_id];
+
       double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
       dynamic_cast<PPNeuron*>(neuron)->fr = corr_fr(norm_var_x, norm_var_y);
   

@@ -14,7 +14,7 @@
 #define A_n   A_p*B
 #define tau_n 0.020
 
-Neuron::Neuron(int id, int type, int group_id, double t_limit) : id(id), type(type), group_id(group_id)
+Neuron::Neuron(int id, int type, int group_id, double t_limit) : id(id), type(type), group_id(group_id), t_limit(t_limit)
 {
   this->t_last = 0.0;
   this->t_next = INFINITY;
