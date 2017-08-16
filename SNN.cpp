@@ -2,7 +2,6 @@
 #include <random>
 
 SNN::SNN(double duration) : 
-  group{Group(std::begin(an), std::begin(an)+(A_NUM/2)), Group(std::begin(an)+(A_NUM/2), std::end(an))}, 
   con(A_NUM+S_NUM)
 {
   int id = 0;
@@ -11,7 +10,7 @@ SNN::SNN(double duration) :
 
   for (Neuron *&neuron : an)
   {
-    neuron = new PPNeuron(id++, (id % (A_NUM/2)) < 500 ? EXCITATORY : INHIBITORY, id >= A_NUM/2, duration);
+    neuron = new PPNeuron(id++, EXCITATORY, id >= A_NUM/2, duration);
   }
   for (Neuron *&neuron : sn)
   {

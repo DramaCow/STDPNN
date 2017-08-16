@@ -178,18 +178,21 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
     EM.t_epoch[group_id] += t_delay;
     EM.insert(new EpochEvent(EM.t_epoch[group_id], group_id));
 
+    auto begin = group_id == 0 ? std::begin(snn.an)       : std::begin(snn.an) + 500;
+    auto end   = group_id == 0 ? std::begin(snn.an) + 500 : std::end(snn.an);
+
     double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
-    for (Neuron *&neuron : snn.group[group_id])
+    for (auto it = begin; it < end; ++it)
     {
-      neuron->t_limit = EM.t_epoch[group_id];
+      (*it)->t_limit = EM.t_epoch[group_id];
 
       double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
-      dynamic_cast<PPNeuron*>(neuron)->fr = corr_fr(norm_var_x, norm_var_y);
+      dynamic_cast<PPNeuron*>(*it)->fr = corr_fr(norm_var_x, norm_var_y);
   
-      double t_next = neuron->next_spike_time(time);
+      double t_next = (*it)->next_spike_time(time);
       if (t_next <= EM.t_epoch[group_id])
       {
-        EM.insert(new SpikeEvent(t_next, neuron));
+        EM.insert(new SpikeEvent(t_next, *it));
       } 
     }
   }
