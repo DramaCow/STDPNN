@@ -22,21 +22,13 @@ Event::Event(double time) : time(time)
 EventManager::EventManager(double duration) : 
   duration(duration),
   epoch_freq(50.0), t_epoch{0.0, 0.0},
-  rec_period(5.0), rec_entries(int(duration/rec_period)+1),
-
-  w_record{std::vector<double>(rec_entries,0), std::vector<double>(rec_entries,0)}, 
-  t_record(rec_entries,0)
+  rec_period(5.0)
 {
   event_list = {nullptr};
   current_size = 0;
 
   std::random_device rd; // slow rng for one-off seed (uses  device entropy)
   gen.seed(rd()); // standard mersenne_twister_engine
-
-  for (int i = 0; i < rec_entries; ++i)
-  {
-    t_record[i] = rec_period*i;
-  }
 }
 
 EventManager::~EventManager()
