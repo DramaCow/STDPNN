@@ -147,6 +147,8 @@ void SpikeEvent::process(EventManager &EM, SNN &snn)
     }
 
     neuron->spike();
+
+    neuron->spikes.push_back(time);
   }
           
   double t_next = neuron->next_spike_time(time);
@@ -170,8 +172,8 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
     EM.t_epoch[group_id] += t_delay;
     EM.insert(new EpochEvent(EM.t_epoch[group_id], group_id));
 
-    auto begin = group_id == 0 ? std::begin(snn.ppn)       : std::begin(snn.ppn) + 100;
-    auto end   = group_id == 0 ? std::begin(snn.ppn) + 100 : std::end(snn.ppn);
+    auto begin = group_id == 0 ? std::begin(snn.ppn)       : std::begin(snn.ppn) + 10;
+    auto end   = group_id == 0 ? std::begin(snn.ppn) + 10 : std::end(snn.ppn);
 
     double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
     for (auto it = begin; it < end; ++it)
@@ -182,7 +184,7 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
       dynamic_cast<PPNeuron*>(*it)->fr = corr_fr(norm_var_x, norm_var_y);
   
       double t_next = (*it)->next_spike_time(time);
-      if (t_next <= EM.t_epoch[group_id])
+      if (t_next <= (*it)->t_limit)
       {
         EM.insert(new SpikeEvent(t_next, *it));
       } 
@@ -197,7 +199,14 @@ RecordEvent::RecordEvent(double time, int idx) : Event(time), idx(idx)
 void RecordEvent::process(EventManager &EM, SNN &snn)
 {
   int progress = 32*(time/EM.duration);
-  std::cout << "\r progress [" << std::string(progress, '#') << std::string(32-progress, ' ') << "] " << /*std::setprecision(2) << std::fixed <<*/ time << "s " << std::flush;
+  std::cout << "\r progress [" << std::string(progress, '#') 
+            << std::string(32-progress, ' ') 
+            << "] " 
+            //<< std::setprecision(2) 
+            //<< std::fixed 
+            << time 
+            << "s " 
+            << std::flush;
 
   /* record data here */
 
@@ -208,43 +217,18 @@ void RecordEvent::process(EventManager &EM, SNN &snn)
   }
 }
 
-BaselineEvent::BaselineEvent(double time, int it) : Event(time), it(it)
+RepeatedActionTrialEvent::RepeatedActionTrialEvent(double time, int it, int last) : Event(time), it(it), last(last)
 {
 }
 
-void BaselineEvent::process(EventManager &EM, SNN &snn)
+void RepeatedActionTrialEvent::process(EventManager &EM, SNN &snn)
 {
 }
 
-LearningEvent::LearningEvent(double time, int it) : Event(time), it(it)
+RandomActionTrialEvent::RandomActionTrialEvent(double time, int it, int last) : Event(time), it(it), last(last)
 {
 }
 
-void LearningEvent::process(EventManager &EM, SNN &snn)
+void RandomActionTrialEvent::process(EventManager &EM, SNN &snn)
 {
 }
-
-IntermissionEvent::IntermissionEvent(double time, int it) : Event(time), it(it)
-{
-}
-
-void IntermissionEvent::process(EventManager &EM, SNN &snn)
-{
-}
-
-ExtinctionEvent::ExtinctionEvent(double time, int it) : Event(time), it(it)
-{
-}
-
-void ExtinctionEvent::process(EventManager &EM, SNN &snn)
-{
-}
-
-PostExtinctionEvent::PostExtinctionEvent(double time, int it) : Event(time), it(it)
-{
-}
-
-void PostExtinctionEvent::process(EventManager &EM, SNN &snn)
-{
-}
-

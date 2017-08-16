@@ -23,9 +23,14 @@ def raster(event_times_list, **kwargs):
     return ax
 
 with open(sys.argv[1], "rb") as f:
-  spikes = [
-    np.fromfile(f, dtype=np.float64), 
-  ]
+  spikes = []
+
+  count, = np.fromfile(f, dtype=np.int32, count=1)
+  print(count)
+  for _ in range(count):
+    count, = np.fromfile(f, dtype=np.int32, count=1)
+    trial = np.fromfile(f, dtype=np.float64, count=count)
+    spikes.append(trial)
 
   fig = plt.figure()
   ax = raster(spikes)

@@ -28,6 +28,8 @@ class Neuron
     double get_x();
     double get_y();
 
+    std::vector<double> spikes;
+
   protected:
     double t_last;
     double t_next;

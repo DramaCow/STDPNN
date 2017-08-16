@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
   }
 
   // global config
-  const double duration = 5000.0;
+  const double duration = 2.4;
   const double dt_max = 0.00005;
   double t_sim = 0.0;
 
@@ -101,6 +101,19 @@ int main(int argc, char *argv[])
       }
     }
     fclose(file);
+  }
+  {
+    FILE* file = fopen((fig_num + "S.dat").c_str(), "wb");
+
+    int count = snn.ppn.size();
+    fwrite(&count, sizeof(int), 1, file);
+
+    for (Neuron *&neuron : snn.ppn)
+    {
+      count = neuron->spikes.size();
+      fwrite(&count, sizeof(int), 1, file);
+      fwrite(&neuron->spikes[0], sizeof(double), count, file);
+    }
   }
   /*
   {

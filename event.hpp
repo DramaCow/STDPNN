@@ -74,47 +74,22 @@ class RecordEvent : public Event
 
 // ===
 
-class BaselineEvent : public Event
+class RepeatedActionTrialEvent : public Event
 {
   public:
-    BaselineEvent(double time, int it);
+    RepeatedActionTrialEvent(double time, int it, int last);
     const int it;
+    const int last;
 
     virtual void process(EventManager &EM, SNN &snn);
 };
 
-class LearningEvent : public Event
+class RandomActionTrialEvent : public Event
 {
   public:
-    LearningEvent(double time, int it);
+    RandomActionTrialEvent(double time, int it, int last);
     const int it;
-
-    virtual void process(EventManager &EM, SNN &snn);
-};
-
-class IntermissionEvent : public Event
-{
-  public:
-    IntermissionEvent(double time, int it);
-    const int it;
-
-    virtual void process(EventManager &EM, SNN &snn);
-};
-
-class ExtinctionEvent : public Event
-{
-  public:
-    ExtinctionEvent(double time, int it);
-    const int it;
-
-    virtual void process(EventManager &EM, SNN &snn);
-};
-
-class PostExtinctionEvent : public Event
-{
-  public:
-    PostExtinctionEvent(double time, int it);
-    const int it;
+    const int last;
 
     virtual void process(EventManager &EM, SNN &snn);
 };
