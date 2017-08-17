@@ -120,6 +120,9 @@ class IzNeuron : public Neuron
     const double E_ampa;
     const double E_nmda;
     const double E_gaba;
+    const double tau_ampa;
+    const double tau_nmda;
+    const double tau_gaba;
 
     double v; // membrane potential (mV)
     double u; // recovery variable (contribution of dominant ion channel)
