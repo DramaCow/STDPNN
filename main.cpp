@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
   EventManager EM(duration);
   //EM.insert(new EpochEvent(0.0, 0));
   //EM.insert(new EpochEvent(0.0, 1));
-  EM.insert(new RandomActionTrialEvent(0.0, 1));
+  EM.insert(new RandomActionTrialEvent(0.0, 2));
   EM.insert(new RepeatedActionTrialEvent(2.4, 1));
   EM.insert(new RandomActionTrialEvent(4.8, 1));
   EM.insert(new RepeatedActionTrialEvent(7.2, 1));

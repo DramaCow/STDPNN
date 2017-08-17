@@ -296,19 +296,10 @@ RandomActionTrialEvent::RandomActionTrialEvent(double time, int it, int last) : 
 
 void RandomActionTrialEvent::process(EventManager &EM, SNN &snn)
 {
-  std::cout << "shuffling: " << std::uniform_real_distribution<double>{0.0, 1.0}(EM.gen) << std::endl;
   std::shuffle(std::begin(snn.ppn), std::end(snn.ppn), EM.gen);
-
-  for (PPNeuron *&neuron : snn.ppn)
-  {
-    std::cout << neuron->id << std::endl;
-  }
-  std::cout << "========" << std::endl;
 
   for (auto n = std::begin(snn.ppn); n < std::begin(snn.ppn) + 5; ++n)
   {
-    std::cout << (*n)->id << std::endl;
-
     (*n)->t_limit = time + 0.4;
     (*n)->fr = f_sal;
 
