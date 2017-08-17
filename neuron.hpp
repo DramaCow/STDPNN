@@ -123,6 +123,9 @@ class IzNeuron : public Neuron
     const double tau_ampa;
     const double tau_nmda;
     const double tau_gaba;
+    const double Mg2p0; // magnesium 2+ init
+
+    double B(double v);
 
     double v; // membrane potential (mV)
     double u; // recovery variable (contribution of dominant ion channel)

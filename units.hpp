@@ -2,9 +2,10 @@
 #define UNITS_H
 
 //#define ms 0.001
-#define ms 1e-3
-#define mV 1e-3
-#define pF 1e-12
-#define pA 1e-12
+#define ms 1e-3  // millisecond
+#define mV 1e-3  // millivolt
+#define pF 1e-12 // picofarad
+#define pA 1e-12 // picoamp
+#define mM 1e-3  // millimolar
 
 #endif

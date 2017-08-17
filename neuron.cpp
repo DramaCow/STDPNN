@@ -10,8 +10,7 @@
 
 #define A_p   0.005
 #define tau_p 0.020
-#define B     1.050
-#define A_n   A_p*B
+#define A_n   A_p*1.050
 #define tau_n 0.020
 
 Neuron::Neuron(int id, int type, double t_limit) : id(id), type(type), t_limit(t_limit)
@@ -148,6 +147,7 @@ IzNeuron::IzNeuron(int id, int type, double t_limit) :
   tau_ampa (   6 * ms ), // ampa time constant
   tau_nmda ( 160 * ms ), // nmda time constant
   tau_gaba (   4 * ms ), // gaba time constant
+  Mg2p0    (   1 * mM ), // for magnesium block function
 
   v(c),   // membrane potential (mV),
   u(0.0), // recovery variable (contribution of dominant ion channel),
@@ -159,6 +159,11 @@ IzNeuron::IzNeuron(int id, int type, double t_limit) :
   v_record.push_back(v);
   u_record.push_back(u);
   t_record.push_back(0.0);
+}
+
+double IzNeuron::B(double v)
+{
+  return 1.0 / (1.0 + (Mg2p0/3.57)*exp(-0.062*v));
 }
 
 void IzNeuron::spike()
@@ -174,12 +179,17 @@ void IzNeuron::spike()
 
 void IzNeuron::step(double dt)
 {
-  // TODO: use 4th order runge-kutta, or whatever boost odeint implements
   double I = /*g_ampa* */h_ampa*(E_ampa - v) +
              /*g_nmda* */h_nmda*(E_nmda - v) +
-             /*g_gaba* */h_gaba*(E_gaba - v);
+             B(v)* /*g_gaba* */h_gaba*(E_gaba - v);
+
+  // TODO: use 4th order runge-kutta, or whatever boost odeint implements
   v += dt * (k*(v - v_r)*(v - v_t) - u + 2000*pA/*+ I*/)/C;
   u += dt * a*(b*(v - v_r) - u);
+
+  h_ampa += dt * -(h_ampa/tau_ampa);
+  h_nmda += dt * -(h_nmda/tau_nmda);
+  h_gaba += dt * -(h_gaba/tau_gaba);
 
   v_record.push_back(v);
   u_record.push_back(u);
