@@ -219,7 +219,7 @@ void RecordEvent::process(EventManager &EM, SNN &snn)
 }
 
 #define f_sal 100.0 // salient fire rate
-#define f_bac 3.0  // background fire rate
+#define f_bac 1.0  // background fire rate
 
 ActionTrialResetEvent::ActionTrialResetEvent(double time) : Event(time)
 {

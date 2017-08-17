@@ -142,8 +142,16 @@ IzNeuron::IzNeuron(int id, int type, double t_limit) :
   v_t    ( -29.7 * mV         ), // threshold potential (mV),
   d      (    91 * (pF*mV)/ms ), // after spike reset of u
 
-  v(c), // membrane potential (mV),
-  u(0.0)  // recovery variable (contribution of dominant ion channel),
+  E_ampa (     0 * mV         ), // ampa recovery potential
+  E_nmda (     0 * mV         ), // nmda recovery potential
+  E_gaba (     0 * mV         ), // gaba recovery potential
+
+  v(c),   // membrane potential (mV),
+  u(0.0), // recovery variable (contribution of dominant ion channel),
+
+  h_ampa(0.0),
+  h_nmda(0.0),
+  h_gaba(0.0)
 {
   v_record.push_back(v);
   u_record.push_back(u);
@@ -164,11 +172,8 @@ void IzNeuron::spike()
 void IzNeuron::step(double dt)
 {
   // TODO: use 4th order runge-kutta, or whatever boost odeint implements
-  //v += dt * (1000*mV);
-  v += dt * (k*(v - v_r)*(v - v_t) - u + 1000*pA/*+ I*/)/C;
+  v += dt * (k*(v - v_r)*(v - v_t) - u + 2000*pA/*+ I*/)/C;
   u += dt * a*(b*(v - v_r) - u);
-
-  //std::cout << a*(b*(v - v_r) - u) << std::endl;
 
   v_record.push_back(v);
   u_record.push_back(u);

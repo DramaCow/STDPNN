@@ -12,15 +12,7 @@ SNN::SNN(double duration) :
   }
   for (Neuron *&neuron : sn)
   {
-    neuron = new IFNeuron(id++, EXCITATORY, duration);
-  }
-
-  std::random_device rd;
-  std::mt19937 gen; // random number generator
-
-  for (PPNeuron *&neuron : ppn)
-  {
-    con.add_edge(neuron, sn[0], std::uniform_real_distribution<double>{W_MIN, W_MAX}(gen));
+    neuron = new IzNeuron(id++, EXCITATORY, duration);
   }
 }
 

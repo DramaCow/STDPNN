@@ -117,8 +117,16 @@ class IzNeuron : public Neuron
     const double v_t;    // threshold potential (mV)
     const double d;      // after spike reset of u
 
+    const double E_ampa;
+    const double E_nmda;
+    const double E_gaba;
+
     double v; // membrane potential (mV)
     double u; // recovery variable (contribution of dominant ion channel)
+
+    double h_ampa;
+    double h_nmda;
+    double h_gaba;
 };
 
 #endif
