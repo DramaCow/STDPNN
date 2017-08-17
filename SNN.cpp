@@ -6,7 +6,7 @@ SNN::SNN(double duration) :
 {
   int id = 0;
 
-  for (Neuron *&neuron : ppn)
+  for (PPNeuron *&neuron : ppn)
   {
     neuron = new PPNeuron(id++, EXCITATORY, duration);
   }
@@ -18,7 +18,7 @@ SNN::SNN(double duration) :
   std::random_device rd;
   std::mt19937 gen; // random number generator
 
-  for (Neuron *&neuron : ppn)
+  for (PPNeuron *&neuron : ppn)
   {
     con.add_edge(neuron, sn[0], std::uniform_real_distribution<double>{W_MIN, W_MAX}(gen));
   }
@@ -51,7 +51,7 @@ SNN::SNN(double duration) :
 
 SNN::~SNN()
 {
-  for (Neuron *&neuron : ppn)
+  for (PPNeuron *&neuron : ppn)
   {
     delete neuron;
   }

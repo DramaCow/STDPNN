@@ -14,7 +14,7 @@ class SNN
     SNN(double duration);
     ~SNN();
 
-    std::array<Neuron*, A_NUM> ppn; // poison process neurons
+    std::array<PPNeuron*, A_NUM> ppn; // poison process neurons
     std::array<Neuron*, S_NUM> sn; // synchronous neurons
 
     SynapseNetwork con;

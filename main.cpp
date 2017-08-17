@@ -4,6 +4,7 @@
 #include <random>
 #include <cmath>
 #include <string>
+#include <algorithm>
 #include "neuron.hpp"
 #include "synapse.hpp"
 #include "event.hpp"
@@ -21,7 +22,7 @@ int main(int argc, char *argv[])
   }
 
   // global config
-  const double duration = 2.4;
+  const double duration = 12.0;
   const double dt_max = 0.00005;
   double t_sim = 0.0;
 
@@ -30,8 +31,13 @@ int main(int argc, char *argv[])
 
   // initialise event queue
   EventManager EM(duration);
-  EM.insert(new EpochEvent(0.0, 0));
-  EM.insert(new EpochEvent(0.0, 1));
+  //EM.insert(new EpochEvent(0.0, 0));
+  //EM.insert(new EpochEvent(0.0, 1));
+  EM.insert(new RandomActionTrialEvent(0.0, 1));
+  EM.insert(new RepeatedActionTrialEvent(2.4, 1));
+  EM.insert(new RandomActionTrialEvent(4.8, 1));
+  EM.insert(new RepeatedActionTrialEvent(7.2, 1));
+  EM.insert(new RandomActionTrialEvent(9.6, 1));
   EM.insert(new RecordEvent(0.0, 0));
 
   // initialise some global recorders
@@ -71,6 +77,9 @@ int main(int argc, char *argv[])
       EM.del_min();
     }
   }
+  
+  // TODO: uhh...
+  std::sort(std::begin(snn.ppn), std::end(snn.ppn), [](Neuron *n1, Neuron *n2) { return n1->id < n2->id; });
 
   // figure number as string
   std::string fig_num(argv[1]);
@@ -108,7 +117,7 @@ int main(int argc, char *argv[])
     int count = snn.ppn.size();
     fwrite(&count, sizeof(int), 1, file);
 
-    for (Neuron *&neuron : snn.ppn)
+    for (PPNeuron *&neuron : snn.ppn)
     {
       count = neuron->spikes.size();
       fwrite(&count, sizeof(int), 1, file);
