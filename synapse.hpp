@@ -20,8 +20,32 @@ class Synapse
 
     double get_w();
 
-  private:
+    virtual double g_ampa() { return 0.0; }
+    virtual double g_nmda() { return 0.0; }
+    virtual double g_gaba() { return 0.0; }
+
+  protected:
     double w;
+};
+
+class GlutamateSynapse : public Synapse
+{
+  public:
+    GlutamateSynapse(Neuron *pre, Neuron *post, double w) : Synapse(pre, post, w) {}
+
+    virtual double g_ampa() { return 1.0*w; }
+    virtual double g_nmda() { return 2.0*w; }
+    virtual double g_gaba() { return 0.0;   }
+};
+
+class GABASynapse : public Synapse
+{
+  public:
+    GABASynapse(Neuron *pre, Neuron *post, double w) : Synapse(pre, post, w) {}
+
+    virtual double g_ampa() { return 0.0;   }
+    virtual double g_nmda() { return 0.0;   }
+    virtual double g_gaba() { return 1.4*w; }
 };
 
 class SynapseNetwork

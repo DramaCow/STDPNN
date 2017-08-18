@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
   }
 
   // global config
-  const double duration = 14.4;
+  const double duration = 9.6;
   const double dt_max = 0.00005;
   double t_sim = 0.0;
 
@@ -34,10 +34,7 @@ int main(int argc, char *argv[])
   //EM.insert(new EpochEvent(0.0, 0));
   //EM.insert(new EpochEvent(0.0, 1));
   EM.insert(new RandomActionTrialEvent(0.0, 2));
-  EM.insert(new RepeatedActionTrialEvent(4.8, 1));
-  EM.insert(new RandomActionTrialEvent(7.2, 1));
-  EM.insert(new RepeatedActionTrialEvent(9.6, 1));
-  EM.insert(new RandomActionTrialEvent(12.0, 1));
+  EM.insert(new RepeatedActionTrialEvent(4.8, 2));
   EM.insert(new RecordEvent(0.0, 0));
 
   // initialise some global recorders
