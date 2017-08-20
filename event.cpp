@@ -23,13 +23,23 @@ Event::Event(double time) : time(time)
 EventManager::EventManager(double duration) : 
   duration(duration),
   epoch_freq(50.0), t_epoch{0.0, 0.0},
-  rec_period(5.0)
+  rec_period(5.0),
+
+  rec_entries(int(duration/rec_period)+1),
+  w1_record(rec_entries, 0),
+  w2_record(rec_entries, 0),
+  t_record(rec_entries, 0)
 {
   event_list = {nullptr};
   current_size = 0;
 
   std::random_device rd; // slow rng for one-off seed (uses  device entropy)
   gen.seed(rd()); // standard mersenne_twister_engine
+
+  for (int i = 0; i < rec_entries; ++i)
+  {
+    t_record[i] = rec_period*i;
+  }
 }
 
 EventManager::~EventManager()
@@ -173,8 +183,8 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
     EM.t_epoch[group_id] += t_delay;
     EM.insert(new EpochEvent(EM.t_epoch[group_id], group_id));
 
-    auto begin = group_id == 0 ? std::begin(snn.ppn)       : std::begin(snn.ppn) + 10;
-    auto end   = group_id == 0 ? std::begin(snn.ppn) + 10 : std::end(snn.ppn);
+    auto begin = group_id == 0 ? std::begin(snn.ppn)       : std::begin(snn.ppn) + 500;
+    auto end   = group_id == 0 ? std::begin(snn.ppn) + 500 : std::end(snn.ppn);
 
     double norm_var_y = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
     for (auto it = begin; it < end; ++it)
@@ -210,6 +220,30 @@ void RecordEvent::process(EventManager &EM, SNN &snn)
             << std::flush;
 
   /* record data here */
+  auto begin  = std::begin(snn.ppn);
+  auto middle = std::begin(snn.ppn) + 500;
+  auto end    = std::end(snn.ppn);
+  double sum_w;
+
+  sum_w = 0.0;
+  for (auto it = begin; it < middle; ++it)
+  {
+    for (Synapse *&sy : snn.con.out(*it))
+    {
+      sum_w += sy->get_w();
+    }
+  }
+  EM.w1_record[idx] = (sum_w / (snn.ppn.size()/2.0)) / W_MAX;
+
+  sum_w = 0.0;
+  for (auto it = middle; it < end; ++it)
+  {
+    for (Synapse *&sy : snn.con.out(*it))
+    {
+      sum_w += sy->get_w();
+    }
+  }
+  EM.w2_record[idx] = (sum_w / (snn.ppn.size()/2.0)) / W_MAX;
 
   double t_delay = EM.rec_period < (EM.duration-time) ? EM.rec_period : (EM.duration-time);
   if (t_delay > 0)
@@ -218,8 +252,8 @@ void RecordEvent::process(EventManager &EM, SNN &snn)
   }
 }
 
-#define f_sal 100.0 // salient fire rate
-#define f_bac 1.0  // background fire rate
+#define f_sal 25.0 // salient fire rate
+#define f_bac 3.0  // background fire rate
 
 ActionTrialResetEvent::ActionTrialResetEvent(double time) : Event(time)
 {

@@ -1,6 +1,9 @@
 #include "SNN.hpp"
 #include <random>
 
+#include <iostream>
+
+/*
 SNN::SNN(double duration) : 
   con(A_NUM+S_NUM)
 {
@@ -15,14 +18,14 @@ SNN::SNN(double duration) :
     neuron = new IzNeuron(id++, EXCITATORY, duration);
   }
 }
+*/
 
-/*
 SNN::SNN(double duration) : 
   con(A_NUM+S_NUM)
 {
   int id = 0;
 
-  for (Neuron *&neuron : ppn)
+  for (PPNeuron *&neuron : ppn)
   {
     neuron = new PPNeuron(id++, EXCITATORY, duration);
   }
@@ -34,12 +37,12 @@ SNN::SNN(double duration) :
   std::random_device rd;
   std::mt19937 gen; // random number generator
 
-  for (Neuron *&neuron : ppn)
+  for (PPNeuron *&neuron : ppn)
   {
     con.add_edge(neuron, sn[0], std::uniform_real_distribution<double>{W_MIN, W_MAX}(gen));
+//    std::cout << neuron->id << " --> " << sn[0]->id << std::endl;
   }
 }
-*/
 
 SNN::~SNN()
 {

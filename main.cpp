@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
   }
 
   // global config
-  const double duration = 9.6;
+  const double duration = 10.0;
   const double dt_max = 0.00005;
   double t_sim = 0.0;
 
@@ -31,10 +31,13 @@ int main(int argc, char *argv[])
 
   // initialise event queue
   EventManager EM(duration);
-  //EM.insert(new EpochEvent(0.0, 0));
-  //EM.insert(new EpochEvent(0.0, 1));
-  EM.insert(new RandomActionTrialEvent(0.0, 2));
-  EM.insert(new RepeatedActionTrialEvent(4.8, 2));
+  EM.insert(new EpochEvent(0.0, 0));
+  EM.insert(new EpochEvent(0.0, 1));
+//  EM.insert(new RandomActionTrialEvent(0.0, 1));
+//  EM.insert(new RepeatedActionTrialEvent(2.4, 1));
+//  EM.insert(new RandomActionTrialEvent(4.8, 1));
+//  EM.insert(new RepeatedActionTrialEvent(7.2, 1));
+//  EM.insert(new RandomActionTrialEvent(9.6, 1));
   EM.insert(new RecordEvent(0.0, 0));
 
   // initialise some global recorders
@@ -107,6 +110,44 @@ int main(int argc, char *argv[])
   }
   {
     FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");
+    int count = snn.ppn.size();
+    int num_plots = 1;
+    double ymin = 0.0, ymax = 1.0;
+    fwrite(&count, sizeof(int), 1, file);
+    fwrite(&num_plots, sizeof(int), 1, file);
+    fwrite(&ymin, sizeof(double), 1, file);
+    fwrite(&ymax, sizeof(double), 1, file);
+    for (double id = 0.0; id < snn.ppn.size(); id+=1.0)
+    {
+      fwrite(&id, sizeof(double), 1, file); 
+    }
+    for (std::size_t id = 0; id < snn.ppn.size(); ++id)
+    {
+      for (Synapse *&sy : snn.con.out(snn.ppn[id]))
+      {
+        double w = sy->get_w()/W_MAX;
+        fwrite(&w, sizeof(double), 1, file);
+      }
+    }
+    fclose(file);
+  }
+  {
+    FILE* file = fopen((fig_num + "B.dat").c_str(), "wb");
+    int count = EM.rec_entries;
+    int num_plots = 2;
+    double ymin = 0.0, ymax = 1.0;
+    fwrite(&count, sizeof(int), 1, file);
+    fwrite(&num_plots, sizeof(int), 1, file);
+    fwrite(&ymin, sizeof(double), 1, file);
+    fwrite(&ymax, sizeof(double), 1, file);
+    fwrite(&EM.t_record[0], sizeof(double), count, file);
+    fwrite(&EM.w1_record[0], sizeof(double), count, file);
+    fwrite(&EM.w2_record[0], sizeof(double), count, file);
+    fclose(file);
+  }
+  /*
+  {
+    FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");
 
     IzNeuron *iz = dynamic_cast<IzNeuron*>(snn.sn[0]);
 
@@ -145,6 +186,7 @@ int main(int argc, char *argv[])
 
     fclose(file);
   }
+  */
 
   std::cout << "\r results written to file!  " << std::endl;
 
