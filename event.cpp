@@ -23,7 +23,7 @@ Event::Event(double time) : time(time)
 EventManager::EventManager(double duration) : 
   duration(duration),
   epoch_freq(50.0), t_epoch{0.0, 0.0},
-  rec_period(5.0),
+  rec_period(1.0),
 
   rec_entries(int(duration/rec_period)+1),
   w1_record(rec_entries, 0),
@@ -249,6 +249,20 @@ void RecordEvent::process(EventManager &EM, SNN &snn)
   if (t_delay > 0)
   {
     EM.insert(new RecordEvent(time + t_delay, idx+1));
+  }
+}
+
+void DopamineEvent::process(EventManager &EM, SNN &snn)
+{
+  for (PPNeuron *&neuron : snn.ppn)
+  {
+    neuron->d1 = d1;
+    neuron->d2 = d2;
+  }
+  for (Neuron *&neuron : snn.sn)
+  {
+    neuron->d1 = d1;
+    neuron->d2 = d2;
   }
 }
 

@@ -30,6 +30,8 @@ class Neuron
 
     std::vector<double> spikes;
 
+    double d1, d2;
+
   protected:
     double t_last;
     double t_next;

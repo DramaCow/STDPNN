@@ -79,6 +79,14 @@ class RecordEvent : public Event
     virtual void process(EventManager &EM, SNN &snn);
 };
 
+class DopamineEvent : public Event
+{
+  public:
+    DopamineEvent(double time, double d1, double d2) : Event(time), d1(d1), d2(d2) {}
+    double d1, d2;
+    virtual void process(EventManager &EM, SNN &snn);
+};
+
 // ===
 
 class ActionTrialResetEvent : public Event
