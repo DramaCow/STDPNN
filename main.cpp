@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
   }
 
   // global config
-  const double duration = 100.0;
+  const double duration = 5000.0;
   const double dt_max = 0.00005;
   double t_sim = 0.0;
 
@@ -39,10 +39,10 @@ int main(int argc, char *argv[])
 //  EM.insert(new RepeatedActionTrialEvent(7.2, 1));
 //  EM.insert(new RandomActionTrialEvent(9.6, 1));
   EM.insert(new RecordEvent(0.0, 0));
-  EM.insert(new DopamineEvent(10.0, 1.0, -1.0));
-  EM.insert(new DopamineEvent(20.0, 1.0, 1.0));
-//  EM.insert(new DopamineEvent(10.0, -1.0, 1.0));
-//  EM.insert(new DopamineEvent(10.0, 1.0, 1.0));
+//  EM.insert(new DopamineEvent(10.0, 0, 1.0, -1.0));
+//  EM.insert(new DopamineEvent(10.0, 1, 1.0, -1.0));
+//  EM.insert(new DopamineEvent(20.0, 0, 1.0, 1.0));
+//  EM.insert(new DopamineEvent(20.0, 1, 1.0, 1.0));
 
   // initialise some global recorders
   std::vector<double> s_record;

@@ -254,10 +254,14 @@ void RecordEvent::process(EventManager &EM, SNN &snn)
 
 void DopamineEvent::process(EventManager &EM, SNN &snn)
 {
-  for (PPNeuron *&neuron : snn.ppn)
+
+  auto begin = group_id == 0 ? std::begin(snn.ppn)       : std::begin(snn.ppn) + 500;
+  auto end   = group_id == 0 ? std::begin(snn.ppn) + 500 : std::end(snn.ppn);
+
+  for (auto it = begin; it < end; ++it)
   {
-    neuron->d1 = d1;
-    neuron->d2 = d2;
+    (*it)->d1 = d1;
+    (*it)->d2 = d2;
   }
   for (Neuron *&neuron : snn.sn)
   {
