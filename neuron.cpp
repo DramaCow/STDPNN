@@ -13,7 +13,7 @@
 #define A_n   A_p*1.050
 #define tau_n 0.020
 
-Neuron::Neuron(int id, int type, double t_limit) : id(id), type(type), t_limit(t_limit), d1(1.0), d2(1.0)
+Neuron::Neuron(int id, int type, double t_limit) : id(id), type(type), t_limit(t_limit)
 {
   this->t_last = 0.0;
   this->t_next = INFINITY;
@@ -31,8 +31,8 @@ void Neuron::update(double t_curr)
 
 void Neuron::spike()
 {
-  x += d1*A_p;
-  y -= d2*A_n;
+  x += A_p;
+  y -= A_n;
 }
 
 double Neuron::get_x()

@@ -260,13 +260,11 @@ void DopamineEvent::process(EventManager &EM, SNN &snn)
 
   for (auto it = begin; it < end; ++it)
   {
-    (*it)->d1 = d1;
-    (*it)->d2 = d2;
-  }
-  for (Neuron *&neuron : snn.sn)
-  {
-    neuron->d1 = d1;
-    neuron->d2 = d2;
+    for (Synapse *&sy : snn.con.out(*it))
+    {
+      sy->d1 = d1;
+      sy->d2 = d2;
+    }
   }
 }
 

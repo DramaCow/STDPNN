@@ -24,6 +24,8 @@ class Synapse
     virtual double g_nmda() { return 0.0; }
     virtual double g_gaba() { return 0.0; }
 
+    double d1, d2;
+
   protected:
     double w;
 };
