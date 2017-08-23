@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <random>
+#include <string>
 #include "neuron.hpp"
 #include "SNN.hpp"
 
@@ -85,6 +86,14 @@ class DopamineEvent : public Event
     DopamineEvent(double time, int group_id, double d1, double d2) : Event(time), group_id(group_id), d1(d1), d2(d2) {}
     int group_id;
     double d1, d2;
+    virtual void process(EventManager &EM, SNN &snn);
+};
+
+class WriteEvent : public Event
+{
+  public:
+    WriteEvent(double time, std::string figure) : Event(time), figure(figure) {}
+    std::string figure;
     virtual void process(EventManager &EM, SNN &snn);
 };
 

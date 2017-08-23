@@ -22,9 +22,12 @@ int main(int argc, char *argv[])
   }
 
   // global config
-  const double duration = 5000.0;
+  const double duration = 10.0;
   const double dt_max = 0.00005;
   double t_sim = 0.0;
+
+  // figure number as string
+  std::string fig_num(argv[1]);
 
   // initialise simulation state
   SNN snn(duration);
@@ -38,11 +41,15 @@ int main(int argc, char *argv[])
 //  EM.insert(new RandomActionTrialEvent(4.8, 1));
 //  EM.insert(new RepeatedActionTrialEvent(7.2, 1));
 //  EM.insert(new RandomActionTrialEvent(9.6, 1));
+//  EM.insert(new SynapticScalingEvent(0.0));
   EM.insert(new RecordEvent(0.0, 0));
-  EM.insert(new DopamineEvent(10.0, 0, 1.0, -1.0));
-  EM.insert(new DopamineEvent(10.0, 1, 1.0, -1.0));
-  EM.insert(new DopamineEvent(20.0, 0, 1.0, 1.0));
-  EM.insert(new DopamineEvent(20.0, 1, 1.0, 1.0));
+  EM.insert(new DopamineEvent(4.0, 0, 1.0, -1.0));
+  EM.insert(new DopamineEvent(4.0, 1, -1.0, 1.0));
+  EM.insert(new DopamineEvent(8.0, 0, -1.0, 1.0));
+  EM.insert(new DopamineEvent(8.0, 1, 1.0, -1.0));
+  //EM.insert(new DopamineEvent(20.0, 0, 1.0, 1.0));
+  //EM.insert(new DopamineEvent(20.0, 1, 1.0, 1.0));
+  //EM.insert(new WriteEvent(6000.0, fig_num + "C.dat"));
 
   // initialise some global recorders
   std::vector<double> s_record;
@@ -84,9 +91,6 @@ int main(int argc, char *argv[])
   
   // TODO: uhh...
   std::sort(std::begin(snn.ppn), std::end(snn.ppn), [](Neuron *n1, Neuron *n2) { return n1->id < n2->id; });
-
-  // figure number as string
-  std::string fig_num(argv[1]);
 
   std::cout << "\r COMPLETE [" << std::string(32, '#') << "] " << /*std::setprecision(2) << std::fixed <<*/ EM.duration << "s " << std::endl;
   std::cout << " writing results to file...";

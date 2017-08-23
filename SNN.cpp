@@ -39,7 +39,8 @@ SNN::SNN(double duration) :
 
   for (PPNeuron *&neuron : ppn)
   {
-    con.add_edge(neuron, sn[0], std::uniform_real_distribution<double>{W_MIN, W_MAX}(gen));
+    double w = std::uniform_real_distribution<double>{W_MIN, W_MAX}(gen);
+    con.add_edge(neuron, sn[0], w);
 //    std::cout << neuron->id << " --> " << sn[0]->id << std::endl;
   }
 }

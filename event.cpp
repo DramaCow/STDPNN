@@ -167,6 +167,20 @@ void SpikeEvent::process(EventManager &EM, SNN &snn)
   {
     EM.insert(new SpikeEvent(t_next, neuron));
   }
+
+#ifdef HOMEOSTASIS
+  double ave_w = 0.0;
+  for (Synapse *&sy : snn.con.in(snn.sn[0]))
+  {
+    ave_w += sy->get_w();
+  }
+  ave_w /= 1000.0;
+  double scaling_factor = 0.5 / (ave_w/W_MAX);
+  for (Synapse *&sy : snn.con.in(snn.sn[0]))
+  {
+    sy->w *= scaling_factor;
+  }
+#endif
 }
 
 EpochEvent::EpochEvent(double time, int group_id) : Event(time), group_id(group_id)
@@ -254,7 +268,6 @@ void RecordEvent::process(EventManager &EM, SNN &snn)
 
 void DopamineEvent::process(EventManager &EM, SNN &snn)
 {
-
   auto begin = group_id == 0 ? std::begin(snn.ppn)       : std::begin(snn.ppn) + 500;
   auto end   = group_id == 0 ? std::begin(snn.ppn) + 500 : std::end(snn.ppn);
 
@@ -266,6 +279,31 @@ void DopamineEvent::process(EventManager &EM, SNN &snn)
       sy->d2 = d2;
     }
   }
+}
+
+void WriteEvent::process(EventManager &EM, SNN &snn)
+{
+    FILE* file = fopen(figure.c_str(), "wb");
+    int count = snn.ppn.size();
+    int num_plots = 1;
+    double ymin = 0.0, ymax = 1.0;
+    fwrite(&count, sizeof(int), 1, file);
+    fwrite(&num_plots, sizeof(int), 1, file);
+    fwrite(&ymin, sizeof(double), 1, file);
+    fwrite(&ymax, sizeof(double), 1, file);
+    for (double id = 0.0; id < snn.ppn.size(); id+=1.0)
+    {
+      fwrite(&id, sizeof(double), 1, file); 
+    }
+    for (std::size_t id = 0; id < snn.ppn.size(); ++id)
+    {
+      for (Synapse *&sy : snn.con.out(snn.ppn[id]))
+      {
+        double w = sy->get_w()/W_MAX;
+        fwrite(&w, sizeof(double), 1, file);
+      }
+    }
+    fclose(file);
 }
 
 #define f_sal 25.0 // salient fire rate

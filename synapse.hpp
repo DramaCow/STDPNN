@@ -26,8 +26,10 @@ class Synapse
 
     double d1, d2;
 
-  protected:
     double w;
+
+  protected:
+//    double w;
 };
 
 class GlutamateSynapse : public Synapse
