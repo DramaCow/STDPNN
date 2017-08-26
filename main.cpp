@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
   }
 
   // global config
-  const double duration = 10.0;
+  const double duration = 1000.0;
   const double dt_max = 0.00005;
   double t_sim = 0.0;
 
@@ -43,10 +43,8 @@ int main(int argc, char *argv[])
 //  EM.insert(new RandomActionTrialEvent(9.6, 1));
 //  EM.insert(new SynapticScalingEvent(0.0));
   EM.insert(new RecordEvent(0.0, 0));
-  EM.insert(new DopamineEvent(4.0, 0, 1.0, -1.0));
-  EM.insert(new DopamineEvent(4.0, 1, -1.0, 1.0));
-  EM.insert(new DopamineEvent(8.0, 0, -1.0, 1.0));
-  EM.insert(new DopamineEvent(8.0, 1, 1.0, -1.0));
+  EM.insert(new DopamineEvent(800.0, 0, -1.0, 1.0));
+  EM.insert(new DopamineEvent(800.0, 1, -1.0, 1.0));
   //EM.insert(new DopamineEvent(20.0, 0, 1.0, 1.0));
   //EM.insert(new DopamineEvent(20.0, 1, 1.0, 1.0));
   //EM.insert(new WriteEvent(6000.0, fig_num + "C.dat"));

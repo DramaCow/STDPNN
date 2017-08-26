@@ -1,7 +1,7 @@
 EXE ?= start
 
 CC := g++
-CFLAGS := -Wextra -Werror -std=c++11 -pedantic -Wno-error=unused-variable -Ofast -g -D HOMEOSTASIS
+CFLAGS := -Wextra -Werror -std=c++11 -pedantic -Wno-error=unused-variable -Wno-error=deprecated-declarations -Ofast -g -D HOMEOSTASIS
 LIBS := -lm
 
 SRCS := $(shell find . -name '*.cpp')
