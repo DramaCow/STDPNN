@@ -6,7 +6,7 @@
 #include <iostream>
 #include <vector>
 #include "neuron.hpp"
-#include "units.hpp"
+#include "../units.hpp"
 
 #define A_p   0.005
 #define tau_p 0.020

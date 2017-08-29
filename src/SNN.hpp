@@ -1,8 +1,8 @@
 #ifndef SNN_H
 #define SNN_H
 
-#include "neuron.hpp"
-#include "synapse.hpp"
+#include "neurons/neuron.hpp"
+#include "synapses/synapse.hpp"
 #include <array>
 
 #define A_NUM 1000

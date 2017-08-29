@@ -38,7 +38,7 @@ class Neuron
     double y;
 };
 
-#include "synapse.hpp"
+#include "../synapses/synapse.hpp"
 
 class PPNeuron : public Neuron
 {

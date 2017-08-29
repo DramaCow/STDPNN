@@ -17,5 +17,5 @@ $(EXE): $(OBJS)
 	$(CC) -c $(CFLAGS) $^ $(LIBS) -o $@
 
 clean:
-	rm -r **/*.o 
+	find . -type f -name '*.o' -exec rm {} +
 	rm $(EXE)

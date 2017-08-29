@@ -5,9 +5,10 @@
 #include <cmath>
 #include <string>
 #include <algorithm>
-#include "neuron.hpp"
-#include "synapse.hpp"
-#include "event.hpp"
+#include "neurons/neuron.hpp"
+#include "synapses/synapse.hpp"
+#include "events/event.hpp"
+#include "eventmanager.hpp"
 #include "units.hpp"
 #include "SNN.hpp"
 

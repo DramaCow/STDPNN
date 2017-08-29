@@ -1,6 +1,6 @@
 #include "SNN.hpp"
-#include <random>
 
+#include <random>
 #include <iostream>
 
 /*
