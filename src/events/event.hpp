@@ -4,7 +4,7 @@
 #include <vector>
 #include <random>
 #include <string>
-#include "../neurons/neuron.hpp"
+#include "../allneurons.hpp"
 #include "../SNN.hpp"
 
 class EventManager; // forward declaration

@@ -1,7 +1,7 @@
 #ifndef EVENTMANAGER_H
 #define EVENTMANAGER_H
 
-#include "events/event.hpp"
+#include "allevents.hpp"
 
 class EventManager
 {

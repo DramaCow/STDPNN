@@ -1,7 +1,7 @@
 #ifndef SYNAPSE_H
 #define SYNAPSE_H
 
-#include "../neurons/neuron.hpp"
+#include "../allneurons.hpp"
 #include <vector>
 
 #define W_MIN 0.0   // minimum peak conductance
