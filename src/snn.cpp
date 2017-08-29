@@ -1,4 +1,4 @@
-#include "SNN.hpp"
+#include "snn.hpp"
 
 #include <random>
 #include <iostream>

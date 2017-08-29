@@ -6,7 +6,7 @@
 #include <string>
 #include <algorithm>
 
-#include "SNN.hpp"
+#include "snn.hpp"
 #include "eventmanager.hpp"
 
 #include <typeinfo>

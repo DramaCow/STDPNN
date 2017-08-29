@@ -5,7 +5,7 @@
 #include <random>
 #include <string>
 #include "../allneurons.hpp"
-#include "../SNN.hpp"
+#include "../snn.hpp"
 
 class EventManager; // forward declaration
 
