@@ -1,5 +1,4 @@
 #include "snn.hpp"
-
 #include <random>
 #include <iostream>
 

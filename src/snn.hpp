@@ -2,7 +2,8 @@
 #define SNN_H
 
 #include "allneurons.hpp"
-#include "allsynapses.hpp"
+#include "synapses/synapse.hpp"
+#include "synapsenetwork.hpp"
 #include <array>
 
 #define A_NUM 1000

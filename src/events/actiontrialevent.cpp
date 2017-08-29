@@ -1,4 +1,5 @@
 #include "actiontrialevent.hpp"
+#include "spikeevent.hpp"
 #include "../eventmanager.hpp"
 #include <algorithm>
 

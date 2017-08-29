@@ -8,6 +8,7 @@
 
 #include "snn.hpp"
 #include "eventmanager.hpp"
+#include "allevents.hpp"
 
 #include <typeinfo>
 

@@ -1,4 +1,5 @@
 #include "epochevent.hpp"
+#include "spikeevent.hpp"
 #include "../eventmanager.hpp"
 
 #define FRF 0.3

@@ -1,5 +1,6 @@
 #include "izneuron.hpp"
 #include "../units.hpp"
+#include <cmath>
 
 IzNeuron::IzNeuron(int id, int type, double t_limit) : 
   Neuron(id, type, t_limit),

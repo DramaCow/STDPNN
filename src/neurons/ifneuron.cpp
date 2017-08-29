@@ -1,5 +1,6 @@
 #include "ifneuron.hpp"
 #include "../units.hpp"
+#include <cmath>
 
 IFNeuron::IFNeuron(int id, int type, double t_limit) : Neuron(id, type, t_limit)
 {
