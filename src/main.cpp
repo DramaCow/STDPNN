@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
   }
 
   // global config
-  const double duration = 0.125;
+  const double duration = 100.0;
   const double dt_max = 0.00005;
   double t_sim = 0.0;
 
