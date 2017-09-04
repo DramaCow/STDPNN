@@ -3,8 +3,9 @@
 #include <iostream>
 
 SNN::SNN(double duration) :
-  ppn(200), sn(1),
-  con(ppn.size() + sn.size())
+  ppn(1), sn(1),
+  con(ppn.size() + sn.size()),
+  d(0.0)
 {
   int id = 0;
 

@@ -16,7 +16,8 @@ class DopaminergicSynapse : public Synapse
     virtual double g_nmda() { return 2.0*w; }
     virtual double g_gaba() { return 0.0;   }
 
-  private:
+  //private:
+  public:
     double alpha(double d);
     double z_p(double d, double dt);
     double z_n(double d, double dt);

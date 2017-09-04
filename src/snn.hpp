@@ -16,6 +16,8 @@ class SNN
     std::vector<Neuron*> sn;    // synchronous neurons
 
     SynapseNetwork con;
+
+    double d; // dopamine level
 };
 
 #endif
