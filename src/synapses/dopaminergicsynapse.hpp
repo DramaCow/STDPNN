@@ -7,7 +7,11 @@ class DopaminergicSynapse : public Synapse
 {
   public:
     DopaminergicSynapse(Neuron *pre, Neuron *post, double w, 
-      double rho, double theta, double a0, double k_p_hi, double k_n_hi, double k_p_lo, double k_n_lo);
+      double rho, double theta, double a0, double k_p_hi, double k_n_hi, double k_p_lo, double k_n_lo, double &d);
+
+    virtual void pre_spike();
+    virtual void post_spike();
+
     virtual double g_ampa() { return 1.0*w; }
     virtual double g_nmda() { return 2.0*w; }
     virtual double g_gaba() { return 0.0;   }
@@ -29,6 +33,8 @@ class DopaminergicSynapse : public Synapse
     double k_n_hi;
     double k_p_lo;
     double k_n_lo;
+
+    const double &d; 
 };
 
 #endif

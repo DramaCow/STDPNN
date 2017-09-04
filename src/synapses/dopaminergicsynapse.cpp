@@ -2,7 +2,7 @@
 #include <cmath>
 
 DopaminergicSynapse::DopaminergicSynapse(Neuron *pre, Neuron *post, double w, 
-  double rho, double theta, double a0, double k_p_hi, double k_n_hi, double k_p_lo, double k_n_lo) : 
+  double rho, double theta, double a0, double k_p_hi, double k_n_hi, double k_p_lo, double k_n_lo, double &d) : 
   Synapse(pre, post, w),
 
   rho    (rho   ) , // Naka-Rushton exponent
@@ -16,8 +16,24 @@ DopaminergicSynapse::DopaminergicSynapse(Neuron *pre, Neuron *post, double w,
   k_p_hi (k_p_hi) ,
   k_n_hi (k_n_hi) ,
   k_p_lo (k_p_lo) ,
-  k_n_lo (k_n_lo)
+  k_n_lo (k_n_lo) ,
+
+  d(d)
 {
+}
+
+void DopaminergicSynapse::pre_spike()
+{
+  double dt = post->get_y();
+  w += mu * z_p(d, dt);
+  w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
+}
+
+void DopaminergicSynapse::post_spike()
+{
+  double dt = pre->get_x();
+  w += mu * z_n(d, dt);
+  w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
 }
 
 double DopaminergicSynapse::alpha(double d)
@@ -27,11 +43,12 @@ double DopaminergicSynapse::alpha(double d)
 
 double DopaminergicSynapse::z_p(double d, double dt)
 {
-  return 0.0;
+  double K = alpha(d)*k_p_hi + (1 - alpha(d))*k_p_lo;
+  return K*exp(-dt/tau_p);
 }
 
 double DopaminergicSynapse::z_n(double d, double dt)
 {
-  return 0.0;
+  double K = alpha(d)*k_n_hi + (1 - alpha(d))*k_n_lo;
+  return K*exp(-dt/tau_n);
 }
-
