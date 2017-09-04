@@ -6,7 +6,7 @@
 #include "synapsenetwork.hpp"
 #include <array>
 
-#define A_NUM 1000
+#define A_NUM 1
 #define S_NUM 1
 
 class SNN
