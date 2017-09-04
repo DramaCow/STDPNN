@@ -46,8 +46,9 @@ SNN::SNN(double duration) :
 }
 */
 
-SNN::SNN(double duration) : 
-  con(A_NUM+S_NUM)
+SNN::SNN(double duration) :
+  ppn(10), sn(1),
+  con(ppn.size() + sn.size())
 {
   int id = 0;
 

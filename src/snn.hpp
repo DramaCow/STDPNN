@@ -6,17 +6,14 @@
 #include "synapsenetwork.hpp"
 #include <array>
 
-#define A_NUM 1
-#define S_NUM 1
-
 class SNN
 {
   public:
     SNN(double duration);
     ~SNN();
 
-    std::array<PPNeuron*, A_NUM> ppn; // poison process neurons
-    std::array<Neuron*, S_NUM> sn; // synchronous neurons
+    std::vector<PPNeuron*> ppn; // poison process neurons
+    std::vector<Neuron*> sn;    // synchronous neurons
 
     SynapseNetwork con;
 };
