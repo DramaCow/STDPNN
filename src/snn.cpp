@@ -3,7 +3,7 @@
 #include <iostream>
 
 SNN::SNN(double duration) :
-  ppn(1), sn(1),
+  ppn(10), sn(1),
   con(ppn.size() + sn.size()),
   d(0.0)
 {
@@ -15,7 +15,7 @@ SNN::SNN(double duration) :
   }
   for (Neuron *&neuron : sn)
   {
-    neuron = new IzNeuron(id++, EXCITATORY, duration);
+    neuron = new IzNeuron(id++, EXCITATORY, duration, con);
   }
 
   std::random_device rd;
@@ -27,6 +27,13 @@ SNN::SNN(double duration) :
     Synapse *sy_d1 = new GlutamateSynapse(neuron, sn[0], w, 1.20, 6.00, 1.20, 1.30,  0.00, -0.40, -0.50, d);
     con.add_synapse(sy_d1);
   }
+
+  /*
+  for (Synapse *&sy : dynamic_cast<IzNeuron*>(sn[0])->in)
+  {
+    std::cout << sy->pre->id << std::endl;
+  }
+  */
 }
 
 SNN::~SNN()

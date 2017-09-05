@@ -2,8 +2,9 @@
 #include "../units.hpp"
 #include <cmath>
 
-IzNeuron::IzNeuron(int id, int type, double t_limit) : 
+IzNeuron::IzNeuron(int id, int type, double t_limit, SynapseNetwork &con) :
   Neuron(id, type, t_limit),
+  in(con.in(this)), out(con.out(this)),
 
   a      (  0.01 * 1          ), // dominant ion channel time const
   b      (   -20 * pF/ms      ), // arbitrary scaling const

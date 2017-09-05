@@ -3,11 +3,12 @@
 
 #include "neuron.hpp"
 #include "../allsynapses.hpp"
+#include "../synapsenetwork.hpp"
 
 class IzNeuron : public Neuron
 {
   public:
-    IzNeuron(int id, int type, double t_limit);
+    IzNeuron(int id, int type, double t_limit, SynapseNetwork &con);
 
     virtual void spike();  
 
@@ -19,6 +20,9 @@ class IzNeuron : public Neuron
     std::vector<double> v_record;
     std::vector<double> u_record;
     std::vector<double> t_record;
+
+    std::vector<Synapse*> &in;
+    std::vector<Synapse*> &out;
 
   private:
     const double a;      // dominant ion channel time const
@@ -51,6 +55,9 @@ class IzNeuron : public Neuron
     double g_ampa;
     double g_nmda;
     double g_gaba;
+
+//    std::vector<Synapse*> &in;
+//    std::vector<Synapse*> &out;
 };
 
 #endif
