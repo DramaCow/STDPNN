@@ -18,13 +18,6 @@ SynapseNetwork::~SynapseNetwork()
   }
 }
 
-void SynapseNetwork::add_edge(Neuron *pre, Neuron *post, double w)
-{
-  Synapse *sy = new Synapse(pre, post, w);
-  A_post[pre->id].push_back(sy);
-  A_pre[post->id].push_back(sy);
-}
-
 void SynapseNetwork::add_synapse(Synapse *sy)
 {
   A_post[sy->pre->id].push_back(sy);

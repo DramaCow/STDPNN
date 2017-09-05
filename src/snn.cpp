@@ -24,8 +24,8 @@ SNN::SNN(double duration) :
   for (PPNeuron *&neuron : ppn)
   {
     double w = std::uniform_real_distribution<double>{W_MIN, W_MAX}(gen);
-    Synapse *sy = new Synapse(neuron, sn[0], w);
-    con.add_synapse(sy);
+    Synapse *sy_d1 = new GlutamateSynapse(neuron, sn[0], w, 1.20, 6.00, 1.20, 1.30,  0.00, -0.40, -0.50, d);
+    con.add_synapse(sy_d1);
   }
 }
 

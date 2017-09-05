@@ -28,7 +28,11 @@ IzNeuron::IzNeuron(int id, int type, double t_limit) :
 
   h_ampa(0.0),
   h_nmda(0.0),
-  h_gaba(0.0)
+  h_gaba(0.0),
+
+  g_ampa(0.0),
+  g_nmda(0.0),
+  g_gaba(0.0)
 {
   v_record.push_back(v);
   u_record.push_back(u);
@@ -72,7 +76,9 @@ void IzNeuron::step(double dt)
 
 void IzNeuron::receive_spike(Synapse *sy)
 {
-  // TODO
+  g_ampa += sy->g_ampa();
+  g_nmda += sy->g_nmda();
+  g_gaba += sy->g_gaba();
 }
 
 bool IzNeuron::is_spiking()

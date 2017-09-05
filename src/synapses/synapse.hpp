@@ -19,9 +19,9 @@ class Synapse
 
     double get_w();
 
-    virtual double g_ampa() { return 0.0; }
-    virtual double g_nmda() { return 0.0; }
-    virtual double g_gaba() { return 0.0; }
+    virtual double g_ampa() = 0;
+    virtual double g_nmda() = 0;
+    virtual double g_gaba() = 0;
 
     double d1, d2;
 

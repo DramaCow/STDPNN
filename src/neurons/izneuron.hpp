@@ -47,6 +47,10 @@ class IzNeuron : public Neuron
     double h_ampa;
     double h_nmda;
     double h_gaba;
+
+    double g_ampa;
+    double g_nmda;
+    double g_gaba;
 };
 
 #endif

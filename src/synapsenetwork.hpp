@@ -9,7 +9,6 @@ class SynapseNetwork
     SynapseNetwork(int num_neurons);
     ~SynapseNetwork();
 
-    void add_edge(Neuron *pre, Neuron *post, double w);
     void add_synapse(Synapse *sy);
 
     std::vector<Synapse *> & in(Neuron *post);
