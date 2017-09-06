@@ -1,6 +1,9 @@
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
+
+mpl.rcParams['agg.path.chunksize'] = 10000
 
 if len(sys.argv) <= 1:
   print("usage: python plot.py <input_filename>")
@@ -14,6 +17,8 @@ else:
     Y = [np.fromfile(f, dtype=np.float64, count=count) for _ in range(num_plots)]
 
     print("count =", count)
+    print("x : ", len(x))
+    print("y0 : ", len(Y[0]))
 
     if len(sys.argv) > 2:
       for y in Y:

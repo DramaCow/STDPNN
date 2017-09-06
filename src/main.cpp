@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
   }
 
   // global config
-  const double duration = 100.0;
+  const double duration = 2.4;
   const double dt_max = 0.00005;
   double t_sim = 0.0;
 
@@ -30,10 +30,9 @@ int main(int argc, char *argv[])
   std::string fig_num(argv[1]);
 
   // example outputting dopamine controlled STDP rules for d1/d2 dopaminergic neurons
-  /*
-  double d = 5.0; // level of dopamine
-  DopaminergicSynapse d1(nullptr, nullptr, 0.5*W_MAX, 1.20, 6.00, 1.20, 1.30,  0.00, -0.40, -0.50, d);
-  DopaminergicSynapse d2(nullptr, nullptr, 0.5*W_MAX, 1.40, 1.80, 1.00, 0.35, -0.85,  0.30,  0.30, d);
+  double d = 0.0; // level of dopamine
+  GlutamateSynapse d1(nullptr, nullptr, 0.5*W_MAX, 1.20, 6.00, 1.20, 1.30,  0.00, -0.40, -0.50, d);
+  GlutamateSynapse d2(nullptr, nullptr, 0.5*W_MAX, 1.40, 1.80, 1.00, 0.35, -0.85,  0.30,  0.30, d);
   std::vector<double> time;
   std::vector<double> stdp1;
   std::vector<double> stdp2;
@@ -70,27 +69,14 @@ int main(int argc, char *argv[])
   fwrite(&stdp1[0], sizeof(double), count, f);
   fwrite(&stdp2[0], sizeof(double), count, f);
   fclose(f);
-  */
 
   // initialise simulation state
   SNN snn(duration);
 
   // initialise event queue
   EventManager EM(duration);
-//  EM.insert(new EpochEvent(0.0, 0));
-//  EM.insert(new EpochEvent(0.0, 1));
-//  EM.insert(new RandomActionTrialEvent(0.0, 1));
-//  EM.insert(new RepeatedActionTrialEvent(2.4, 1));
-//  EM.insert(new RandomActionTrialEvent(4.8, 1));
-//  EM.insert(new RepeatedActionTrialEvent(7.2, 1));
-//  EM.insert(new RandomActionTrialEvent(9.6, 1));
-//  EM.insert(new SynapticScalingEvent(0.0));
+  EM.insert(new RandomActionTrialEvent(0.0, 1));
   EM.insert(new RecordEvent(0.0, 0));
-//  EM.insert(new DopamineEvent(800.0, 0, -1.0, 1.0));
-//  EM.insert(new DopamineEvent(800.0, 1, -1.0, 1.0));
-  //EM.insert(new DopamineEvent(20.0, 0, 1.0, 1.0));
-  //EM.insert(new DopamineEvent(20.0, 1, 1.0, 1.0));
-  //EM.insert(new WriteEvent(6000.0, fig_num + "C.dat"));
 
   // initialise some global recorders
   std::vector<double> s_record;
@@ -151,7 +137,6 @@ int main(int argc, char *argv[])
     fwrite(&iz->v_record[0], sizeof(double), count, file);
     fclose(file);
   }
-  /*
   {
     FILE* file = fopen((fig_num + "S.dat").c_str(), "wb");
 
@@ -172,6 +157,7 @@ int main(int argc, char *argv[])
       fwrite(&neuron->spikes[0], sizeof(double), count, file);
     }
   }
+  /*
   {
     FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");
     int count = snn.ppn.size();

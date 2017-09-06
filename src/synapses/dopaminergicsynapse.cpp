@@ -1,5 +1,8 @@
 #include "dopaminergicsynapse.hpp"
 #include <cmath>
+#include "../units.hpp"
+
+#include <iostream>
 
 DopaminergicSynapse::DopaminergicSynapse(Neuron *pre, Neuron *post, double w, 
   double rho, double theta, double a0, double k_p_hi, double k_n_hi, double k_p_lo, double k_n_lo, double &d) : 
@@ -24,16 +27,20 @@ DopaminergicSynapse::DopaminergicSynapse(Neuron *pre, Neuron *post, double w,
 
 void DopaminergicSynapse::pre_spike()
 {
+  //std::cout << w << " , ";
   double dt = post->get_y();
-  w += mu * z_p(d, dt);
+  w += mu * z_p(d, dt) * nS;
   w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
+  //std::cout << w << std::endl;
 }
 
 void DopaminergicSynapse::post_spike()
 {
+  //std::cout << w << " , ";
   double dt = pre->get_x();
-  w += mu * z_n(d, dt);
+  w += mu * z_n(d, dt) * nS;
   w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
+  //std::cout << w << std::endl;
 }
 
 double DopaminergicSynapse::alpha(double d)

@@ -1,6 +1,7 @@
 #include "izneuron.hpp"
 #include "../units.hpp"
 #include <cmath>
+#include <iostream>
 
 IzNeuron::IzNeuron(int id, int type, double t_limit, SynapseNetwork &con) :
   Neuron(id, type, t_limit),
@@ -58,12 +59,21 @@ void IzNeuron::spike()
 
 void IzNeuron::step(double dt)
 {
-  double I = /*g_ampa* */h_ampa*(E_ampa - v) +
-             /*g_nmda* */h_nmda*(E_nmda - v) +
-             B(v)* /*g_gaba* */h_gaba*(E_gaba - v);
+  g_ampa = g_nmda = g_gaba = 0.0;
+  for (Synapse *&sy : in)
+  {
+    g_ampa += sy->g_ampa();
+    g_nmda += sy->g_nmda();
+    g_gaba += sy->g_gaba();
+  }
+
+  double I = g_ampa* h_ampa*(E_ampa - v) +
+             g_nmda* h_nmda*(E_nmda - v) +
+             B(v)* g_gaba* h_gaba*(E_gaba - v);
 
   // TODO: use 4th order runge-kutta, or whatever boost odeint implements
-  v += dt * (k*(v - v_r)*(v - v_t) - u + 2000*pA/*+ I*/)/C;
+  //v += dt * (k*(v - v_r)*(v - v_t) - u + 2000*pA/*+ I*/)/C;
+  v += dt * (k*(v - v_r)*(v - v_t) - u + I)/C;
   u += dt * a*(b*(v - v_r) - u);
 
   h_ampa += dt * -(h_ampa/tau_ampa);
@@ -77,9 +87,13 @@ void IzNeuron::step(double dt)
 
 void IzNeuron::receive_spike(Synapse *sy)
 {
-  g_ampa += sy->g_ampa();
-  g_nmda += sy->g_nmda();
-  g_gaba += sy->g_gaba();
+  //std::cout << h_ampa << " " << h_nmda << " " << h_gaba << std::endl;
+  //std::cout << sy->get_w() << std::endl;
+  //std::cout << sy->g_ampa() << " " << sy->g_nmda() << " " << sy->g_gaba() << std::endl;
+
+  h_ampa += sy->g_ampa() > 0;
+  h_nmda += sy->g_nmda() > 0;
+  h_gaba += sy->g_gaba() > 0;
 }
 
 bool IzNeuron::is_spiking()

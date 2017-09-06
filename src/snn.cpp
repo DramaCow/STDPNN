@@ -1,11 +1,12 @@
 #include "snn.hpp"
 #include <random>
 #include <iostream>
+#include "units.hpp"
 
 SNN::SNN(double duration) :
-  ppn(10), sn(1),
+  ppn(200), sn(1),
   con(ppn.size() + sn.size()),
-  d(0.0)
+  d(10.0)
 {
   int id = 0;
 
@@ -23,7 +24,7 @@ SNN::SNN(double duration) :
 
   for (PPNeuron *&neuron : ppn)
   {
-    double w = std::uniform_real_distribution<double>{W_MIN, W_MAX}(gen);
+    double w = std::uniform_real_distribution<double>{0.0, 0.46*nS}(gen);
     Synapse *sy_d1 = new GlutamateSynapse(neuron, sn[0], w, 1.20, 6.00, 1.20, 1.30,  0.00, -0.40, -0.50, d);
     con.add_synapse(sy_d1);
   }

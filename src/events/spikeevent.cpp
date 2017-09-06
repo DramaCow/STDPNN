@@ -1,6 +1,8 @@
 #include "spikeevent.hpp"
 #include "../eventmanager.hpp"
 
+#include <iostream>
+
 SpikeEvent::SpikeEvent(double time, Neuron *neuron) : Event(time), neuron(neuron)
 {
 }

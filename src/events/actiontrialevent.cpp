@@ -5,6 +5,7 @@
 
 #define f_sal 25.0 // salient fire rate
 #define f_bac 3.0  // background fire rate
+#define SIG 50
 
 ActionTrialResetEvent::ActionTrialResetEvent(double time) : Event(time)
 {
@@ -40,7 +41,7 @@ void RepeatedActionTrialEvent::process(EventManager &EM, SNN &snn)
     std::sort(std::begin(snn.ppn), std::end(snn.ppn), [](Neuron *n1, Neuron *n2) { return n1->id < n2->id; });
   }
 
-  for (auto n = std::begin(snn.ppn); n < std::begin(snn.ppn) + 5; ++n)
+  for (auto n = std::begin(snn.ppn); n < std::begin(snn.ppn) + SIG; ++n)
   {
     (*n)->t_limit = time + 0.4;
     (*n)->fr = f_sal;
@@ -53,7 +54,7 @@ void RepeatedActionTrialEvent::process(EventManager &EM, SNN &snn)
       EM.insert(new SpikeEvent(t_next, *n));
     }
   }
-  for (auto n = std::begin(snn.ppn) + 5; n < std::end(snn.ppn); ++n)
+  for (auto n = std::begin(snn.ppn) + SIG; n < std::end(snn.ppn); ++n)
   {
     (*n)->t_limit = time + 2.4;
     (*n)->fr = f_bac;
@@ -83,7 +84,7 @@ void RandomActionTrialEvent::process(EventManager &EM, SNN &snn)
 {
   std::shuffle(std::begin(snn.ppn), std::end(snn.ppn), EM.gen);
 
-  for (auto n = std::begin(snn.ppn); n < std::begin(snn.ppn) + 5; ++n)
+  for (auto n = std::begin(snn.ppn); n < std::begin(snn.ppn) + SIG; ++n)
   {
     (*n)->t_limit = time + 0.4;
     (*n)->fr = f_sal;
@@ -96,7 +97,7 @@ void RandomActionTrialEvent::process(EventManager &EM, SNN &snn)
       EM.insert(new SpikeEvent(t_next, *n));
     }
   }
-  for (auto n = std::begin(snn.ppn) + 5; n < std::end(snn.ppn); ++n)
+  for (auto n = std::begin(snn.ppn) + SIG; n < std::end(snn.ppn); ++n)
   {
     (*n)->t_limit = time + 2.4;
     (*n)->fr = f_bac;
