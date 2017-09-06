@@ -126,15 +126,17 @@ int main(int argc, char *argv[])
   {
     IzNeuron *iz = dynamic_cast<IzNeuron*>(snn.sn[0]);
     FILE* file = fopen((fig_num + "B.dat").c_str(), "wb");
-    int count = iz->v_record.size();
+    int count = iz->u_record.size();
     int num_plots = 1;
-    double ymin = -80*mV, ymax = 40*mV;
+    //double ymin = -80*mV, ymax = 40*mV;
+    double ymin = *min_element(std::begin(iz->u_record), std::end(iz->u_record)); 
+    double ymax = *max_element(std::begin(iz->u_record), std::end(iz->u_record));
     fwrite(&count, sizeof(int), 1, file);
     fwrite(&num_plots, sizeof(int), 1, file);
     fwrite(&ymin, sizeof(double), 1, file);
     fwrite(&ymax, sizeof(double), 1, file);
     fwrite(&iz->t_record[0], sizeof(double), count, file);
-    fwrite(&iz->v_record[0], sizeof(double), count, file);
+    fwrite(&iz->u_record[0], sizeof(double), count, file);
     fclose(file);
   }
   {

@@ -10,7 +10,7 @@ PPNeuron::PPNeuron(int id, int type, double t_limit) : Neuron(id, type, t_limit)
 
 bool PPNeuron::is_spiking()
 {
-  return t_last == t_next;
+  return true;
 }
 
 double PPNeuron::next_spike_time(double t)

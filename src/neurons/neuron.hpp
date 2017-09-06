@@ -17,7 +17,6 @@ class Neuron
     const int type;
     double t_limit;
 
-    virtual void update(double t_curr);
     virtual void spike();  
 
     virtual void step(double dt) = 0;
@@ -25,13 +24,9 @@ class Neuron
     virtual bool is_spiking() = 0;
     virtual double next_spike_time(double t) = 0;
 
-    double get_x();
-    double get_y();
-
     std::vector<double> spikes;
 
   protected:
-    double t_last;
     double t_next;
 
     double x;

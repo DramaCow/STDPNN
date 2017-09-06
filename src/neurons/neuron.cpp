@@ -22,13 +22,6 @@ Neuron::Neuron(int id, int type, double t_limit) : id(id), type(type), t_limit(t
   this->y = 0.0;
 }
 
-void Neuron::update(double t_curr)
-{
-  x *= exp(-(t_curr - t_last)/tau_p);
-  y *= exp(-(t_curr - t_last)/tau_n);
-  t_last = t_curr;
-}
-
 void Neuron::spike()
 {
   x += A_p;

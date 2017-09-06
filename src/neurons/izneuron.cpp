@@ -7,7 +7,7 @@ IzNeuron::IzNeuron(int id, int type, double t_limit, SynapseNetwork &con) :
   Neuron(id, type, t_limit),
   in(con.in(this)), out(con.out(this)),
 
-  a      (  0.01 * 1          ), // dominant ion channel time const
+  a      (  0.01 * 1/ms       ), // dominant ion channel time const
   b      (   -20 * pF/ms      ), // arbitrary scaling const
   c      (   -55 * mV         ), // reset potential (mV),
   k      (     1 * pF/(mV*mV) ), // arbitrary scaling const
@@ -70,7 +70,7 @@ void IzNeuron::step(double dt)
 
   // TODO: use 4th order runge-kutta, or whatever boost odeint implements
   //v += dt * (k*(v - v_r)*(v - v_t) - u + 2000*pA/*+ I*/)/C;
-  v += dt * (k*(v - v_r)*(v - v_t) - u + 2000*pA/*I*/)/C;
+  v += dt * (k*(v - v_r)*(v - v_t) - u + 400*pA/*I*/)/C;
   u += dt * a*(b*(v - v_r) - u);
 
   h_ampa += dt * -(h_ampa/tau_ampa);
@@ -78,6 +78,7 @@ void IzNeuron::step(double dt)
   h_gaba += dt * -(h_gaba/tau_gaba);
 
   v_record.push_back(v);
+  //u_record.push_back((400*pA - u) / pA);
   u_record.push_back(u);
   t_record.push_back(t_record.back() + dt);
 }

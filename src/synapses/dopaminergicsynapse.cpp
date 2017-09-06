@@ -30,16 +30,24 @@ DopaminergicSynapse::DopaminergicSynapse(Neuron *pre, Neuron *post, double w,
 
 void DopaminergicSynapse::pre_spike(double t)
 {
-  double dt = post->get_y();
-  w += mu * z_p(d, dt) * nS;
+  double dt = t - t_x;
+  y *= exp(-dt/tau_n);
+  w += mu * y;
   w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
+
+  y += z_n(d, 0); // 0 is for laziness
+  t_y = t;
 }
 
 void DopaminergicSynapse::post_spike(double t)
 {
-  double dt = pre->get_x();
-  w += mu * z_n(d, dt) * nS;
+  double dt = t - t_x;
+  x *= exp(-dt/tau_p);
+  w += mu * x;
   w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
+
+  x += z_p(d, 0); // 0 is for laziness
+  t_x = t;
 }
 
 double DopaminergicSynapse::alpha(double d)

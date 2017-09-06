@@ -9,14 +9,14 @@ SpikeEvent::SpikeEvent(double time, Neuron *neuron) : Event(time), neuron(neuron
 
 void SpikeEvent::process(EventManager &EM, SNN &snn)
 {
-  neuron->update(time);
+  //neuron->update(time);
 
   if (neuron->is_spiking())
   {
     // acting as PRE-synaptic neuron
     for (Synapse *&sy : snn.con.out(neuron))
     {
-      sy->post->update(time);
+      //sy->post->update(time);
       sy->pre_spike(time);
       sy->post->receive_spike(sy);
 
@@ -30,7 +30,7 @@ void SpikeEvent::process(EventManager &EM, SNN &snn)
     // acting as POST-synaptic neuron
     for (Synapse *&sy : snn.con.in(neuron))
     {
-      sy->pre->update(time);
+      //sy->pre->update(time);
       sy->post_spike(time);
     }
 
