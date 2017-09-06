@@ -16,8 +16,8 @@ class Synapse
     Neuron *const pre;
     Neuron *const post;
 
-    virtual void pre_spike()  = 0;
-    virtual void post_spike() = 0;
+    virtual void pre_spike(double t)  = 0;
+    virtual void post_spike(double t) = 0;
 
     double get_w();
 

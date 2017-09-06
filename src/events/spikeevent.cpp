@@ -17,7 +17,7 @@ void SpikeEvent::process(EventManager &EM, SNN &snn)
     for (Synapse *&sy : snn.con.out(neuron))
     {
       sy->post->update(time);
-      sy->pre_spike();
+      sy->pre_spike(time);
       sy->post->receive_spike(sy);
 
       double t_next = sy->post->next_spike_time(time);
@@ -31,7 +31,7 @@ void SpikeEvent::process(EventManager &EM, SNN &snn)
     for (Synapse *&sy : snn.con.in(neuron))
     {
       sy->pre->update(time);
-      sy->post_spike();
+      sy->post_spike(time);
     }
 
     neuron->spike();

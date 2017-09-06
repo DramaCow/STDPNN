@@ -9,14 +9,19 @@ class DopaminergicSynapse : public Synapse
     DopaminergicSynapse(Neuron *pre, Neuron *post, double w, 
       double rho, double theta, double a0, double k_p_hi, double k_n_hi, double k_p_lo, double k_n_lo, double &d);
 
-    virtual void pre_spike();
-    virtual void post_spike();
+    virtual void pre_spike(double t);
+    virtual void post_spike(double t);
 
   //private:
   public:
     double alpha(double d);
     double z_p(double d, double dt);
     double z_n(double d, double dt);
+
+    double x;   // presynaptic trace
+    double t_x; // last presynaptic trace update
+    double y;   // postsynaptic trace
+    double t_y; // last postsynaptic trace update
 
     double rho;   // Naka-Rushton exponent
     double theta; // Nake-Rushton threshold

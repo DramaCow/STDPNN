@@ -4,24 +4,14 @@ FixedSynapse::FixedSynapse(Neuron *pre, Neuron *post, double w) : Synapse(pre, p
 {
 }
 
-void FixedSynapse::pre_spike()
+void FixedSynapse::pre_spike(double t)
 {
-//  if (pre->type != INHIBITORY)
-//  {
-//    std::cout << w << " , ";
-    w += d2 * post->get_y() * W_MAX;
-    w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
-//    std::cout << w << std::endl;
-//  }
+  w += post->get_y() * W_MAX;
+  w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
 }
 
-void FixedSynapse::post_spike()
+void FixedSynapse::post_spike(double t)
 {
-//  if (pre->type != INHIBITORY)
-//  {
-//    std::cout << w << " , ";
-    w += d1 * pre->get_x() * W_MAX;
-    w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
-//    std::cout << w << std::endl;
-//  }
+  w += pre->get_x() * W_MAX;
+  w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
 }

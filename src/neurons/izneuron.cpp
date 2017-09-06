@@ -30,11 +30,7 @@ IzNeuron::IzNeuron(int id, int type, double t_limit, SynapseNetwork &con) :
 
   h_ampa(0.0),
   h_nmda(0.0),
-  h_gaba(0.0),
-
-  g_ampa(0.0),
-  g_nmda(0.0),
-  g_gaba(0.0)
+  h_gaba(0.0)
 {
   v_record.push_back(v);
   u_record.push_back(u);
@@ -59,6 +55,7 @@ void IzNeuron::spike()
 
 void IzNeuron::step(double dt)
 {
+  double g_ampa, g_nmda, g_gaba;
   g_ampa = g_nmda = g_gaba = 0.0;
   for (Synapse *&sy : in)
   {
@@ -73,7 +70,7 @@ void IzNeuron::step(double dt)
 
   // TODO: use 4th order runge-kutta, or whatever boost odeint implements
   //v += dt * (k*(v - v_r)*(v - v_t) - u + 2000*pA/*+ I*/)/C;
-  v += dt * (k*(v - v_r)*(v - v_t) - u + I)/C;
+  v += dt * (k*(v - v_r)*(v - v_t) - u + 2000*pA/*I*/)/C;
   u += dt * a*(b*(v - v_r) - u);
 
   h_ampa += dt * -(h_ampa/tau_ampa);

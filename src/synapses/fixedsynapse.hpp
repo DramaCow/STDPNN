@@ -8,8 +8,8 @@ class FixedSynapse : public Synapse
   public:
     FixedSynapse(Neuron *pre, Neuron *post, double w);
 
-    virtual void pre_spike();
-    virtual void post_spike();
+    virtual void pre_spike(double t);
+    virtual void post_spike(double t);
 
     virtual double g_ampa() { return 0.0; }
     virtual double g_nmda() { return 0.0; }
