@@ -25,8 +25,9 @@ int main(int argc, char *argv[])
   std::string fig_num(argv[1]);
 
   // example outputting dopamine controlled STDP rules for d1/d2 dopaminergic neurons
-  FixedSynapse fsy(nullptr, nullptr, 0.5*W_MAX);
-  fsy.write(fig_num);
+  //double d = 10.0;
+  //GlutamateSynapse sy_d1(nullptr, nullptr, 0.5*W_MAX, 1.20, 6.00, 1.20, 1.30,  0.00, -0.40, -0.50, d);
+  //sy_d1.write(fig_num);
 
   // global config
   const double duration = 100;
@@ -80,9 +81,6 @@ int main(int argc, char *argv[])
       EM.del_min();
     }
   }
-  
-  // TODO: uhh...
-  //std::sort(std::begin(snn.ppn), std::end(snn.ppn), [](Neuron *n1, Neuron *n2) { return n1->id < n2->id; });
 
   std::cout << "\r COMPLETE [" << std::string(32, '#') << "] " << /*std::setprecision(2) << std::fixed <<*/ EM.duration << "s " << std::endl;
   std::cout << " writing results to file...";
