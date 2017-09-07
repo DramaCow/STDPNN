@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
   }
 
   // global config
-  const double duration = 2.4;
+  const double duration = 8000;
   const double dt_max = 0.00005;
   double t_sim = 0.0;
 
@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
   std::string fig_num(argv[1]);
 
   // example outputting dopamine controlled STDP rules for d1/d2 dopaminergic neurons
+  /*
   double d = 0.0; // level of dopamine
   GlutamateSynapse d1(nullptr, nullptr, 0.5*W_MAX, 1.20, 6.00, 1.20, 1.30,  0.00, -0.40, -0.50, d);
   GlutamateSynapse d2(nullptr, nullptr, 0.5*W_MAX, 1.40, 1.80, 1.00, 0.35, -0.85,  0.30,  0.30, d);
@@ -69,13 +70,16 @@ int main(int argc, char *argv[])
   fwrite(&stdp1[0], sizeof(double), count, f);
   fwrite(&stdp2[0], sizeof(double), count, f);
   fclose(f);
+  */
 
   // initialise simulation state
   SNN snn(duration);
 
   // initialise event queue
   EventManager EM(duration);
-  EM.insert(new RandomActionTrialEvent(0.0, 1));
+  EM.insert(new EpochEvent(0.0, 0));
+  EM.insert(new EpochEvent(0.0, 1));
+  //EM.insert(new RandomActionTrialEvent(0.0, 1));
   EM.insert(new RecordEvent(0.0, 0));
 
   // initialise some global recorders
@@ -124,6 +128,7 @@ int main(int argc, char *argv[])
 
   // export results to binary files
   {
+    /*
     IzNeuron *iz = dynamic_cast<IzNeuron*>(snn.sn[0]);
     FILE* file = fopen((fig_num + "B.dat").c_str(), "wb");
     int count = iz->u_record.size();
@@ -138,6 +143,7 @@ int main(int argc, char *argv[])
     fwrite(&iz->t_record[0], sizeof(double), count, file);
     fwrite(&iz->u_record[0], sizeof(double), count, file);
     fclose(file);
+    */
   }
   {
     FILE* file = fopen((fig_num + "S.dat").c_str(), "wb");
@@ -159,7 +165,6 @@ int main(int argc, char *argv[])
       fwrite(&neuron->spikes[0], sizeof(double), count, file);
     }
   }
-  /*
   {
     FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");
     int count = snn.ppn.size();
@@ -197,7 +202,6 @@ int main(int argc, char *argv[])
     fwrite(&EM.w2_record[0], sizeof(double), count, file);
     fclose(file);
   }
-  */
   /*
   {
     FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");

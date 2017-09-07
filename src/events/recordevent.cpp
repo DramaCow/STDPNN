@@ -20,7 +20,6 @@ void RecordEvent::process(EventManager &EM, SNN &snn)
             << std::flush;
 
   /* record data here */
-/*
   auto begin  = std::begin(snn.ppn);
   auto middle = std::begin(snn.ppn) + 500;
   auto end    = std::end(snn.ppn);
@@ -45,7 +44,6 @@ void RecordEvent::process(EventManager &EM, SNN &snn)
     }
   }
   EM.w2_record[idx] = (sum_w / (snn.ppn.size()/2.0)) / W_MAX;
-*/
 
   double t_delay = EM.rec_period < (EM.duration-time) ? EM.rec_period : (EM.duration-time);
   if (t_delay > 0)

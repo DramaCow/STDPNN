@@ -5,8 +5,8 @@
 #include "../units.hpp"
 
 #define W_MIN 0.0   // minimum peak conductance
-//#define W_MAX 0.015 // maximum peak conductance
-#define W_MAX 2*0.46*nS // maximum peak conductance
+#define W_MAX 0.015 // maximum peak conductance
+//#define W_MAX 2*0.46*nS // maximum peak conductance
 
 class Synapse
 {

@@ -37,7 +37,14 @@ void EpochEvent::process(EventManager &EM, SNN &snn)
       (*it)->t_limit = EM.t_epoch[group_id];
 
       double norm_var_x = std::normal_distribution<double>{0.0, 1.0}(EM.gen);
-      (*it)->fr = corr_fr(norm_var_x, norm_var_y);
+      if (group_id == 0) 
+      {
+        (*it)->fr = corr_fr(norm_var_x, norm_var_y);
+      }
+      else
+      {
+        (*it)->fr = uncorr_fr(norm_var_x);
+      }
   
       double t_next = (*it)->next_spike_time(time);
       if (t_next <= (*it)->t_limit)

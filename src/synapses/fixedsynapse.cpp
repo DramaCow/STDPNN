@@ -1,5 +1,6 @@
 #include "fixedsynapse.hpp"
 #include <cmath>
+#include <iostream>
 
 #define A_p   0.005
 #define tau_p 0.020
@@ -19,7 +20,7 @@ void FixedSynapse::pre_spike(double t)
   w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
 
   y -= A_n;
-  t_y = t;
+  t_x = t;
 }
 
 void FixedSynapse::post_spike(double t)
@@ -31,5 +32,5 @@ void FixedSynapse::post_spike(double t)
   w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
 
   x += A_p;
-  t_x = t;
+  t_y = t;
 }
