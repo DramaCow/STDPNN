@@ -3,6 +3,7 @@
 
 #include "../neurons/neuron.hpp"
 #include "../units.hpp"
+#include <string>
 
 #define W_MIN 0.0   // minimum peak conductance
 #define W_MAX 0.015 // maximum peak conductance
@@ -28,6 +29,8 @@ class Synapse
     double d1, d2;
 
     double w;
+
+    virtual void write(std::string fig) = 0;
 
   protected:
 //    double w;

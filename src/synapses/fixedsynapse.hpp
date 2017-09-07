@@ -14,6 +14,8 @@ class FixedSynapse : public Synapse
     virtual double g_ampa() { return 0.0; }
     virtual double g_nmda() { return 0.0; }
     virtual double g_gaba() { return 0.0; }
+
+    virtual void write(std::string fig);
 };
 
 #endif

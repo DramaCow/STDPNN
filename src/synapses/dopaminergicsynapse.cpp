@@ -1,5 +1,6 @@
 #include "dopaminergicsynapse.hpp"
 #include <cmath>
+#include <algorithm>
 #include "../units.hpp"
 
 #include <iostream>
@@ -64,4 +65,50 @@ double DopaminergicSynapse::z_n(double d, double dt)
 {
   double K = alpha(d)*k_n_hi + (1 - alpha(d))*k_n_lo;
   return K*exp(-dt/tau_n);
+}
+
+void DopaminergicSynapse::write(std::string fig)
+{
+  std::vector<double> time;
+  std::vector<double> stdp;
+
+  double t;
+  t = -0.1;
+  for (int i = 0; i < 100; ++i)
+  {
+    time.push_back(t);
+		stdp.push_back(mu*z_n(d,-t));
+    t += 0.001;
+  }
+  t = 0.0;
+  for (int i = 0; i < 100; ++i)
+  {
+    time.push_back(t);
+    stdp.push_back(mu*z_p(d,t));
+    t += 0.001;
+  }
+
+  FILE* file; 
+  if (pre == nullptr || post == nullptr)
+  {
+    file = fopen((fig + "_dsy_example.dat").c_str(), "wb");
+  }
+  else
+  {
+    file = fopen((fig + "_dsy_" + std::to_string(pre->id) + "_" + std::to_string(post->id) + ".dat").c_str(), "wb");
+  }
+
+  int count = time.size();
+  int num_plots = 1;
+  double ymin = *min_element(std::begin(stdp), std::end(stdp)); 
+  double ymax = *max_element(std::begin(stdp), std::end(stdp));
+
+  fwrite(&count, sizeof(int), 1, file);
+  fwrite(&num_plots, sizeof(int), 1, file);
+  fwrite(&ymin, sizeof(double), 1, file);
+  fwrite(&ymax, sizeof(double), 1, file);
+  fwrite(&time[0], sizeof(double), count, file);
+  fwrite(&stdp[0], sizeof(double), count, file);
+
+  fclose(file);
 }

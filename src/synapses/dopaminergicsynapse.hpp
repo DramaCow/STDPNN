@@ -12,6 +12,8 @@ class DopaminergicSynapse : public Synapse
     virtual void pre_spike(double t);
     virtual void post_spike(double t);
 
+    virtual void write(std::string fig);
+
   //private:
   public:
     double alpha(double d);

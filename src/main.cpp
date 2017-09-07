@@ -21,56 +21,17 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  // global config
-  const double duration = 100;
-  const double dt_max = 0.00005;
-  double t_sim = 0.0;
-
   // figure number as string
   std::string fig_num(argv[1]);
 
   // example outputting dopamine controlled STDP rules for d1/d2 dopaminergic neurons
-  /*
-  double d = 0.0; // level of dopamine
-  GlutamateSynapse d1(nullptr, nullptr, 0.5*W_MAX, 1.20, 6.00, 1.20, 1.30,  0.00, -0.40, -0.50, d);
-  GlutamateSynapse d2(nullptr, nullptr, 0.5*W_MAX, 1.40, 1.80, 1.00, 0.35, -0.85,  0.30,  0.30, d);
-  std::vector<double> time;
-  std::vector<double> stdp1;
-  std::vector<double> stdp2;
-  double t = -0.1;
-  for (int i = 0; i < 100; ++i)
-  {
-    time.push_back(t);
-    stdp1.push_back(d1.mu*d1.z_n(d,-t));
-    stdp2.push_back(d2.mu*d2.z_n(d,-t));
-    t += 0.001;
-  }
-  t = 0.0;
-  for (int i = 0; i < 100; ++i)
-  {
-    time.push_back(t);
-    stdp1.push_back(d1.mu*d1.z_p(d,t));
-    stdp2.push_back(d2.mu*d2.z_p(d,t));
-    t += 0.001;
-  }
-  FILE* f = fopen((fig_num + "BB.dat").c_str(), "wb");
-  int count = time.size();
-  int num_plots = 2;
-  double ymin1 = *min_element(std::begin(stdp1), std::end(stdp1)); 
-  double ymax1 = *max_element(std::begin(stdp1), std::end(stdp1));
-  double ymin2 = *min_element(std::begin(stdp2), std::end(stdp2)); 
-  double ymax2 = *max_element(std::begin(stdp2), std::end(stdp2));
-  double ymin = ymin1 < ymin2 ? ymin1 : ymin2;
-  double ymax = ymax1 > ymax2 ? ymax1 : ymax2;
-  fwrite(&count, sizeof(int), 1, f);
-  fwrite(&num_plots, sizeof(int), 1, f);
-  fwrite(&ymin, sizeof(double), 1, f);
-  fwrite(&ymax, sizeof(double), 1, f);
-  fwrite(&time[0], sizeof(double), count, f);
-  fwrite(&stdp1[0], sizeof(double), count, f);
-  fwrite(&stdp2[0], sizeof(double), count, f);
-  fclose(f);
-  */
+  FixedSynapse fsy(nullptr, nullptr, 0.5*W_MAX);
+  fsy.write(fig_num);
+
+  // global config
+  const double duration = 100;
+  const double dt_max = 0.00005;
+  double t_sim = 0.0;
 
   // initialise simulation state
   SNN snn(duration);
@@ -125,7 +86,6 @@ int main(int argc, char *argv[])
 
   std::cout << "\r COMPLETE [" << std::string(32, '#') << "] " << /*std::setprecision(2) << std::fixed <<*/ EM.duration << "s " << std::endl;
   std::cout << " writing results to file...";
-
 
   // export results to binary files
   snn.con.write(fig_num);
