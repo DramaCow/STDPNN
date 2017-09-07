@@ -2,6 +2,7 @@
 #define ALLEVENTS_H
 
 #include "events/event.hpp"
+#include "events/progressevent.hpp"
 #include "events/spikeevent.hpp"
 #include "events/epochevent.hpp"
 #include "events/recordevent.hpp"

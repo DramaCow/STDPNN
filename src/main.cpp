@@ -39,10 +39,11 @@ int main(int argc, char *argv[])
 
   // initialise event queue
   EventManager EM(duration);
+  EM.insert(new ProgressEvent(0.0, 0));
+
   EM.insert(new EpochEvent(0.0, 0));
   EM.insert(new EpochEvent(0.0, 1));
-  //EM.insert(new RandomActionTrialEvent(0.0, 1));
-  EM.insert(new RecordEvent(0.0, 0));
+  EM.insert(new RecordEvent(0.0, 0, fig_num));
 
   // initialise some global recorders
   std::vector<double> s_record;
@@ -82,13 +83,11 @@ int main(int argc, char *argv[])
     }
   }
 
-  std::cout << "\r COMPLETE [" << std::string(32, '#') << "] " << /*std::setprecision(2) << std::fixed <<*/ EM.duration << "s " << std::endl;
-  std::cout << " writing results to file...";
-
   // export results to binary files
+  std::cout << " writing results to file...";
   snn.con.write(fig_num);
   {
-    FILE* file = fopen((fig_num + "S.dat").c_str(), "wb");
+    FILE* file = fopen((fig_num + "_spiketrains.dat").c_str(), "wb");
 
     int count = snn.ppn.size() + snn.sn.size();
     fwrite(&count, sizeof(int), 1, file);
@@ -106,20 +105,6 @@ int main(int argc, char *argv[])
       fwrite(&count, sizeof(int), 1, file);
       fwrite(&neuron->spikes[0], sizeof(double), count, file);
     }
-  }
-  {
-    FILE* file = fopen((fig_num + "B.dat").c_str(), "wb");
-    int count = EM.rec_entries;
-    int num_plots = 2;
-    double ymin = 0.0, ymax = 1.0;
-    fwrite(&count, sizeof(int), 1, file);
-    fwrite(&num_plots, sizeof(int), 1, file);
-    fwrite(&ymin, sizeof(double), 1, file);
-    fwrite(&ymax, sizeof(double), 1, file);
-    fwrite(&EM.t_record[0], sizeof(double), count, file);
-    fwrite(&EM.w1_record[0], sizeof(double), count, file);
-    fwrite(&EM.w2_record[0], sizeof(double), count, file);
-    fclose(file);
   }
 
   std::cout << "\r results written to file!  " << std::endl;

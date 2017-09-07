@@ -1,25 +1,12 @@
 #include "recordevent.hpp"
 #include "../eventmanager.hpp"
 
-#include <iostream>
-
-RecordEvent::RecordEvent(double time, int idx) : Event(time), idx(idx)
+RecordEvent::RecordEvent(double time, int idx, std::string fig) : Event(time), idx(idx), fig(fig)
 {
 }
 
 void RecordEvent::process(EventManager &EM, SNN &snn)
 {
-  int progress = 32*(time/EM.duration);
-  std::cout << "\r progress [" << std::string(progress, '#') 
-            << std::string(32-progress, ' ') 
-            << "] " 
-            //<< std::setprecision(2) 
-            //<< std::fixed 
-            << time 
-            << "s " 
-            << std::flush;
-
-  /* record data here */
   auto begin  = std::begin(snn.ppn);
   auto middle = std::begin(snn.ppn) + 500;
   auto end    = std::end(snn.ppn);
@@ -48,6 +35,24 @@ void RecordEvent::process(EventManager &EM, SNN &snn)
   double t_delay = EM.rec_period < (EM.duration-time) ? EM.rec_period : (EM.duration-time);
   if (t_delay > 0)
   {
-    EM.insert(new RecordEvent(time + t_delay, idx+1));
+    EM.insert(new RecordEvent(time + t_delay, idx+1, fig));
+  }
+  else
+  {
+    FILE* file = fopen((fig + "_ave.dat").c_str(), "wb");
+
+    int count = EM.rec_entries;
+    int num_plots = 2;
+    double ymin = 0.0, ymax = 1.0;
+
+    fwrite(&count, sizeof(int), 1, file);
+    fwrite(&num_plots, sizeof(int), 1, file);
+    fwrite(&ymin, sizeof(double), 1, file);
+    fwrite(&ymax, sizeof(double), 1, file);
+    fwrite(&EM.t_record[0], sizeof(double), count, file);
+    fwrite(&EM.w1_record[0], sizeof(double), count, file);
+    fwrite(&EM.w2_record[0], sizeof(double), count, file);
+
+    fclose(file);
   }
 }
