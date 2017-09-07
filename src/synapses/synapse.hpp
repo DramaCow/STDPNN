@@ -31,6 +31,10 @@ class Synapse
 
   protected:
 //    double w;
+    double x;   // presynaptic trace
+    double t_x; // last presynaptic trace update
+    double y;   // postsynaptic trace
+    double t_y; // last postsynaptic trace update
 };
 
 #endif

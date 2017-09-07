@@ -28,9 +28,6 @@ class Neuron
 
   protected:
     double t_next;
-
-    double x;
-    double y;
 };
 
 #endif

@@ -8,9 +8,6 @@ DopaminergicSynapse::DopaminergicSynapse(Neuron *pre, Neuron *post, double w,
   double rho, double theta, double a0, double k_p_hi, double k_n_hi, double k_p_lo, double k_n_lo, double &d) : 
   Synapse(pre, post, w),
 
-  x(0.0), t_x(0.0),
-  y(0.0), t_y(0.0),
-
   rho    (rho   ) , // Naka-Rushton exponent
   theta  (theta ) , // Nake-Rushton threshold
   a0     (a0    ) , // maximum value
@@ -32,6 +29,7 @@ void DopaminergicSynapse::pre_spike(double t)
 {
   double dt = t - t_x;
   y *= exp(-dt/tau_n);
+
   w += mu * y;
   w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
 
@@ -43,6 +41,7 @@ void DopaminergicSynapse::post_spike(double t)
 {
   double dt = t - t_x;
   x *= exp(-dt/tau_p);
+
   w += mu * x;
   w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
 
