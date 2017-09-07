@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
   //sy_d1.write(fig_num);
 
   // global config
-  const double duration = 100;
+  const double duration = 8000;
   const double dt_max = 0.00005;
   double t_sim = 0.0;
 

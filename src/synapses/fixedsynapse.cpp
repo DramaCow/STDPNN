@@ -14,26 +14,26 @@ FixedSynapse::FixedSynapse(Neuron *pre, Neuron *post, double w) : Synapse(pre, p
 
 void FixedSynapse::pre_spike(double t)
 {
-  double dt = t - t_y;
-  y *= exp(-dt/tau_n);
+  x *= exp(-(t - t_x)/tau_p);
+  y *= exp(-(t - t_y)/tau_n);
 
   w += y * W_MAX;
   w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
 
-  y -= A_n;
-  t_x = t;
+  x += A_p;
+  t_x = t_y = t;
 }
 
 void FixedSynapse::post_spike(double t)
 {
-  double dt = t - t_x;
-  x *= exp(-dt/tau_p);
+  x *= exp(-(t - t_x)/tau_p);
+  y *= exp(-(t - t_y)/tau_n);
 
   w += x * W_MAX;
   w = w < W_MIN ? W_MIN : w > W_MAX ? W_MAX : w;
 
-  x += A_p;
-  t_y = t;
+  y -= A_n;
+  t_x = t_y = t;
 }
 
 void FixedSynapse::write(std::string fig)
