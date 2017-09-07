@@ -17,6 +17,8 @@ class PPNeuron : public Neuron
 
     double fr;        // fire rate
 
+    virtual void write(std::string fig) {}
+
   private:
     std::mt19937 gen; // random number generator
     double t_next;    // time of next spike

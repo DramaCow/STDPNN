@@ -17,12 +17,13 @@ class IzNeuron : public Neuron
     virtual bool is_spiking();
     virtual double next_spike_time(double t);
 
-    std::vector<double> v_record;
-    std::vector<double> u_record;
-    std::vector<double> t_record;
-
     std::vector<Synapse*> &in;
     std::vector<Synapse*> &out;
+
+    std::vector<double> t_record;
+    std::vector<double> v_record;
+    std::vector<double> u_record;
+    virtual void write(std::string fig);
 
   private:
     const double a;      // dominant ion channel time const

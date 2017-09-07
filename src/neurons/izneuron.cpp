@@ -1,6 +1,7 @@
 #include "izneuron.hpp"
 #include "../units.hpp"
 #include <cmath>
+#include <algorithm>
 #include <iostream>
 
 IzNeuron::IzNeuron(int id, int type, double t_limit, SynapseNetwork &con) :
@@ -32,9 +33,9 @@ IzNeuron::IzNeuron(int id, int type, double t_limit, SynapseNetwork &con) :
   h_nmda(0.0),
   h_gaba(0.0)
 {
+  t_record.push_back(0.0);
   v_record.push_back(v);
   u_record.push_back(u);
-  t_record.push_back(0.0);
 }
 
 double IzNeuron::B(double v)
@@ -77,10 +78,9 @@ void IzNeuron::step(double dt)
   h_nmda += dt * -(h_nmda/tau_nmda);
   h_gaba += dt * -(h_gaba/tau_gaba);
 
-  v_record.push_back(v);
-  //u_record.push_back((400*pA - u) / pA);
-  u_record.push_back(u);
   t_record.push_back(t_record.back() + dt);
+  v_record.push_back(v);
+  u_record.push_back(u);
 }
 
 void IzNeuron::receive_spike(Synapse *sy)
@@ -103,4 +103,23 @@ double IzNeuron::next_spike_time(double t)
 {
   // REDUNDANT
   return INFINITY;
+}
+
+void IzNeuron::write(std::string fig)
+{
+  FILE* file = fopen((fig + "_iz_" + std::to_string(id) + ".dat").c_str(), "wb");
+
+  int count = v_record.size();
+  int num_plots = 1;
+  double ymin = *min_element(std::begin(v_record), std::end(v_record)); 
+  double ymax = *max_element(std::begin(v_record), std::end(v_record));
+
+  fwrite(&count, sizeof(int), 1, file);
+  fwrite(&num_plots, sizeof(int), 1, file);
+  fwrite(&ymin, sizeof(double), 1, file);
+  fwrite(&ymax, sizeof(double), 1, file);
+  fwrite(&t_record[0], sizeof(double), count, file);
+  fwrite(&v_record[0], sizeof(double), count, file);
+
+  fclose(file);
 }

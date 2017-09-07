@@ -2,6 +2,7 @@
 #define SYNAPSENETWORK_H
 
 #include "synapses/synapse.hpp"
+#include <string>
 
 class SynapseNetwork
 {
@@ -16,6 +17,8 @@ class SynapseNetwork
 
     std::vector<std::vector<Synapse *>> A_post; // TODO: move
     std::vector<std::vector<Synapse *>> A_pre;
+
+    void write(std::string fig);
 
   private:
     int num_neurons;

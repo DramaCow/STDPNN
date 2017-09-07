@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
   }
 
   // global config
-  const double duration = 8000;
+  const double duration = 100;
   const double dt_max = 0.00005;
   double t_sim = 0.0;
 
@@ -121,30 +121,14 @@ int main(int argc, char *argv[])
   }
   
   // TODO: uhh...
-  std::sort(std::begin(snn.ppn), std::end(snn.ppn), [](Neuron *n1, Neuron *n2) { return n1->id < n2->id; });
+  //std::sort(std::begin(snn.ppn), std::end(snn.ppn), [](Neuron *n1, Neuron *n2) { return n1->id < n2->id; });
 
   std::cout << "\r COMPLETE [" << std::string(32, '#') << "] " << /*std::setprecision(2) << std::fixed <<*/ EM.duration << "s " << std::endl;
   std::cout << " writing results to file...";
 
+
   // export results to binary files
-  {
-    /*
-    IzNeuron *iz = dynamic_cast<IzNeuron*>(snn.sn[0]);
-    FILE* file = fopen((fig_num + "B.dat").c_str(), "wb");
-    int count = iz->u_record.size();
-    int num_plots = 1;
-    //double ymin = -80*mV, ymax = 40*mV;
-    double ymin = *min_element(std::begin(iz->u_record), std::end(iz->u_record)); 
-    double ymax = *max_element(std::begin(iz->u_record), std::end(iz->u_record));
-    fwrite(&count, sizeof(int), 1, file);
-    fwrite(&num_plots, sizeof(int), 1, file);
-    fwrite(&ymin, sizeof(double), 1, file);
-    fwrite(&ymax, sizeof(double), 1, file);
-    fwrite(&iz->t_record[0], sizeof(double), count, file);
-    fwrite(&iz->u_record[0], sizeof(double), count, file);
-    fclose(file);
-    */
-  }
+  snn.con.write(fig_num);
   {
     FILE* file = fopen((fig_num + "S.dat").c_str(), "wb");
 
@@ -166,29 +150,6 @@ int main(int argc, char *argv[])
     }
   }
   {
-    FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");
-    int count = snn.ppn.size();
-    int num_plots = 1;
-    double ymin = 0.0, ymax = 1.0;
-    fwrite(&count, sizeof(int), 1, file);
-    fwrite(&num_plots, sizeof(int), 1, file);
-    fwrite(&ymin, sizeof(double), 1, file);
-    fwrite(&ymax, sizeof(double), 1, file);
-    for (double id = 0.0; id < snn.ppn.size(); id+=1.0)
-    {
-      fwrite(&id, sizeof(double), 1, file); 
-    }
-    for (std::size_t id = 0; id < snn.ppn.size(); ++id)
-    {
-      for (Synapse *&sy : snn.con.out(snn.ppn[id]))
-      {
-        double w = sy->get_w()/W_MAX;
-        fwrite(&w, sizeof(double), 1, file);
-      }
-    }
-    fclose(file);
-  }
-  {
     FILE* file = fopen((fig_num + "B.dat").c_str(), "wb");
     int count = EM.rec_entries;
     int num_plots = 2;
@@ -202,48 +163,6 @@ int main(int argc, char *argv[])
     fwrite(&EM.w2_record[0], sizeof(double), count, file);
     fclose(file);
   }
-  /*
-  {
-    FILE* file = fopen((fig_num + "A.dat").c_str(), "wb");
-
-    IzNeuron *iz = dynamic_cast<IzNeuron*>(snn.sn[0]);
-
-    int count = iz->t_record.size();
-    int num_plots = 1;
-    double ymin = -80*mV, 
-           ymax = 40*mV;
-
-    fwrite(&count, sizeof(int), 1, file);
-    fwrite(&num_plots, sizeof(int), 1, file);
-    fwrite(&ymin, sizeof(double), 1, file);
-    fwrite(&ymax, sizeof(double), 1, file);
-
-    fwrite(&iz->t_record[0], sizeof(double), count, file);
-    fwrite(&iz->v_record[0], sizeof(double), count, file);
-
-    fclose(file);
-  }
-  {
-    FILE* file = fopen((fig_num + "B.dat").c_str(), "wb");
-
-    IzNeuron *iz = dynamic_cast<IzNeuron*>(snn.sn[0]);
-
-    int count = iz->t_record.size();
-    int num_plots = 1;
-    double ymin = 0, 
-           ymax = 5e-10;
-
-    fwrite(&count, sizeof(int), 1, file);
-    fwrite(&num_plots, sizeof(int), 1, file);
-    fwrite(&ymin, sizeof(double), 1, file);
-    fwrite(&ymax, sizeof(double), 1, file);
-
-    fwrite(&iz->t_record[0], sizeof(double), count, file);
-    fwrite(&iz->u_record[0], sizeof(double), count, file);
-
-    fclose(file);
-  }
-  */
 
   std::cout << "\r results written to file!  " << std::endl;
 
