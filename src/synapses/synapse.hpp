@@ -26,8 +26,6 @@ class Synapse
     virtual double g_nmda() = 0;
     virtual double g_gaba() = 0;
 
-    double d1, d2;
-
     double w;
 
     virtual void write(std::string fig) = 0;

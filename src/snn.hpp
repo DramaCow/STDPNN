@@ -9,7 +9,7 @@
 class SNN
 {
   public:
-    SNN(double duration);
+    SNN(double duration, int ppn_size, int sn_size);
     ~SNN();
 
     std::vector<PPNeuron*> ppn; // poison process neurons
