@@ -11,8 +11,6 @@
 #include "allevents.hpp"
 #include "units.hpp"
 
-#include <typeinfo>
-
 int main(int argc, char *argv[]) 
 {
   if (argc < 2)
@@ -25,12 +23,13 @@ int main(int argc, char *argv[])
   std::string fig_num(argv[1]);
 
   // example outputting dopamine controlled STDP rules for d1/d2 dopaminergic neurons
-  //double d = 10.0;
-  //GlutamateSynapse sy_d1(nullptr, nullptr, 0.5*W_MAX, 1.20, 6.00, 1.20, 1.30,  0.00, -0.40, -0.50, d);
-  //sy_d1.write(fig_num);
+  double d = 0.0;
+  GlutamateSynapse sy_e(nullptr, nullptr, 0.5*W_MAX, 1.20, 6.00, 1.20, 1.30,  0.00, -0.40, -0.50, d);
+  //FixedSynapse sy_e(nullptr, nullptr, 0.5*W_MAX);
+  sy_e.write(fig_num);
 
   // global config
-  const double duration = 8000;
+  const double duration = 10;
   const double dt_max = 0.00005;
   double t_sim = 0.0;
 
@@ -54,8 +53,8 @@ int main(int argc, char *argv[])
     for (PPNeuron *&neuron : snn.ppn)
     {
       double w = std::uniform_real_distribution<double>{W_MIN, W_MAX}(gen);
-      Synapse *sy = new FixedSynapse(neuron, snn.sn[0], w);
-      //Synapse *sy = new GlutamateSynapse(neuron, snn.sn[0], w, 1.20, 6.00, 1.20, 1.30, 0.00, -0.40, -0.50, snn.d);
+      //Synapse *sy = new FixedSynapse(neuron, snn.sn[0], w);
+      Synapse *sy = new GlutamateSynapse(neuron, snn.sn[0], w, 1.20, 6.00, 1.20, 1.30, 0.00, -0.40, -0.50, snn.d);
       snn.con.add_synapse(sy);
     }
   }

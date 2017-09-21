@@ -74,14 +74,14 @@ void DopaminergicSynapse::write(std::string fig)
 
   double t;
   t = -0.1;
-  for (int i = 0; i < 100; ++i)
+  for (int i = 0; i < 101; ++i)
   {
     time.push_back(t);
 		stdp.push_back(mu*z_n(d,-t));
     t += 0.001;
   }
   t = 0.0;
-  for (int i = 0; i < 100; ++i)
+  for (int i = 0; i < 101; ++i)
   {
     time.push_back(t);
     stdp.push_back(mu*z_p(d,t));
