@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #ifndef ALLSYNAPSES_H
 #define ALLSYNAPSES_H
 

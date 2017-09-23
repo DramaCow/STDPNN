@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #include "izneuron.hpp"
 #include "../units.hpp"
 #include <cmath>

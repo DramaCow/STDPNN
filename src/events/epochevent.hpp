@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #ifndef EPOCHEVENT_H
 #define EPOCHEVENT_H
 

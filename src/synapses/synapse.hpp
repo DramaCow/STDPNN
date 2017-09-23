@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #ifndef SYNAPSE_H
 #define SYNAPSE_H
 

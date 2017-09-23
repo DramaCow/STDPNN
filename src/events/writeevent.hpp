@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #ifndef WRITEEVENT_H
 #define WRITEEVENT_H
 

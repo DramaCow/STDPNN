@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #include "actiontrialevent.hpp"
 #include "spikeevent.hpp"
 #include "../eventmanager.hpp"

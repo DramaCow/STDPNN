@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #ifndef PPNEURON_H
 #define PPNEURON_H
 

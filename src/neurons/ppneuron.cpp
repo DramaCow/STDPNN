@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #include "ppneuron.hpp"
 
 PPNeuron::PPNeuron(int id, int type, double t_limit) : Neuron(id, type, t_limit)

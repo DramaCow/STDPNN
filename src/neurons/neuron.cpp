@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 //#include <boost/numeric/odeint.hpp>
 //namespace odeint = boost::numeric::odeint;
 

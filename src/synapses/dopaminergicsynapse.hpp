@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #ifndef DOPAMINERGICSYNAPSE_H
 #define DOPAMINERGICSYNAPSE_H
 

@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #ifndef RECORDEVENT_H
 #define RECORDEVENT_H
 

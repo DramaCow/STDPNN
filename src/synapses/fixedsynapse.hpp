@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #ifndef FIXEDSYNAPSE_H
 #define FIXEDSYNAPSE_H
 

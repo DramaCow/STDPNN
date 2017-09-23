@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #ifndef SYNAPSENETWORK_H
 #define SYNAPSENETWORK_H
 

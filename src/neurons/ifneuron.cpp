@@ -1,23 +1,29 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #include "ifneuron.hpp"
 #include "../units.hpp"
 #include <cmath>
 #include <algorithm>
 
-IFNeuron::IFNeuron(int id, int type, double t_limit) : Neuron(id, type, t_limit)
+IFNeuron::IFNeuron(int id, int type, double t_limit) : 
+  Neuron(id, type, t_limit),
+
+  tau_m    (  20.0 * ms ),
+  V_rest   ( -74.0 * mV ),
+  V_thresh ( -54.0 * mV ),
+  V_reset  ( -60.0 * mV ),
+  E_ex     (   0.0 * mV ),
+  tau_ex   (   5.0 * ms ),
+  E_in     ( -88.0 * mV ),
+  tau_in   (   5.0 * ms ),
+
+  V    ( V_rest ),
+  g_ex (    0.0 ),
+  g_in (    0.0 )
 {
-  // TODO: use initialization lists, not this shit
-  tau_m    =  20.0 * ms;
-  V_rest   = -74.0 * mV;
-  V_thresh = -54.0 * mV;
-  V_reset  = -60.0 * mV;
-  E_ex     =   0.0 * mV;
-  tau_ex   =   5.0 * ms;
-  E_in     = -88.0 * mV;
-  tau_in   =   5.0 * ms;
-
-  V = V_rest;
-  g_ex = g_in = 0;
-
   t_record.push_back(0.0);
   V_record.push_back(V);
 }

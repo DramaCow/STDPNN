@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #ifndef ALLEVENTS_H
 #define ALLEVENTS_H
 

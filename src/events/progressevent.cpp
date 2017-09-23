@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #include "progressevent.hpp"
 #include "../eventmanager.hpp"
 

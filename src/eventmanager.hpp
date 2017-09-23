@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #ifndef EVENTMANAGER_H
 #define EVENTMANAGER_H
 

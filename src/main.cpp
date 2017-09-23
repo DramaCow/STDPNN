@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <cstdio>
@@ -23,13 +28,13 @@ int main(int argc, char *argv[])
   std::string fig_num(argv[1]);
 
   // example outputting dopamine controlled STDP rules for d1/d2 dopaminergic neurons
-  double d = 0.0;
-  GlutamateSynapse sy_e(nullptr, nullptr, 0.5*W_MAX, 1.20, 6.00, 1.20, 1.30,  0.00, -0.40, -0.50, d);
-  //FixedSynapse sy_e(nullptr, nullptr, 0.5*W_MAX);
-  sy_e.write(fig_num);
+  //double d = 0.0;
+  //GlutamateSynapse sy_e(nullptr, nullptr, 0.5*W_MAX, 1.20, 6.00, 1.20, 1.30,  0.00, -0.40, -0.50, d);
+  ////FixedSynapse sy_e(nullptr, nullptr, 0.5*W_MAX);
+  //sy_e.write(fig_num);
 
   // global config
-  const double duration = 10;
+  const double duration = 5000;
   const double dt_max = 0.00005;
   double t_sim = 0.0;
 
@@ -53,8 +58,8 @@ int main(int argc, char *argv[])
     for (PPNeuron *&neuron : snn.ppn)
     {
       double w = std::uniform_real_distribution<double>{W_MIN, W_MAX}(gen);
-      //Synapse *sy = new FixedSynapse(neuron, snn.sn[0], w);
-      Synapse *sy = new GlutamateSynapse(neuron, snn.sn[0], w, 1.20, 6.00, 1.20, 1.30, 0.00, -0.40, -0.50, snn.d);
+      Synapse *sy = new FixedSynapse(neuron, snn.sn[0], w);
+      //Synapse *sy = new GlutamateSynapse(neuron, snn.sn[0], w, 1.20, 6.00, 1.20, 1.30, 0.00, -0.40, -0.50, snn.d);
       snn.con.add_synapse(sy);
     }
   }
@@ -108,8 +113,8 @@ int main(int argc, char *argv[])
 
   // export results to binary files
   std::cout << " writing results to file...";
-  snn.con.write(fig_num);
-  snn.sn[0]->write(fig_num);
+  //snn.con.write(fig_num);
+  //snn.sn[0]->write(fig_num);
   {
     FILE* file = fopen((fig_num + "_spiketrains.dat").c_str(), "wb");
 

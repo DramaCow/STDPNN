@@ -1,3 +1,8 @@
+/*
+  author: Sam Coward
+  date: Sept 2017
+*/
+
 #ifndef IFNEURON_H
 #define IFNEURON_H
 
@@ -10,27 +15,24 @@ class IFNeuron : public Neuron
     IFNeuron(int id, int type, double t_limit);
 
     virtual void spike();  
-
     virtual void step(double dt);
     virtual void receive_spike(Synapse *sy);
     virtual bool is_spiking();
     virtual double next_spike_time(double t);
+    virtual void write(std::string fig);
 
     std::vector<double> t_record;
     std::vector<double> V_record;
-    virtual void write(std::string fig);
 
   private:
-    double V_rest;
-    double V_thresh;
-    double V_reset;
-    double tau_m;
-
-    double E_ex;
-    double tau_ex;
-
-    double E_in;
-    double tau_in;
+    const double V_rest;
+    const double V_thresh;
+    const double V_reset;
+    const double tau_m;
+    const double E_ex;
+    const double tau_ex;
+    const double E_in;
+    const double tau_in;
 
     double V;
     double g_ex;
